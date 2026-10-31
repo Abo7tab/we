@@ -97,11 +97,17 @@
       },
       {
         "code": "36",
-        "reason": "Need Address Modification for fixed voice installation: address mismatch/error; direct the customer to correct it with required documents per the procedure."
+        "reason": "Need Address Modification for fixed voice installation: address mismatch/error; direct the customer to correct it with required documents per the procedure.",
+        "action": "Check the address in Check Availability. If it is incorrect/mismatched, close the TT with code 36 and direct the customer to the branch with the required documents to correct it.",
+        "sla": "24 hours for FV FCC per the training guide; verify the customer SLA shown on the current TT before advising them.",
+        "source_reference": "day 4.pdf p. 4; verify the procedure and SLA in current TTS."
       },
       {
         "code": "37",
-        "reason": "Customer did not answer the fixed voice installation visit call (Fixed Voice SR Follow Up / Installation)."
+        "reason": "Customer did not answer the fixed voice installation visit call (Fixed Voice SR Follow Up / Installation).",
+        "action": "If the customer did not answer the installation visit call, close the FCC ticket with code 37, then archive the related TT as the procedure requires.",
+        "sla": "24 hours for FV FCC per the training guide; verify the customer SLA shown on the current TT before advising them.",
+        "source_reference": "day 4.pdf p. 4; verify the procedure and SLA in current TTS."
       },
       {
         "code": "38",
@@ -109,7 +115,10 @@
       },
       {
         "code": "39",
-        "reason": "Need Address Modification for fixed voice installation: use after confirming the same number exists in the building according to Check Availability."
+        "reason": "Need Address Modification for fixed voice installation: use after confirming the same number exists in the building according to Check Availability.",
+        "action": "Run Check Availability and match the address and number. If you confirm the same number exists in the building, close the TT with code 39; otherwise do not use this code and follow the address-correction path.",
+        "sla": "24 hours for FV FCC per the training guide; verify the customer SLA shown on the current TT before advising them.",
+        "source_reference": "day 4.pdf p. 4; verify the procedure and SLA in current TTS."
       },
       {
         "code": "59",
@@ -117,11 +126,17 @@
       },
       {
         "code": "61",
-        "reason": "Fixed voice Change Customer Category: successful closure in the category-change flow; match the actual result to the current procedure."
+        "reason": "Fixed voice Change Customer Category: successful closure in the category-change flow; match the actual result to the current procedure.",
+        "action": "In the Change Customer Category flow, match the actual outcome to the procedure’s Success scenario; use 61 only when it applies.",
+        "sla": "24 hours for FV FCC per the training guide; verify the customer SLA shown on the current TT before advising them.",
+        "source_reference": "day 4.pdf p. 4; verify the procedure and SLA in current TTS."
       },
       {
         "code": "63",
-        "reason": "Fixed voice Change Customer Category: failed closure in the category-change flow; match the actual result to the current procedure."
+        "reason": "Fixed voice Change Customer Category: failed closure in the category-change flow; match the actual result to the current procedure.",
+        "action": "In the Change Customer Category flow, match the actual outcome to the procedure’s Fail scenario; use 63 only when it applies.",
+        "sla": "24 hours for FV FCC per the training guide; verify the customer SLA shown on the current TT before advising them.",
+        "source_reference": "day 4.pdf p. 4; verify the procedure and SLA in current TTS."
       },
       {
         "code": "65",
@@ -129,7 +144,10 @@
       },
       {
         "code": "67",
-        "reason": "Data Ports problem after ruling out a general outage; follow the approved checks and escalation flow."
+        "reason": "Data Ports problem after ruling out a general outage; follow the approved checks and escalation flow.",
+        "action": "First rule out a general outage and complete the regular checks. If a Data Ports issue is confirmed, follow its escalation path; use 67 only when that cause is shown in TTS.",
+        "sla": "No separate SLA is documented for this code; follow the current ticket SLA.",
+        "source_reference": "day 8.pdf; verify the procedure and SLA in current TTS."
       },
       {
         "code": "73",

@@ -213,6 +213,7 @@ const COPY = {
         sourceReference: 'مصدر الإجراء وحدود الاعتماد',
         howToCheck: 'أعرف منين وأعمل إيه؟', checkGuidance: 'أتحقق إزاي؟', whatToDo: 'أعمل إيه حسب النتيجة؟', generalCheckHint: 'اقرأ السؤال للعميل أو راجع الأداة المذكورة، ثم اختَر النتيجة المطابقة. لو النتيجة مش واضحة أو مش موجودة ضمن الاختيارات، ما تخمّنش وارجع للإجراء الحالي.',
         quickSla: 'مواعيد الـSLA', quickCodes: 'أكواد الإغلاق', quickPackages: 'الباقات', quickToolSearch: 'ابحث بالاسم أو الحالة أو الرقم أو المدة…',
+        slaCodeNoFixed: 'لا توجد مهلة مستقلة موثقة للكود؛ راجع SLA التذكرة الحالية.', codeAction: 'أعمل إيه؟', genericCodeAction: 'تأكد أن وصف الكود يطابق السبب والنتيجة الفعلية في TTS قبل الإغلاق.',
         slaSortBy: 'ترتيب حسب', slaSortDuration: 'مدة المهلة', slaSortCase: 'اسم الحالة', slaAscending: 'تصاعدي', slaDescending: 'تنازلي', slaCaseColumn: 'الحالة', slaDurationColumn: 'المهلة',
         quickChangePackage: 'تغيير باقة',
         quickAccess: 'الوصول السريع', closeDrawer: 'إغلاق',
@@ -244,6 +245,7 @@ const COPY = {
         sourceReference: 'Procedure source and verification note',
         howToCheck: 'How do I verify this and what should I do?', checkGuidance: 'How to check', whatToDo: 'What to do with the result', generalCheckHint: 'Ask the question shown or check the named tool, then choose the matching result. If the result is unclear or not listed, do not guess; check the current procedure.',
         quickSla: 'SLA lookup', quickCodes: 'Close codes', quickPackages: 'Packages', quickToolSearch: 'Search by name, case, code, or timeframe…',
+        slaCodeNoFixed: 'No separate SLA is documented for this code; check the current ticket SLA.', codeAction: 'What should I do?', genericCodeAction: 'Confirm the code matches the actual cause and outcome in TTS before closing.',
         slaSortBy: 'Sort by', slaSortDuration: 'SLA duration', slaSortCase: 'Case name', slaAscending: 'Ascending', slaDescending: 'Descending', slaCaseColumn: 'Case', slaDurationColumn: 'SLA',
         quickChangePackage: 'Change package',
         quickAccess: 'Quick access', closeDrawer: 'Close',
@@ -383,7 +385,7 @@ const App = {
         const quickSlaRows = computed(() => {
             if (!tree.value) return [];
             const query = normalizeSearch(slaSearch.value, language.value);
-            return Object.entries(tree.value)
+            const stepRows = Object.entries(tree.value)
                 .filter(([id, step]) => id !== 'start' && step && typeof step === 'object' && typeof step.sla === 'string')
                 .map(([id, step]) => ({
                     id,
@@ -392,7 +394,20 @@ const App = {
                     durationSort: slaMinutes(step.sla),
                     source: step.source_reference || (language.value === 'ar' ? 'راجع SLA التذكرة الحالية' : 'Check the current ticket SLA'),
                     searchText: normalizeSearch(`${id} ${step.question} ${step.sla} ${step.action || ''} ${step.source_reference || ''}`, language.value),
-                }))
+                }));
+            const codeRows = query ? (tree.value.operations_guide?.closure_codes || [])
+                .filter((row) => normalizeSearch(`${row.code} ${row.reason} ${row.agent_action || ''} ${row.sla || ''}`, language.value).includes(query))
+                .map((row) => ({
+                    id: null,
+                    code: row.code,
+                    title: `${t('codeLabel')} ${row.code}: ${row.reason}`,
+                    duration: row.sla || t('slaCodeNoFixed'),
+                    durationSort: slaMinutes(row.sla || ''),
+                    action: row.agent_action || t('genericCodeAction'),
+                    source: row.source_reference || (language.value === 'ar' ? 'دليل أكواد الإغلاق؛ تحقّق من TTS الحالي' : 'Close-code guide; verify current TTS'),
+                    searchText: normalizeSearch(`${row.code} ${row.reason} ${row.agent_action || ''} ${row.sla || ''}`, language.value),
+                })) : [];
+            return [...stepRows, ...codeRows]
                 .filter((row) => !query || query.split(' ').every((token) => row.searchText.includes(token)))
                 .sort((a, b) => {
                     const direction = slaSortDirection.value === 'asc' ? 1 : -1;
@@ -400,7 +415,7 @@ const App = {
                         if (Number.isFinite(a.durationSort) !== Number.isFinite(b.durationSort)) return Number.isFinite(a.durationSort) ? -1 : 1;
                         if (a.durationSort !== b.durationSort) return (a.durationSort - b.durationSort) * direction;
                     }
-                    return a.title.localeCompare(b.title, language.value) * direction;
+                    return (a.title.localeCompare(b.title, language.value) * direction) || String(a.code || a.id).localeCompare(String(b.code || b.id));
                 });
         });
 
@@ -698,9 +713,10 @@ const App = {
                         h('div', { class: 'min-w-0' }, [
                             h('h3', { class: 'm-0 line-clamp-2 text-xs font-bold leading-5 text-slate-900 sm:text-sm' }, row.title),
                             h('p', { class: 'mt-0.5 truncate text-[10px] leading-4 text-slate-500', title: `${t('sourceReference')}: ${row.source}` }, row.source),
+                            row.action ? h('p', { class: 'mt-1 text-[11px] leading-5 text-indigo-900' }, [h('strong', `${t('codeAction')} `), row.action]) : null,
                         ]),
                         h('span', { class: 'max-w-40 rounded-lg bg-blue-50 px-2 py-1 text-end text-[11px] font-bold leading-4 text-blue-900' }, row.duration),
-                        h('button', { class: 'col-span-2 inline-flex min-h-8 items-center gap-1 justify-self-start rounded-lg px-2 py-1 text-[11px] font-bold text-blue-800 hover:bg-blue-100 sm:col-span-1', type: 'button', onClick: () => jumpToStep(row.id) }, [icon('arrow', 'size-4'), t('openStep')]),
+                        row.id ? h('button', { class: 'col-span-2 inline-flex min-h-8 items-center gap-1 justify-self-start rounded-lg px-2 py-1 text-[11px] font-bold text-blue-800 hover:bg-blue-100 sm:col-span-1', type: 'button', onClick: () => jumpToStep(row.id) }, [icon('arrow', 'size-4'), t('openStep')]) : h('span', { class: 'hidden sm:block' }, ''),
                     ])) : h('p', { class: 'rounded-lg bg-slate-50 p-3 text-sm text-slate-600' }, t('noQuickMatches'))),
                 ]) : null,
                 quickToolsOpen.value === 'codes' ? h('section', { class: 'mb-4 rounded-2xl border border-blue-100 bg-white p-3 sm:p-4' }, [
@@ -712,7 +728,12 @@ const App = {
                     h('input', { class: 'app-control mb-3 w-full rounded-xl border px-3 py-2.5 text-sm', type: 'search', value: codeSearch.value, placeholder: t('codesSearch'), onInput: (event) => { codeSearch.value = event.target.value; } }),
                     h('div', { class: 'max-h-96 space-y-2 overflow-y-auto pe-1', 'aria-live': 'polite' }, (tree.value?.operations_guide?.closure_codes || []).filter((row) => !codeSearch.value || normalizeSearch(`${row.code} ${row.reason}`, language.value).includes(normalizeSearch(codeSearch.value, language.value))).sort((a, b) => Number(a.code) - Number(b.code)).map((row) => h('article', { class: 'flex items-start gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3', key: row.code }, [
                         h('span', { class: 'inline-flex min-w-10 items-center justify-center rounded-lg bg-indigo-100 px-2 py-1 font-bold text-indigo-900' }, row.code),
-                        h('p', { class: 'm-0 text-sm leading-6 text-slate-800' }, row.reason),
+                        h('div', { class: 'min-w-0 flex-1' }, [
+                            h('p', { class: 'm-0 text-sm leading-6 text-slate-800' }, row.reason),
+                            h('p', { class: 'mt-2 rounded-lg bg-indigo-50 p-2 text-xs leading-5 text-indigo-950' }, [h('strong', `${t('codeAction')} `), row.agent_action || t('genericCodeAction')]),
+                            row.sla ? h('p', { class: 'mt-1 text-[11px] font-semibold leading-5 text-blue-900' }, `${t('sla')} ${row.sla}`) : null,
+                            row.source_reference ? h('p', { class: 'mt-1 text-[10px] leading-4 text-slate-500' }, `${t('sourceReference')}: ${row.source_reference}`) : null,
+                        ]),
                     ]))),
                 ]) : null,
                 quickToolsOpen.value === 'packages' ? h('section', { class: 'mb-4 rounded-2xl border border-blue-100 bg-white p-3 sm:p-4' }, [

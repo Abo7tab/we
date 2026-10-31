@@ -2,7 +2,7 @@
   "start": "start_menu",
   "operations_guide": {
     "search": "Use the service number to open a line profile or follow a service order. Use Account Number or NAS Port ID when the tool asks for an IP or NST/NOC log lookup. Follow the field requested by the tool and confirm the result belongs to the same customer and service. Do not enter customer numbers on this website.",
-    "record": "Technical fault: update the existing TT with all checks. When escalation is required, create/update the IR record according to the case path. An SR (Service Request) is for a new service or a customer-requested change, not a replacement for a fault TT. Create DLAY only after the SLA is breached or when the case path requires it; first check that an automatic delay ticket does not already exist, then renew the SLA and record the delay in I-Report/Cases as instructed.",
+    "record": "Before troubleshooting: search TTS History by service number for a TT for the same fault, then check Outage/Customer360, billing/suspension status, and package usage. Record any existing ticket reference and update that TT instead of duplicating it. For a technical escalation, update/create the correct TT and update/create IR when the case path requires it. SR is for a service request or a Major Fault path when instructed; it does not replace a fault TT. Attach a Major Fault message screenshot to its SR when that process requires it. Create DLAY only after SLA breach or when required; check for an automatic ticket, renew SLA, and record delay as instructed. After creating/updating a ticket, tell the customer its reference and the SLA shown in the system.",
     "codes_note": "These FCC codes come from a dated training PDF. Use a code only when it matches the actual cause and the current TTS choices; never select by number alone.",
     "closure_codes": [
       {"code":"2","reason":"Line stable / no problem found"},{"code":"86","reason":"Problem solved after changing customer CPE"},{"code":"87","reason":"Problem solved after changing splitter"},{"code":"8","reason":"Problem solved after fixing internal wiring"},{"code":"9","reason":"Problem solved after fixing external wire"},{"code":"12","reason":"Problem solved after changing external wire"},{"code":"10","reason":"Problem solved after changing internal wiring"},{"code":"13","reason":"Problem solved after fixing from box side"},{"code":"11","reason":"Problem solved after fixing from cabin side"},{"code":"14","reason":"Problem solved after fixing from exchange"},{"code":"18","reason":"Problem solved after voice resplit"},{"code":"35","reason":"Split after contract change"},{"code":"6","reason":"New installation"},{"code":"59","reason":"Problem solved after changing new port"},{"code":"83","reason":"Internal wiring and cannot be solved"},{"code":"20","reason":"Major fault"},{"code":"84","reason":"Internal wiring; customer refuses to change it"},{"code":"81","reason":"Internal problem - cable maintenance needed"},{"code":"82","reason":"External problem - cable maintenance needed"},{"code":"75","reason":"Splitter problem - customer has no spare"},{"code":"74","reason":"Customer CPE problem"},{"code":"65","reason":"CPE configuration required; match the current TTS label"},{"code":"38","reason":"Stalagmite problem (label as shown in table)"},{"code":"17","reason":"Customer unavailable - schedule in comment"},{"code":"28","reason":"Customer refused visit / refused entry"},{"code":"96","reason":"Customer did not answer"},{"code":"26","reason":"Engineering inspection"},{"code":"19","reason":"Internal network - close compound"},{"code":"29","reason":"Customer phone device problem"},{"code":"23","reason":"Customer voice-service invoice problem"},{"code":"4","reason":"Work order not finished"},{"code":"30","reason":"Unavailable as per customer request"},{"code":"7","reason":"Installation failed"},{"code":"27","reason":"Address modification"},{"code":"73","reason":"Installation refused by customer"},{"code":"24","reason":"Line out of service"}
@@ -11,13 +11,136 @@
   "start_menu": {
     "question": "What is the reason for the call? Choose the request type; for faults, check TTS History before troubleshooting.",
     "options": [
-      { "label": "Internet outage/slow speed or DSL issue", "next_step": "physical_start" },
-      { "label": "Landline or voice issue", "next_step": "voice_start" },
+      { "label": "Internet outage/slow speed or DSL issue", "next_step": "preflight_start" },
+      { "label": "Landline or voice issue", "next_step": "preflight_start" },
       { "label": "New installation or installation follow-up", "next_step": "request_start" },
       { "label": "Package, service, or general inquiry", "next_step": "inquiry_start" },
       { "label": "Complaint or escalation", "next_step": "complaint_start" },
       { "label": "Exception or close code shown in TTS History", "next_step": "exceptions_start" }
     ]
+  },
+  "preflight_start": {
+    "question": "Before troubleshooting, have you checked TTS History for an open TT for this same fault?",
+    "options": [
+      {
+        "label": "No open TT for this fault; continue checks",
+        "next_step": "outage_precheck"
+      },
+      {
+        "label": "An open TT exists; record its reference and update it, then continue",
+        "next_step": "outage_precheck"
+      },
+      {
+        "label": "TT status is unclear; search by service number first",
+        "next_step": "existing_tt_terminal"
+      }
+    ]
+  },
+  "outage_precheck": {
+    "question": "Does the approved tool show an outage, planned outage, or major fault for this service or area?",
+    "options": [
+      {
+        "label": "Yes, an outage is confirmed",
+        "next_step": "outage_terminal"
+      },
+      {
+        "label": "No outage is shown",
+        "next_step": "billing_precheck"
+      },
+      {
+        "label": "An outage is possible or the tool result is unclear",
+        "next_step": "outage_unconfirmed_terminal"
+      }
+    ]
+  },
+  "billing_precheck": {
+    "question": "Is the account/service active with no unpaid balance or billing suspension?",
+    "options": [
+      {
+        "label": "There is an unpaid balance or billing suspension",
+        "next_step": "billing_terminal"
+      },
+      {
+        "label": "The account is active with no blocking balance",
+        "next_step": "quota_precheck"
+      },
+      {
+        "label": "Status is unclear; verify the account before troubleshooting",
+        "next_step": "billing_verify_terminal"
+      }
+    ]
+  },
+  "quota_precheck": {
+    "question": "Have you checked the package validity and usage, and is allowance still available?",
+    "options": [
+      {
+        "label": "The package expired or allowance is exhausted",
+        "next_step": "quota_terminal"
+      },
+      {
+        "label": "The package is active with allowance; start fault diagnosis",
+        "next_step": "technical_type"
+      },
+      {
+        "label": "Usage could not be verified",
+        "next_step": "quota_verify_terminal"
+      }
+    ]
+  },
+  "technical_type": {
+    "question": "Which fault type remains after checking duplicate tickets, outages, billing, and package usage?",
+    "options": [
+      {
+        "label": "Internet or DSL",
+        "next_step": "physical_start"
+      },
+      {
+        "label": "Landline or voice",
+        "next_step": "voice_start"
+      }
+    ]
+  },
+  "existing_tt_terminal": {
+    "question": "Check fault tickets before creating a new one.",
+    "action": "Search TTS History by service number. If an open TT exists for the same fault, record its reference and update it instead of creating a duplicate. Then return and check outage, account status, and package usage.",
+    "customer_script": "I will first check the fault history for your line so I can follow the existing case and avoid creating a duplicate request.",
+    "sla": "Use the SLA recorded on the existing ticket",
+    "options": []
+  },
+  "outage_unconfirmed_terminal": {
+    "question": "A general outage is possible, but it is not confirmed in the tool.",
+    "action": "Check Customer360/Outage Tool. If the result remains unclear, ask the team leader to confirm before opening an individual fault ticket. If a Major Fault is confirmed, follow its process and record the announcement/reference. Attach a screenshot of the Major Fault message to its SR when that process requires it; screenshots are not a blanket requirement for every outage.",
+    "customer_script": "I will verify the network status with the relevant team and share the official update time once the outage status is confirmed.",
+    "sla": "Use the official system SLA after status is confirmed",
+    "options": []
+  },
+  "billing_terminal": {
+    "question": "Account status may be preventing the service from working.",
+    "action": "Check the current balance and suspension status in the approved system. Quote only the current amount and available payment channel. Do not open a technical fault TT until the billing block is cleared; retest the service after the status updates.",
+    "customer_script": "I can see an outstanding balance or service suspension. I will explain the current amount and payment options, then we can retest the service after the account updates.",
+    "sla": "According to payment processing and system update",
+    "options": []
+  },
+  "billing_verify_terminal": {
+    "question": "Billing or suspension status could not be confirmed.",
+    "action": "Do not classify this as a technical fault until account/service status is confirmed in the approved system. Do not ask for payment credentials or passwords. Once verified, return to the package check and continue.",
+    "customer_script": "I will verify the service and billing status first, then continue with the right steps for your case.",
+    "sla": "Continue after checking the system",
+    "options": []
+  },
+  "quota_terminal": {
+    "question": "The package has expired or its allowance is exhausted.",
+    "action": "Confirm allowance and validity in the system. Explain current renewal/add-on options and prices from the live source. Do not record this as a technical fault or create a TT for exhausted allowance.",
+    "customer_script": "I checked your package usage, and it has expired/reached its available limit. I can explain the renewal or add-on options currently available.",
+    "sla": "According to completion of renewal or add-on",
+    "options": []
+  },
+  "quota_verify_terminal": {
+    "question": "Package usage could not be confirmed.",
+    "action": "Check package usage and validity in the system before recording a fault. Do not rely on an estimate or an outdated package table. Continue with the relevant path once the status is visible.",
+    "customer_script": "I will check your package usage and validity in the system, then we can decide whether to renew it or continue technical checks.",
+    "sla": "Continue after usage information is available",
+    "options": []
   },
   "physical_start": {
     "question": "Ask the customer to check the router's DSL/ADSL light. What does it do during the issue?",
@@ -103,8 +226,8 @@
   },
   "physical_escalation": {
     "question": "The physical fault or instability needs escalation.",
-    "action": "Record the customer's confirmation, light status, wiring, ASSIA result, and visit details if any. Create or re-escalate the fault/IU ticket according to the case type. Check for an Outage and outstanding line bills before escalation. Follow the SLA recorded for the case.",
-    "customer_script": "I have recorded the checks and their results, and I will send the case to the specialist team for review. We will follow up using the contact details on file.",
+    "action": "Record the customer confirmation, light status, wiring, ASSIA result, and visit details. Update the existing TT for the same fault, or create the correct TT/escalation if none exists. Create/update IR when required, and check outage, billing, and package status. Record the case reference and SLA from the system, then give both to the customer. Create an SR only if the process requires it.",
+    "customer_script": "I recorded the checks and sent/updated the case for the specialist team. Your case reference is (read it from the system), and the recorded SLA is (read it from the system). We will follow up using the latest update.",
     "sla": "Usually 24 hours for IU cases; Outages and other fault types may differ. Check the case SLA.",
     "options": []
   },
@@ -191,8 +314,8 @@
   },
   "noc_escalation": {
     "question": "The logical issue needs escalation to the relevant team.",
-    "action": "Record the symptoms, start time, tested devices, CPE status, and MTU/DNS/trace or system-log results. Escalate to NOC according to the case type and follow the SLA shown in the system. Do not include credentials or internal addresses in customer-facing comments.",
-    "customer_script": "We have completed the initial checks, and I will send the case to the specialist team to review the network. We will follow up according to the SLA recorded for your case.",
+    "action": "Record symptoms, start time, tested devices, CPE status, and MTU/DNS/trace or system-log results. Update the existing TT or create the correct TT if none exists; escalate to NOC and update/create IR if required. Record the case reference and SLA from the system and give both to the customer. Do not include credentials or internal addresses in customer-facing comments.",
+    "customer_script": "We completed the initial checks and recorded a technical follow-up. Your case reference is (read it from the system), and the recorded SLA is (read it from the system). We will follow up with the latest update.",
     "sla": "Depends on the case and escalation path; check the system and do not quote one universal SLA",
     "options": []
   },
@@ -205,8 +328,8 @@
   },
   "outage_terminal": {
     "question": "The issue may be related to a general network outage.",
-    "action": "Check the Outage Tool or CST360 for the outage type (planned/unplanned) and end time before opening an individual ticket. If the outage window has ended and the issue remains, restart the individual-fault diagnosis. Refer to the team leader if the outage is not visible in the tools.",
-    "customer_script": "The issue may be related to a general outage. I will check its status and official update time. If the issue continues afterward, I will continue with individual troubleshooting.",
+    "action": "Confirm the outage, type, and end time in Outage Tool or Customer360, and record its announcement/reference. Do not open a duplicate individual TT during a confirmed general outage. Give the official SLA shown. If the outage is unclear, ask the team leader to confirm. If the outage window ends and the issue remains, resume individual diagnosis and update/create the correct TT. Create an SR and attach a screenshot only when the Major Fault/current process requires it; this is not a blanket requirement for every outage.",
+    "customer_script": "I checked the network status, and the issue is related to a general outage (record the outage reference from the system). The official SLA and update time are the ones shown in our system. If the issue continues after the outage ends, we will continue checking your line and follow up using the recorded reference.",
     "sla": "According to the official Outage notice; do not estimate a resolution time",
     "options": []
   },

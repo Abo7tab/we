@@ -102,6 +102,7 @@ const COPY = {
         ambiguous: 'لم يتطابق الكلام مع اختيار واحد. قل كلمة أقصر من الاختيار أو اضغطه؛ سأواصل الاستماع.', voiceError: 'تعذر التعرف على الصوت. اسمح للميكروفون أو استخدم الأزرار.',
         startMic: 'اختيار صوتي', stopMic: 'إيقاف الاستماع', stopAudio: 'إيقاف الصوت', readResult: 'قراءة النتيجة',
         autoRead: 'قراءة السؤال تلقائيًا', voice: 'الصوت', language: 'اللغة', dark: 'الوضع الداكن', light: 'الوضع الفاتح',
+        testVoice: 'اختبار الصوت', rateUnit: '×', voiceNotInstalled: 'لو مش ظاهر صوت عربي هنا، جودة القراءة تعتمد على الأصوات المثبتة في الجهاز والمتصفح.',
         voicePrivacy: 'قد يعالج المتصفح الصوت عبر خدمة خارجية وبحاجة إلى الإنترنت؛ هذا الموقع لا يحفظ تسجيل الميكروفون.',
         operations: 'رقم البحث والتسجيل في النظام', searchTitle: 'أبحث بأي رقم؟', recordTitle: 'أسجل إيه؟', codesTitle: 'أكواد الإغلاق الظاهرة في دليل التدريب', codesSearch: 'ابحث برقم الكود أو الوصف', codeLabel: 'الكود', reasonLabel: 'الوصف',
         toolLabel: 'الأداة:', supportIssue: 'حدث خطأ أثناء التحميل.', retryMic: 'تعذر تشغيل الميكروفون. راجع إذن الميكروفون أو استخدم الأزرار.', micEnded: 'انتهى الاستماع بعد عدة محاولات. اضغط الميكروفون للمحاولة مجددًا.',
@@ -119,6 +120,7 @@ const COPY = {
         ambiguous: 'No single option matched. Say a shorter phrase from the button or tap it; listening will continue.', voiceError: 'Speech recognition failed. Allow microphone access or use the buttons.',
         startMic: 'Voice choice', stopMic: 'Stop listening', stopAudio: 'Stop audio', readResult: 'Read result',
         autoRead: 'Read each question automatically', voice: 'Voice', language: 'Language', dark: 'Dark mode', light: 'Light mode',
+        testVoice: 'Test voice', rateUnit: '×', voiceNotInstalled: 'If no Arabic voice appears here, speech quality depends on voices installed on the device and browser.',
         voicePrivacy: 'The browser may process audio through an online service; this site does not save microphone recordings.',
         operations: 'Which ID and record should I use?', searchTitle: 'What should I search by?', recordTitle: 'What should I record?', codesTitle: 'Close codes listed in training guide', codesSearch: 'Search by code or reason', codeLabel: 'Code', reasonLabel: 'Reason',
         toolLabel: 'Tool:', supportIssue: 'An error occurred while loading.', retryMic: 'Could not start the microphone. Check its permission or use the buttons.', micEnded: 'Listening ended after several attempts. Tap the microphone to try again.',
@@ -140,7 +142,7 @@ const App = {
         const voices = ref([]);
         const selectedVoice = ref('');
         const autoRead = ref(true);
-        const speechRate = ref(0.85);
+        const speechRate = ref(0.9);
         const codeSearch = ref('');
         const voiceStatus = ref('');
         let activeRecognition = null;
@@ -185,6 +187,11 @@ const App = {
         }
         function speakCurrentStep() { if (autoRead.value && currentStep.value) speak(currentStep.value.question); }
         function readResult() { speak([currentStep.value?.action, currentStep.value?.sla, currentStep.value?.customer_script].filter(Boolean).join('. ')); }
+        function testVoice() {
+            speak(language.value === 'ar'
+                ? 'هذا اختبار للصوت. تقدر توقف القراءة من زر إيقاف الصوت.'
+                : 'This is a voice test. You can stop playback with the stop audio button.');
+        }
 
         function afterStepChange() {
             voiceStatus.value = '';
@@ -324,6 +331,7 @@ const App = {
                 language.value = nextLanguage;
                 document.documentElement.lang = nextLanguage;
                 document.documentElement.dir = nextLanguage === 'ar' ? 'rtl' : 'ltr';
+                try { selectedVoice.value = localStorage.getItem('support-voice-' + nextLanguage) ?? ''; } catch { selectedVoice.value = ''; }
                 refreshVoices();
                 notice.value = '';
             } catch (error) {
@@ -337,6 +345,19 @@ const App = {
         function switchTheme(next) {
             theme.value = next;
             try { localStorage.setItem('support-theme', next); } catch { /* preference is optional */ }
+        }
+        function setAutoRead(enabled) {
+            autoRead.value = enabled;
+            try { localStorage.setItem('support-auto-read', enabled ? 'on' : 'off'); } catch { /* optional preference */ }
+            if (!enabled) stopAudio();
+        }
+        function setSpeechRate(rate) {
+            speechRate.value = Number(rate);
+            try { localStorage.setItem('support-speech-rate', String(speechRate.value)); } catch { /* optional preference */ }
+        }
+        function setVoice(voiceURI) {
+            selectedVoice.value = voiceURI;
+            try { localStorage.setItem('support-voice-' + language.value, voiceURI); } catch { /* optional preference */ }
         }
 
         function choose(option) {
@@ -397,6 +418,12 @@ const App = {
 
         onMounted(() => {
             try { theme.value = localStorage.getItem('support-theme') === 'dark' ? 'dark' : 'light'; } catch { /* optional preference */ }
+            try {
+                autoRead.value = localStorage.getItem('support-auto-read') !== 'off';
+                const savedRate = Number(localStorage.getItem('support-speech-rate'));
+                if (Number.isFinite(savedRate) && savedRate >= 0.65 && savedRate <= 1.3) speechRate.value = savedRate;
+                selectedVoice.value = localStorage.getItem('support-voice-ar') ?? '';
+            } catch { /* optional preferences */ }
             document.documentElement.lang = 'ar';
             document.documentElement.dir = 'rtl';
             refreshVoices();
@@ -443,11 +470,12 @@ const App = {
                         'aria-label': t('newInquiry'),
                     }, [icon('home', 'size-4'), t('fresh')]) : null,
                 ]),
-                h('div', { class: 'settings-panel mb-5 grid gap-3 rounded-2xl bg-slate-50 p-3 sm:grid-cols-2' }, [
-                    h('label', { class: 'flex items-center justify-between gap-2 text-sm text-gray-700' }, [t('voice'), h('select', { class: 'app-control max-w-[70%] rounded border bg-white p-2', value: selectedVoice.value, onChange: (event) => { selectedVoice.value = event.target.value; } }, [h('option', { value: '' }, language.value === 'ar' ? 'الافتراضي' : 'Default'), ...voices.value.map((voice) => h('option', { value: voice.voiceURI, key: voice.voiceURI }, `${voice.name} (${voice.lang})`))])]),
-                    h('label', { class: 'flex items-center justify-between gap-2 text-sm' }, [language.value === 'ar' ? 'سرعة القراءة' : 'Speech speed', h('input', { type: 'range', min: '0.75', max: '1.05', step: '0.05', value: speechRate.value, onInput: (event) => { speechRate.value = event.target.value; } })]),
-                    h('label', { class: 'flex items-center gap-2 text-sm sm:col-span-2' }, [h('input', { type: 'checkbox', checked: autoRead.value, onChange: (event) => { autoRead.value = event.target.checked; if (!autoRead.value) stopAudio(); } }), t('autoRead')]),
-                    h('p', { class: 'text-xs leading-5 text-gray-500 sm:col-span-2' }, t('voicePrivacy')),
+                h('div', { class: 'settings-panel mb-4 flex flex-wrap items-center gap-2 rounded-2xl bg-slate-50 p-2.5' }, [
+                    h('label', { class: 'flex min-w-0 flex-1 items-center gap-2 text-xs text-gray-700' }, [t('voice'), h('select', { class: 'app-control min-w-0 flex-1 rounded-lg border bg-white px-2 py-1.5 text-xs', value: selectedVoice.value, onChange: (event) => setVoice(event.target.value) }, [h('option', { value: '' }, language.value === 'ar' ? 'تلقائي' : 'Auto'), ...voices.value.map((voice) => h('option', { value: voice.voiceURI, key: voice.voiceURI }, `${voice.name} (${voice.lang})`))])]),
+                    h('button', { class: 'app-control rounded-lg border px-2.5 py-1.5 text-xs font-medium', type: 'button', onClick: testVoice }, t('testVoice')),
+                    h('label', { class: 'flex items-center gap-1.5 text-xs text-gray-700' }, [language.value === 'ar' ? 'السرعة' : 'Speed', h('input', { class: 'w-20 accent-blue-700', type: 'range', min: '0.65', max: '1.3', step: '0.05', value: speechRate.value, onInput: (event) => setSpeechRate(event.target.value), 'aria-label': language.value === 'ar' ? 'سرعة القراءة' : 'Speech rate' }), h('span', { class: 'w-8 tabular-nums' }, `${Number(speechRate.value).toFixed(2)}${t('rateUnit')}`)]),
+                    h('label', { class: 'flex items-center gap-1.5 text-xs text-gray-700' }, [h('input', { type: 'checkbox', checked: autoRead.value, onChange: (event) => setAutoRead(event.target.checked) }), t('autoRead')]),
+                    h('p', { class: 'w-full text-[11px] leading-4 text-gray-500' }, voices.value.length ? t('voicePrivacy') : t('voiceNotInstalled')),
                 ]),
                 loading.value
                     ? h('p', { class: 'py-8 text-center text-gray-500', role: 'status' }, t('loading'))

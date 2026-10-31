@@ -218,6 +218,7 @@ const COPY = {
         slaSortBy: 'ترتيب حسب', slaSortDuration: 'مدة المهلة', slaSortCase: 'اسم الحالة', slaAscending: 'تصاعدي', slaDescending: 'تنازلي', slaCaseColumn: 'الحالة', slaDurationColumn: 'المهلة',
         quickChangePackage: 'تغيير باقة',
         quickAccess: 'الوصول السريع', closeDrawer: 'إغلاق',
+        homeEyebrow: 'مساحة دعم فني تفاعلية', homeTitleA: 'كل مكالمة لها ', homeTitleB: 'مسار واضح.', homeLead: 'اختار مساحة العمل المناسبة: وجّه المكالمة خطوة بخطوة، استكشف شجرة القرارات، أو راجع الإجراءات على راحتك.', homeSearch: 'ابحث عن عرض أو مشكلة أو خطوة دعم…', homeRoomsLabel: 'اختر وجهتك', homeRoomsTitle: 'ادخل مساحة العمل', homeRoomsHint: 'كل مساحة لها طريقة مختلفة للتعامل مع نفس قاعدة المعرفة.', homeLive: 'وقت المكالمة', homeLiveText: 'خطوات عملية واضحة: اسأل، افحص في النظام، ثم أكمل حسب النتيجة.', homeExplore: 'استكشاف الحالات', homeExploreText: 'افتح الفروع وشاهد كيف تتغير النتيجة مع كل قرار حتى تصل للنهاية.', homeLearn: 'وقت المراجعة', homeLearnText: 'شرائح قصيرة تشرح الحالات والأدوات والإجراءات بشكل متدرج.', homeEnter: 'ادخل المساحة', homeSlaHint: 'ابحث في المهل ورتبها', homeCodesHint: 'ابحث بالكود وشوف الإجراء', homePackagesHint: 'اعثر على الباقة بسرعة',
         guidedMode: 'مساعد المكالمة', treeMode: 'خريطة الشجرة', reviewMode: 'مراجعة وتعلّم', reviewTitle: 'مكتبة المراجعة', reviewIntro: 'اختار موضوعًا وراجع خطواته كشرائح قصيرة. تقدر تتنقل بين الفروع وتشوف الإجراء والمهلة والنهاية.', reviewChooseTopic: 'اختار موضوع المراجعة', reviewStart: 'ابدأ العرض', reviewContinue: 'تابع الشرائح', reviewTopics: 'موضوعات', reviewSlides: 'شريحة', reviewBackSlide: 'السابق', reviewNextSlide: 'التالي', reviewFinish: 'نهاية العرض', reviewBackTopics: 'كل الموضوعات', reviewOpenAssistant: 'افتح الخطوة في مساعد المكالمة', reviewBranch: 'انتقل لهذه الحالة', reviewCaseMap: 'فروع الحالة', reviewStudy: 'مراجعة ذاتية', reviewDeckProgress: 'تقدم العرض', mapTitle: 'خريطة القرار', mapIntro: 'اختار فرعًا من الرسم؛ كل قرار يفتح عقدة جديدة لحد ما توصل للإجراء والـSLA.', mapSearch: 'ابحث عن حالة أو أداة أو عرض…', mapSearchHint: 'البحث يشمل الأسئلة والإجراءات والنهايات في كل الشجرة.', mapTrail: 'المسار الذي استكشفته', mapRoot: 'بداية الشجرة', mapBranches: 'النتائج الممكنة من هذه الخطوة', mapBranch: 'تابع المسار', mapTry: 'جرّب في المساعد', mapOpenCurrent: 'ابدأ هذه الخطوة في المساعد', mapBackBranch: 'ارجع للتفرع السابق', mapReset: 'ابدأ استكشافًا جديدًا', mapTerminal: 'نهاية المسار', mapSla: 'SLA المسار', mapSearchEmpty: 'لا توجد حالة مطابقة.', mapOptionsCount: 'فروع متاحة', mapVisits: 'خطوات اتخذتها', mapProgress: 'اللي تم في المسار', mapNext: 'الخطوة الحالية', mapNoPath: 'لا يوجد مسار متاح لهذه الخطوة.', mapFound: 'النتيجة التي وصلنا لها',
         quickProblem: 'تشخيص مشكلة', quickInquiry: 'استفسار خدمة', quickRequest: 'طلب أو متابعة تركيب', quickBilling: 'فاتورة أو سداد', quickComplaint: 'شكوى أو تصعيد',
         openReference: 'مرجع الدعم', returnGuided: 'العودة لمساعد المكالمة',
@@ -251,6 +252,7 @@ const COPY = {
         slaSortBy: 'Sort by', slaSortDuration: 'SLA duration', slaSortCase: 'Case name', slaAscending: 'Ascending', slaDescending: 'Descending', slaCaseColumn: 'Case', slaDurationColumn: 'SLA',
         quickChangePackage: 'Change package',
         quickAccess: 'Quick access', closeDrawer: 'Close',
+        homeEyebrow: 'Interactive support space', homeTitleA: 'A clear path for ', homeTitleB: 'every call.', homeLead: 'Choose your workspace: guide a live call, explore the decision tree, or review support procedures at your own pace.', homeSearch: 'Search a service, issue, or support step…', homeRoomsLabel: 'Choose your destination', homeRoomsTitle: 'Enter a workspace', homeRoomsHint: 'Each space gives you a different way to use the same support knowledge.', homeLive: 'Live call', homeLiveText: 'Clear steps: ask, check the system, and continue based on what you find.', homeExplore: 'Explore cases', homeExploreText: 'Open branches and see how each decision leads to a different outcome.', homeLearn: 'Learning time', homeLearnText: 'Short slides explain cases, tools, and procedures step by step.', homeEnter: 'Enter workspace', homeSlaHint: 'Search and sort response times', homeCodesHint: 'Find a code and see what to do', homePackagesHint: 'Find a package quickly',
         guidedMode: 'Call assistant', treeMode: 'Decision map', reviewMode: 'Review & learn', reviewTitle: 'Learning library', reviewIntro: 'Choose a topic and review its steps as short slides. Explore branches, actions, SLAs, and outcomes.', reviewChooseTopic: 'Choose a review topic', reviewStart: 'Start presentation', reviewContinue: 'Continue slides', reviewTopics: 'Topics', reviewSlides: 'Slide', reviewBackSlide: 'Previous', reviewNextSlide: 'Next', reviewFinish: 'End of presentation', reviewBackTopics: 'All topics', reviewOpenAssistant: 'Open in call assistant', reviewBranch: 'Jump to this case', reviewCaseMap: 'Case branches', reviewStudy: 'Self study', reviewDeckProgress: 'Presentation progress', mapTitle: 'Decision map', mapIntro: 'Choose a branch in the drawing. Each decision opens a new node until you reach the action and SLA.', mapSearch: 'Search a case, tool, or symptom…', mapSearchHint: 'Searches questions, actions, and end states across the full tree.', mapTrail: 'Explored path', mapRoot: 'Tree start', mapBranches: 'Possible results from this step', mapBranch: 'Continue path', mapTry: 'Try in assistant', mapOpenCurrent: 'Open this step in assistant', mapBackBranch: 'Back to previous branch', mapReset: 'Start a new exploration', mapTerminal: 'End of path', mapSla: 'Path SLA', mapSearchEmpty: 'No matching case.', mapOptionsCount: 'branches', mapVisits: 'Steps taken', mapProgress: 'What you have done', mapNext: 'Current step', mapNoPath: 'No path is available for this step.', mapFound: 'Outcome reached',
         quickProblem: 'Troubleshoot a problem', quickInquiry: 'Service inquiry', quickRequest: 'Installation request or follow-up', quickBilling: 'Bill or payment', quickComplaint: 'Complaint or escalation',
         openReference: 'Support reference', returnGuided: 'Return to call guide',
@@ -290,7 +292,7 @@ const App = {
         const slaSortDirection = ref('asc');
         const packageSearch = ref('');
         const quickDrawerOpen = ref(false);
-        const workspaceMode = ref('map');
+        const workspaceMode = ref('home');
         const treeMapPath = ref([]);
         const treeMapSearch = ref('');
         const reviewDeckId = ref(null);
@@ -634,6 +636,75 @@ const App = {
             workspaceMode.value = 'review';
         }
 
+        function goHome() {
+            quickToolsOpen.value = '';
+            quickDrawerOpen.value = false;
+            workspaceMode.value = 'home';
+            reviewDeckId.value = null;
+            afterStepChange();
+        }
+
+        function enterGuided() {
+            quickToolsOpen.value = '';
+            workspaceMode.value = 'guided';
+            afterStepChange();
+        }
+
+        function renderHome() {
+            const rooms = [
+                { id: 'guided', icon: 'chat', number: '01', eyebrow: t('homeLive'), title: t('guidedMode'), detail: t('homeLiveText'), action: enterGuided, className: 'portal-live' },
+                { id: 'map', icon: 'tree', number: '02', eyebrow: t('homeExplore'), title: t('treeMode'), detail: t('homeExploreText'), action: openTreeMap, className: 'portal-map' },
+                { id: 'review', icon: 'grid', number: '03', eyebrow: t('homeLearn'), title: t('reviewMode'), detail: t('homeLearnText'), action: enterReview, className: 'portal-learn' },
+            ];
+            const searchResults = quickSearch.value.trim() ? quickSearchResults.value.slice(0, 4).map((result, index) => h('button', {
+                class: 'home-search-result', type: 'button', key: result.id || result.title, onClick: () => { if (result.kind === 'step') jumpToStep(result.id); else if (result.kind === 'code') { codeSearch.value = String(result.id); openQuickTool('codes'); } else { workspaceMode.value = 'reference'; quickSearch.value = result.title; } },
+            }, [h('span', [index === 0 ? h('small', t('bestMatch')) : null, h('strong', result.title), h('span', result.snippet)]), icon('arrow', 'size-4')])) : null;
+
+            return h('section', { class: 'home-world' }, [
+                h('div', { class: 'home-hero' }, [
+                    h('div', { class: 'home-copy' }, [
+                        h('div', { class: 'home-status' }, [h('span', { class: 'status-pulse' }), t('homeEyebrow')]),
+                        h('h2', { class: 'home-title' }, [t('homeTitleA'), h('span', t('homeTitleB'))]),
+                        h('p', { class: 'home-lead' }, t('homeLead')),
+                        h('div', { class: 'home-search-box' }, [
+                            icon('search', 'size-5'),
+                            h('input', { type: 'search', value: quickSearch.value, placeholder: t('homeSearch'), onInput: (event) => { quickSearch.value = event.target.value; } }),
+                            h('kbd', '⌕'),
+                        ]),
+                        searchResults ? h('div', { class: 'home-search-results' }, searchResults.length ? searchResults : [h('p', { class: 'decision-empty' }, t('noSearchResults'))]) : null,
+                    ]),
+                    h('div', { class: 'home-visual', 'aria-hidden': 'true' }, [
+                        h('div', { class: 'home-visual-glow' }),
+                        h('div', { class: 'home-orbit home-orbit-a' }),
+                        h('div', { class: 'home-orbit home-orbit-b' }),
+                        h('div', { class: 'home-orbit home-orbit-c' }),
+                        h('div', { class: 'home-core' }, [h('img', { src: '/we-logo.svg', alt: '', class: 'home-logo' })]),
+                        ...[['chat', 'home-node-a'], ['tree', 'home-node-b'], ['grid', 'home-node-c']].map(([name, cls]) => h('div', { class: 'home-node ' + cls }, [icon(name, 'size-5')])),
+                        h('span', { class: 'home-spark home-spark-a' }),
+                        h('span', { class: 'home-spark home-spark-b' }),
+                    ]),
+                ]),
+                h('div', { class: 'portal-section-heading' }, [
+                    h('div', [h('span', t('homeRoomsLabel')), h('h3', t('homeRoomsTitle'))]),
+                    h('p', t('homeRoomsHint')),
+                ]),
+                h('div', { class: 'portal-grid' }, rooms.map((room) => h('button', { class: 'portal-card ' + room.className, type: 'button', onClick: room.action, key: room.id }, [
+                    h('span', { class: 'portal-index' }, room.number),
+                    h('span', { class: 'portal-icon-wrap' }, [icon(room.icon, 'size-6')]),
+                    h('span', { class: 'portal-eyebrow' }, room.eyebrow),
+                    h('strong', { class: 'portal-title' }, room.title),
+                    h('span', { class: 'portal-detail' }, room.detail),
+                    h('span', { class: 'portal-enter' }, [t('homeEnter'), icon('arrow', 'size-4')]),
+                    h('span', { class: 'portal-glow' }),
+                ]))),
+                h('div', { class: 'home-utility-row' }, [
+                    h('button', { class: 'home-utility', type: 'button', onClick: () => openQuickTool('sla') }, [icon('clock', 'size-5'), h('span', [h('strong', t('quickSla')), h('small', t('homeSlaHint'))]), icon('arrow', 'size-4')]),
+                    h('button', { class: 'home-utility', type: 'button', onClick: () => openQuickTool('codes') }, [icon('ticket', 'size-5'), h('span', [h('strong', t('quickCodes')), h('small', t('homeCodesHint'))]), icon('arrow', 'size-4')]),
+                    h('button', { class: 'home-utility', type: 'button', onClick: () => openQuickTool('packages') }, [icon('search', 'size-5'), h('span', [h('strong', t('quickPackages')), h('small', t('homePackagesHint'))]), icon('arrow', 'size-4')]),
+                ]),
+            ]);
+        }
+
         function selectReviewDeck(deckId) {
             reviewDeckId.value = deckId;
             reviewSlideIndex.value = 0;
@@ -968,7 +1039,7 @@ const App = {
 
 
         return () => h('main', {
-                class: `app-shell we-brand ${theme.value === 'dark' ? 'app-dark' : ''} relative isolate min-h-screen w-full overflow-x-clip bg-slate-50 px-4 py-6 pb-28 text-gray-800 sm:px-6 sm:py-10`,
+                class: `app-shell we-brand scene-${workspaceMode.value} ${theme.value === 'dark' ? 'app-dark' : ''} relative isolate min-h-screen w-full overflow-x-clip px-4 py-5 pb-28 text-gray-800 sm:px-8 sm:py-8`,
         }, [
             h('div', { class: 'wave-backdrop pointer-events-none absolute inset-x-0 bottom-0 z-0 h-48 overflow-hidden sm:h-64', 'aria-hidden': 'true' }, [
                 h('svg', { class: 'wave wave-one absolute bottom-0 h-full w-[200%]', viewBox: '0 0 2880 320', preserveAspectRatio: 'none' }, [
@@ -982,23 +1053,24 @@ const App = {
                 ]),
             ]),
             h('section', {
-                class: 'app-card relative z-10 mx-auto max-w-6xl rounded-[1.75rem] bg-white p-4 shadow-2xl shadow-slate-400/20 ring-1 ring-slate-900/5 sm:p-7 lg:p-9',
+                key: workspaceMode.value, class: `app-card workspace-frame workspace-frame-${workspaceMode.value} relative z-10 mx-auto w-full max-w-screen-2xl p-3 sm:p-5 lg:p-8`,
                 'aria-busy': loading.value ? 'true' : 'false',
             }, [
-                h('header', { class: 'mb-5 flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-4' }, [
+                h('header', { class: 'world-header mb-5 flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-4' }, [
                     h('div', { class: 'flex min-w-0 items-center gap-3' }, [
-                        h('button', { class: 'brand-mark inline-flex size-12 shrink-0 items-center justify-center rounded-full transition hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2', type: 'button', onClick: restart, 'aria-label': t('newInquiry'), title: t('newInquiry') }, [h('img', { src: '/we-logo.svg', class: 'size-11', alt: 'WE' })]),
+                        h('button', { class: 'brand-mark inline-flex size-12 shrink-0 items-center justify-center rounded-full transition hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2', type: 'button', onClick: goHome, 'aria-label': t('title'), title: t('title') }, [h('img', { src: '/we-logo.svg', class: 'size-11', alt: 'WE' })]),
                         h('div', { class: 'min-w-0' }, [
                             h('div', { class: 'flex flex-wrap items-center gap-x-2 gap-y-1' }, [
-                                h('button', { class: 'block text-start text-xs font-bold tracking-wide text-purple-800 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500', type: 'button', onClick: restart }, t('brand')),
+                                h('button', { class: 'block text-start text-xs font-bold tracking-wide text-purple-800 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500', type: 'button', onClick: goHome }, t('brand')),
                                 h('span', { class: 'we-exceed text-[10px] font-extrabold tracking-[0.14em]' }, t('exceed')),
                                 h('span', { class: 'we-internal text-[10px] font-medium' }, t('internalTool')),
                             ]),
                             h('h1', { class: 'truncate text-xl font-bold text-gray-900 sm:text-2xl' }, t('title')),
                         ]),
                     ]),
-                    h('nav', { class: 'order-3 flex w-full items-center gap-1 rounded-xl border border-slate-200 bg-slate-50 p-1 sm:order-none sm:w-auto', 'aria-label': language.value === 'ar' ? 'أوضاع العمل' : 'Work modes' }, [
-                        h('button', { class: `inline-flex min-h-9 flex-1 items-center justify-center gap-1.5 rounded-lg px-3 text-xs font-bold transition sm:flex-none ${workspaceMode.value === 'guided' || workspaceMode.value === 'reference' ? 'bg-white text-purple-800 shadow-sm' : 'text-slate-600 hover:bg-white'}`, type: 'button', onClick: () => { workspaceMode.value = 'guided'; quickToolsOpen.value = ''; }, 'aria-pressed': workspaceMode.value === 'guided' || workspaceMode.value === 'reference' }, [icon('chat', 'size-4'), t('guidedMode')]),
+                    h('nav', { class: 'world-nav order-3 flex w-full items-center gap-1 rounded-xl border border-slate-200 bg-slate-50 p-1 sm:order-none sm:w-auto', 'aria-label': language.value === 'ar' ? 'أوضاع العمل' : 'Work modes' }, [
+                        h('button', { class: `world-nav-button inline-flex min-h-9 flex-1 items-center justify-center gap-1.5 rounded-lg px-3 text-xs font-bold transition sm:flex-none ${workspaceMode.value === 'home' ? 'bg-white text-purple-800 shadow-sm' : 'text-slate-600 hover:bg-white'}`, type: 'button', onClick: goHome, 'aria-pressed': workspaceMode.value === 'home' }, [icon('home', 'size-4'), t('homeRoomsLabel')]),
+                        h('button', { class: `inline-flex min-h-9 flex-1 items-center justify-center gap-1.5 rounded-lg px-3 text-xs font-bold transition sm:flex-none ${workspaceMode.value === 'guided' || workspaceMode.value === 'reference' ? 'bg-white text-purple-800 shadow-sm' : 'text-slate-600 hover:bg-white'}`, type: 'button', onClick: enterGuided, 'aria-pressed': workspaceMode.value === 'guided' || workspaceMode.value === 'reference' }, [icon('chat', 'size-4'), t('guidedMode')]),
                         h('button', { class: `inline-flex min-h-9 flex-1 items-center justify-center gap-1.5 rounded-lg px-3 text-xs font-bold transition sm:flex-none ${workspaceMode.value === 'map' ? 'bg-white text-purple-800 shadow-sm' : 'text-slate-600 hover:bg-white'}`, type: 'button', onClick: openTreeMap, 'aria-pressed': workspaceMode.value === 'map' }, [icon('tree', 'size-4'), t('treeMode')]),
                         h('button', { class: `inline-flex min-h-9 flex-1 items-center justify-center gap-1.5 rounded-lg px-3 text-xs font-bold transition sm:flex-none ${workspaceMode.value === 'review' ? 'bg-white text-purple-800 shadow-sm' : 'text-slate-600 hover:bg-white'}`, type: 'button', onClick: enterReview, 'aria-pressed': workspaceMode.value === 'review' }, [icon('grid', 'size-4'), t('reviewMode')]),
                     ]),
@@ -1071,7 +1143,7 @@ const App = {
                         item.source ? h('p', { class: 'mt-2 text-[10px] text-slate-500' }, item.source) : null,
                     ])) : h('p', { class: 'rounded-lg bg-slate-50 p-3 text-sm text-slate-600' }, t('noQuickMatches'))),
                 ]) : null,
-                workspaceMode.value === 'map' || workspaceMode.value === 'review' ? null : h('section', { class: 'quick-search-panel mb-5 rounded-2xl border border-slate-200 bg-white p-3 sm:p-4' }, [
+                workspaceMode.value === 'map' || workspaceMode.value === 'review' || workspaceMode.value === 'home' ? null : h('section', { class: 'quick-search-panel mb-5 rounded-2xl border border-slate-200 bg-white p-3 sm:p-4' }, [
                     h('label', { class: 'mb-2 flex items-center gap-2 text-sm font-bold text-slate-800', for: 'quick-support-search' }, [icon('search', 'size-4 text-blue-700'), t('quickSearch')]),
                     h('div', { class: 'flex gap-2' }, [
                         h('input', {
@@ -1111,7 +1183,9 @@ const App = {
                         ]))
                         : h('p', { class: 'rounded-xl bg-amber-50 px-3 py-2 text-sm leading-6 text-amber-900' }, t('noSearchResults'))) : null,
                 ]),
-                workspaceMode.value === 'map'
+                workspaceMode.value === 'home'
+                    ? renderHome()
+                    : workspaceMode.value === 'map'
                     ? loading.value
                         ? h('p', { class: 'py-8 text-center text-slate-500', role: 'status' }, t('loading'))
                         : loadError.value

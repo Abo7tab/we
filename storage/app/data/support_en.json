@@ -2558,7 +2558,8 @@
       }
     ],
     "action": "This is an internal check; do not ask the customer about Congested status. If Congested or Within Ratio appears, use approved wording and stop individual troubleshooting unless the system directs otherwise.",
-    "source_reference": "day 13.pdf pp. 11 and 13. Use the current Utilization script; do not promise an ETA not shown in the system."
+    "source_reference": "day 13.pdf pp. 11 and 13. Use the current Utilization script; do not promise an ETA not shown in the system.",
+    "check_guidance": "Open CST360 > Port Details and read Congested status. This is an internal result; do not ask the customer."
   },
   "logical_instability_congested_terminal": {
     "question": "Network status is Congested; stop individual troubleshooting.",
@@ -2598,7 +2599,8 @@
     ],
     "customer_prompt": "I am checking the line in our diagnostic tool.",
     "action": "Verify Line ID matches the service. If data is stale, run the permitted analysis and confirm Last Fix within 24 hours before relying on the result.",
-    "source_reference": "day 13.pdf p. 10; day 11.pdf pp. 1-4. No DSL Physical alone does not prove a logical cause."
+    "source_reference": "day 13.pdf p. 10; day 11.pdf pp. 1-4. No DSL Physical alone does not prove a logical cause.",
+    "check_guidance": "Match Line ID to the service, then check Supported, Collection Date, and Last Fix in ASSIA/Clear View."
   },
   "logical_instability_assia_result": {
     "question": "What is the current Clear View result?",
@@ -2617,7 +2619,8 @@
       }
     ],
     "action": "Match Advice/Fault with the issue time. If Physical Fault or Technician Dispatch appears, stop Logical and route to Physical/BLQ as appropriate.",
-    "source_reference": "day 13.pdf pp. 10-11; day 9.pdf pp. 3-7."
+    "source_reference": "day 13.pdf pp. 10-11; day 9.pdf pp. 3-7.",
+    "check_guidance": "Read the Clear View result exactly as shown and match it to the drop time; No DSL Physical alone does not prove a Logical cause."
   },
   "logical_instability_not_supported": {
     "question": "ASSIA does not support the line. What does the ADSL light do during the drop?",
@@ -2657,7 +2660,8 @@
     ],
     "customer_prompt": "Did you restart the router or lose power around the time of the issue?",
     "action": "Use NST in CST360 for the last 24 hours. Exclude CPE/power/port restarts. Compare timestamps with the customer’s account; do not classify from count alone.",
-    "source_reference": "day 13.pdf p. 11; day 11.pdf pp. 3-4."
+    "source_reference": "day 13.pdf p. 11; day 11.pdf pp. 3-4.",
+    "check_guidance": "In CST360/NST, check Accepted Logs for the last 24 hours. Match timestamps to the customer’s report and exclude CPE/power/port restarts before counting."
   },
   "logical_instability_interval": {
     "question": "Record the log interval, but do not auto-classify it: day13 conflicts at the 3-minute boundary. Continue the shared procedure.",
@@ -2676,7 +2680,8 @@
       }
     ],
     "action": "Do not select a Multiple Login subtype from conflicting heading/explanation. Apply shared Reset & Reconfigure steps, record timestamps, and verify the subtype in current Wiki.",
-    "source_reference": "day 13.pdf p. 11; source wording conflicts around the threshold; verify current Wiki/TTS."
+    "source_reference": "day 13.pdf p. 11; source wording conflicts around the threshold; verify current Wiki/TTS.",
+    "check_guidance": "Compare accepted-log timestamps directly and record the interval in minutes without rounding or assigning an unshown category."
   },
   "logical_instability_multiple_over3": {
     "question": "Multiple Login with gap over 3 minutes: after Reset & Reconfigure, is service stable?",
@@ -2763,7 +2768,8 @@
       }
     ],
     "action": "Check current usage in CST360/BSS. Quota exhaustion is not a Logical fault; do not rely on old usage values.",
-    "source_reference": "day 13.pdf pp. 12-14."
+    "source_reference": "day 13.pdf pp. 12-14.",
+    "check_guidance": "Check current package usage and remaining quota in BSS/CST360 before continuing troubleshooting."
   },
   "logical_instability_fault_review": {
     "question": "ASSIA returned a different fault; classify it before continuing Logical.",
@@ -2794,7 +2800,8 @@
     ],
     "customer_prompt": "Is it slow across all devices and sites, or only with one game, site, or device?",
     "action": "Before technical checks, review open TT, outage, account status, and quota. Do not classify as BLQ before excluding quota exhaustion and outage.",
-    "source_reference": "day 9.pdf pp. 1-2, 16-21; SLA.pdf p. 13. Verify measurements and SLA in current CST360/TTS."
+    "source_reference": "day 9.pdf pp. 1-2, 16-21; SLA.pdf p. 13. Verify measurements and SLA in current CST360/TTS.",
+    "check_guidance": "Ask whether slowness affects all devices/sites or only one game/site/device. Exclude outage, account, and quota using initial checks."
   },
   "slowness_scope": {
     "question": "Using the current approved test on one device near the router, how does it compare with recorded line speed?",
@@ -2826,7 +2833,8 @@
     ],
     "customer_prompt": "We will run the approved test near the router. Is it below the speed recorded for your line?",
     "action": "Compare with the current profile/contracted speed, quota, and optimization window. Ethernet is useful if available, not mandatory. Do not treat old PDF thresholds as live values.",
-    "source_reference": "day 9.pdf pp. 1-3, 16-21; day 13.pdf pp. 16-19."
+    "source_reference": "day 9.pdf pp. 1-3, 16-21; day 13.pdf pp. 16-19.",
+    "check_guidance": "Run the approved speed test on one device near the router, then compare Operational/Attainable/Profile/Contracted Speed in current Matrix/CST360."
   },
   "slowness_site_specific": {
     "question": "Slowness is limited to one site/service.",
@@ -2871,7 +2879,8 @@
     ],
     "customer_prompt": "I will check your line quality in our diagnostic tool.",
     "action": "Verify Line ID before reading results. Physical Fault/Dispatch routes to Physical. BLQ requires valid Clear View; run the approved refresh after Main Wire if permitted.",
-    "source_reference": "day 9.pdf pp. 3-7; SLA.pdf pp. 11, 13."
+    "source_reference": "day 9.pdf pp. 3-7; SLA.pdf pp. 11, 13.",
+    "check_guidance": "Open ASSIA/Clear View and match Line ID, Collection Date, and Last Fix within 24 hours. Do not substitute an old threshold for current Matrix."
   },
   "blq_refresh": {
     "question": "Correct the data source, then run approved Clear View. Is Last Fix now within 24 hours?",
@@ -2890,7 +2899,8 @@
       }
     ],
     "action": "Confirm Main Wire as guided; remove a splitter only if safe and approved. Never ask the customer to handle unsafe wiring.",
-    "source_reference": "day 9.pdf pp. 3-6; Last Fix recency is not a customer SLA."
+    "source_reference": "day 9.pdf pp. 3-6; Last Fix recency is not a customer SLA.",
+    "check_guidance": "After a safe, guided Main Wire connection, rerun approved Clear View and verify Last Fix and Line ID."
   },
   "blq_alternate_check": {
     "question": "ASSIA unavailable; what approved alternative result is available?",
@@ -2932,7 +2942,8 @@
       }
     ],
     "action": "Use ADSL/VDSL thresholds from current Matrix/CST360 only; day 9 values are historical. Complete Voice Verification if required for this complaint type. No Physical does not automatically mean speed is fine.",
-    "source_reference": "day 9.pdf pp. 5-10; SLA.pdf pp. 11, 13."
+    "source_reference": "day 9.pdf pp. 5-10; SLA.pdf pp. 11, 13.",
+    "check_guidance": "Compare Operational, Attainable, Satisfactory, and Contracted speed for the port type in current Matrix/CST360; record displayed Faults/Dispatch."
   },
   "blq_optimization": {
     "question": "Need Optimization shown with no Physical Fault.",
@@ -2968,7 +2979,8 @@
     ],
     "customer_prompt": "Is the issue high ping while playing, or does the game fail to launch/have a compatibility issue?",
     "action": "Check TT/outage and account/quota first. Check ASSIA/Clear View; resolve Physical/BLQ before Gaming. Record game, device, and access technology. Guide classifies streaming/IPTV separately from Gaming/IOT.",
-    "source_reference": "day 12.pdf pp. 7-11; day 10.pdf pp. 14-17."
+    "source_reference": "day 12.pdf pp. 7-11; day 10.pdf pp. 14-17.",
+    "check_guidance": "Record game and device, then distinguish High Ping from game settings/compatibility. Check line status before gaming steps."
   },
   "gaming_assia": {
     "question": "Check ASSIA/Clear View first. Is there a Physical Fault or line issue?",
@@ -2987,7 +2999,8 @@
       }
     ],
     "action": "If Physical appears, resolve Physical/BLQ before ping troubleshooting. No DSL Physical alone does not rule out every network cause.",
-    "source_reference": "day 12.pdf pp. 7-9; day 11.pdf pp. 1-4."
+    "source_reference": "day 12.pdf pp. 7-9; day 11.pdf pp. 1-4.",
+    "check_guidance": "Read ASSIA/Clear View after confirming Line ID and recency; resolve Fault/Dispatch or BLQ before diagnosing ping."
   },
   "gaming_high_ping": {
     "question": "Follow approved steps in order and retest ping after each. What happened?",
@@ -3014,7 +3027,8 @@
       }
     ],
     "action": "Follow current approved MTU 1420/DNS procedure only, changing one item at a time. Never request router credentials or use unapproved settings.",
-    "source_reference": "day 12.pdf pp. 8-10; verify MTU/DNS against current procedure."
+    "source_reference": "day 12.pdf pp. 8-10; verify MTU/DNS against current procedure.",
+    "check_guidance": "Change one approved setting at a time and compare ping before and after on the same game and device."
   },
   "gaming_google_dns": {
     "question": "After Google DNS and retest, did ping improve?",
@@ -3071,7 +3085,8 @@
     "action": "Search for an open/In Progress IReport/Case first; update it, do not duplicate. Record service/landline, customer, game, High Ping or Compatibility, troubleshooting, device, technology, status, and required contact. Give the actual reference. Training mentions 15m follow-up; promise only if current system shows it.",
     "customer_script": "I recorded the case under {displayed reference}. The available timeframe is {system displayed SLA}.",
     "sla": "Use current IReport SLA; do not rely on 15m from training alone.",
-    "source_reference": "day 12.pdf pp. 9-11. 15m follow-up and reopen/48h rules must be verified in current IReport."
+    "source_reference": "day 12.pdf pp. 9-11. 15m follow-up and reopen/48h rules must be verified in current IReport.",
+    "check_guidance": "Search IReport for a case on the same service/game and check its status before creating one; record issue type, device, technology, and each step result."
   },
   "gaming_compatibility": {
     "question": "Game compatibility/settings issue, not ping.",
@@ -3130,7 +3145,8 @@
     ],
     "customer_prompt": "Is Wi-Fi only switching/dropping, or does the internet service itself disconnect?",
     "action": "Ask about symptoms and do not assume Dual Band is available. If possible, test one device near the router; this is not mandatory.",
-    "source_reference": "day 13.pdf pp. 12-14."
+    "source_reference": "day 13.pdf pp. 12-14.",
+    "check_guidance": "Ask whether only Wi-Fi is delayed while switching between 2.4/5GHz or the whole internet service drops; test near the router if possible."
   },
   "logical_instability_band_switch": {
     "question": "Issue is related to Wi-Fi band switching.",
@@ -3176,7 +3192,8 @@
       }
     ],
     "action": "Verify the account in BSS before Logical steps. If suspended, check bill and reason in the system; do not remove suspension/restart port unless current tool and procedure authorize it.",
-    "source_reference": "day 11.pdf pp. 2-3; day 13.pdf p. 12. Use current BSS status."
+    "source_reference": "day 11.pdf pp. 2-3; day 13.pdf p. 12. Use current BSS status.",
+    "check_guidance": "Open the service in BSS and check Active/Suspended status and the suspension reason. Do not change service until the status is clear."
   },
   "logical_check_speed_variance": {
     "question": "Is there a Speed Variance between system reading and the profile/contracted speed?",
@@ -3195,7 +3212,8 @@
       }
     ],
     "action": "Handle Speed Variance before other Logical cases per verification guide. Exclude quota exhaustion; reduced speed after quota depletion is not Speed Variance.",
-    "source_reference": "day 11.pdf pp. 2-3."
+    "source_reference": "day 11.pdf pp. 2-3.",
+    "check_guidance": "Compare Operational/Sync Speed with the current CST360/MATRIX Profile and Contracted Speed, and confirm quota remains. A recorded discrepancy is Speed Variance; a Wi-Fi test alone is insufficient."
   },
   "logical_suspended_account": {
     "question": "Account is Suspended; pause Logical troubleshooting.",

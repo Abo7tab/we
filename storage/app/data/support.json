@@ -2557,7 +2557,8 @@
       }
     ],
     "action": "ده فحص داخلي؛ لا تسأل العميل عن Congested status. إذا ظهر Congested أو Within Ratio استخدم النص المعتمد ولا تكمل خطوات العطل الفردي إلا بتوجيه من النظام.",
-    "source_reference": "day 13.pdf ص 11 و13. استخدم نص Utilization الحالي؛ لا تعد بموعد غير ظاهر بالنظام."
+    "source_reference": "day 13.pdf ص 11 و13. استخدم نص Utilization الحالي؛ لا تعد بموعد غير ظاهر بالنظام.",
+    "check_guidance": "افتح CST360 > Port Details واقرأ Congested status. هذه نتيجة داخلية؛ لا تسأل العميل عنها."
   },
   "logical_instability_congested_terminal": {
     "question": "الشبكة ظاهرة Congested؛ أوقف التشخيص الفردي.",
@@ -2597,7 +2598,8 @@
     ],
     "customer_prompt": "هراجع حالة الخط من أداة الفحص عندي.",
     "action": "تأكد من تطابق Line ID مع رقم الخدمة. إذا كانت البيانات قديمة شغّل التحليل المسموح وتأكد Last Fix within 24 hours قبل الاعتماد على النتيجة.",
-    "source_reference": "day 13.pdf ص 10؛ day 11.pdf ص 1-4. No DSL Physical وحدها لا تثبت سببًا منطقيًا."
+    "source_reference": "day 13.pdf ص 10؛ day 11.pdf ص 1-4. No DSL Physical وحدها لا تثبت سببًا منطقيًا.",
+    "check_guidance": "طابق Line ID برقم الخدمة، ثم افحص Supported وCollection Date وLast Fix في ASSIA/Clear View."
   },
   "logical_instability_assia_result": {
     "question": "ما نتيجة Clear View الحالية؟",
@@ -2616,7 +2618,8 @@
       }
     ],
     "action": "طابق Advice/Fault مع وقت المشكلة. إذا ظهر Physical Fault أو Technician Dispatch أوقف Logical وانتقل إلى Physical/BLQ حسب نوع الحالة.",
-    "source_reference": "day 13.pdf ص 10-11؛ day 9.pdf ص 3-7."
+    "source_reference": "day 13.pdf ص 10-11؛ day 9.pdf ص 3-7.",
+    "check_guidance": "اقرأ ناتج Clear View كما يظهر حرفيًا، وطابقه مع وقت الانقطاع؛ لا تعتبر No DSL Physical وحدها إثباتًا لسبب Logical."
   },
   "logical_instability_not_supported": {
     "question": "ASSIA لا يدعم الخط. كيف تظهر لمبة ADSL وقت الفصل؟",
@@ -2656,7 +2659,8 @@
     ],
     "customer_prompt": "هل عملت Restart للراوتر أو فصلت الكهرباء وقت المشكلة؟",
     "action": "استخدم NST في CST360 لآخر 24 ساعة. استبعد Restart CPE/Power/Port. قارن التوقيت بعد سؤال العميل؛ لا تصنف من عدد السجلات فقط.",
-    "source_reference": "day 13.pdf ص 11؛ day 11.pdf ص 3-4."
+    "source_reference": "day 13.pdf ص 11؛ day 11.pdf ص 3-4.",
+    "check_guidance": "في CST360/NST افحص Accepted Logs لآخر 24 ساعة. طابق وقتها مع إفادة العميل واستبعد CPE/Power/Port restarts قبل العد."
   },
   "logical_instability_interval": {
     "question": "سجّل الفارق بين الـLogs، لكن لا تصنفه آليًا: نص day13 متعارض على حد 3 دقائق. أكمل الإجراء المشترك.",
@@ -2675,7 +2679,8 @@
       }
     ],
     "action": "لا تختَر اسم نوع Multiple Login بناءً على عنوان/شرح متعارض. طبّق خطوات Reset & Reconfigure المشتركة، ووثّق الطوابع الزمنية ثم راجع Wiki الحالي للتصنيف.",
-    "source_reference": "day 13.pdf ص 11؛ يوجد تعارض OCR/النص حول الحد، تحقّق من Wiki/TTS الحالي."
+    "source_reference": "day 13.pdf ص 11؛ يوجد تعارض OCR/النص حول الحد، تحقّق من Wiki/TTS الحالي.",
+    "check_guidance": "قارن وقتي الـLogs المقبولين من الطوابع الزمنية نفسها، وسجّل الفارق بالدقائق دون تقريب أو تسمية غير ظاهرة بالنظام."
   },
   "logical_instability_multiple_over3": {
     "question": "Multiple Login بفارق أكبر من 3 دقائق: بعد Reset & Reconfigure هل استقر الاتصال؟",
@@ -2762,7 +2767,8 @@
       }
     ],
     "action": "راجع الاستهلاك الحالي في CST360/BSS. لا تعتبر نفاد الباقة عطل Logical، ولا تعتمد على أرقام استهلاك قديمة.",
-    "source_reference": "day 13.pdf ص 12-14."
+    "source_reference": "day 13.pdf ص 12-14.",
+    "check_guidance": "راجع استهلاك وسعة الباقة الحالية في BSS/CST360 قبل مواصلة التشخيص."
   },
   "logical_instability_fault_review": {
     "question": "ظهرت نتيجة ASSIA مختلفة؛ راجع نوع العطل قبل متابعة Logical.",
@@ -2793,7 +2799,8 @@
     ],
     "customer_prompt": "البطء حاصل على كل الأجهزة والمواقع، ولا في لعبة أو موقع أو جهاز معين؟",
     "action": "قبل التشخيص الفني: تحقق من TT المفتوحة، العطل العام، حالة الحساب، واستهلاك الباقة. لا تصف الحالة BLQ قبل استبعاد نفاد الباقة والعطل العام.",
-    "source_reference": "day 9.pdf ص 1-2 و16-21؛ SLA.pdf ص 13. القيم والمهل تتأكد من CST360/TTS الحالي."
+    "source_reference": "day 9.pdf ص 1-2 و16-21؛ SLA.pdf ص 13. القيم والمهل تتأكد من CST360/TTS الحالي.",
+    "check_guidance": "اسأل عن نطاق البطء: كل الأجهزة والمواقع، أم لعبة/موقع/جهاز واحد. استبعد Outage والحساب والباقة من نتائج الفحص الأولي."
   },
   "slowness_scope": {
     "question": "اختبر بطريقة النظام الحالية على جهاز واحد قرب الراوتر؛ ما النتيجة مقارنة بسرعة الخط المسجلة؟",
@@ -2825,7 +2832,8 @@
     ],
     "customer_prompt": "هنقيس السرعة بالطريقة المعتمدة على جهاز قريب من الراوتر. هل النتيجة أقل من السرعة المسجلة عندي؟",
     "action": "قارن القياس بالـProfile/السرعة المتعاقد عليها في النظام الحالي، وبحالة الباقة وفترة التحسين. Ethernet وسيلة مقارنة إن توفرت وليس شرطًا لإتمام كل مكالمة. لا تستخدم عتبات PDF القديمة كقيم حية.",
-    "source_reference": "day 9.pdf ص 1-3 و16-21؛ day 13.pdf ص 16-19."
+    "source_reference": "day 9.pdf ص 1-3 و16-21؛ day 13.pdf ص 16-19.",
+    "check_guidance": "نفّذ اختبار السرعة المعتمد على جهاز واحد قرب الراوتر، ثم قارن Operational/Attainable/Profile/Contracted Speed باستخدام Matrix/CST360 الحالي."
   },
   "slowness_site_specific": {
     "question": "البطء محصور في موقع/خدمة واحدة.",
@@ -2870,7 +2878,8 @@
     ],
     "customer_prompt": "هراجع جودة الخط من أداة الفحص عندي.",
     "action": "تأكد من Line ID قبل قراءة النتائج. Physical Fault/Dispatch يحوّل إلى Physical. للـBLQ يجب أن تكون بيانات Clear View صالحة؛ شغّل الإجراء المعتمد للتحديث بعد Main Wire إن كان مسموحًا.",
-    "source_reference": "day 9.pdf ص 3-7؛ SLA.pdf ص 11 و13."
+    "source_reference": "day 9.pdf ص 3-7؛ SLA.pdf ص 11 و13.",
+    "check_guidance": "افتح ASSIA/Clear View، وطابق Line ID وCollection Date وLast Fix خلال 24 ساعة. لا تستخدم عتبة قديمة بدل Matrix الحالي."
   },
   "blq_refresh": {
     "question": "صحح مصدر القراءة، ثم شغّل Clear View المعتمد. هل Last Fix أصبح خلال آخر 24 ساعة؟",
@@ -2889,7 +2898,8 @@
       }
     ],
     "action": "تأكد من أن العميل على Main Wire وفق الإرشاد، وأزل Splitter فقط إذا الإجراء آمن ومسموح. لا تطلب فتح أو لمس أسلاك خطرة.",
-    "source_reference": "day 9.pdf ص 3-6؛ شرط حداثة Last Fix ليس SLA للعميل."
+    "source_reference": "day 9.pdf ص 3-6؛ شرط حداثة Last Fix ليس SLA للعميل.",
+    "check_guidance": "بعد توصيل Main Wire وفق إرشاد آمن، أعد Clear View المسموح وتأكد من تاريخ Last Fix وتطابق Line ID."
   },
   "blq_alternate_check": {
     "question": "ASSIA غير متاح؛ ما أقرب نتيجة بديلة معتمدة في النظام؟",
@@ -2931,7 +2941,8 @@
       }
     ],
     "action": "استخدم عتبات ADSL/VDSL حسب Matrix/CST360 الحالي فقط؛ أرقام day 9 تاريخية. تأكد من Voice Verification إذا كان مطلوبًا لنوع الشكوى. عدم وجود Physical لا يعني تلقائيًا أن السرعة سليمة.",
-    "source_reference": "day 9.pdf ص 5-10؛ SLA.pdf ص 11 و13."
+    "source_reference": "day 9.pdf ص 5-10؛ SLA.pdf ص 11 و13.",
+    "check_guidance": "قارن Operational وAttainable وSatisfactory وContracted speed حسب نوع Port في Matrix/CST360 الحالي، وسجّل Faults/Dispatch الظاهرة."
   },
   "blq_optimization": {
     "question": "Need Optimization ظاهر مع عدم وجود Physical Fault.",
@@ -2967,7 +2978,8 @@
     ],
     "customer_prompt": "المشكلة Ping عالي أثناء اللعب، ولا اللعبة نفسها مش بتفتح/فيها توافق؟",
     "action": "تأكد من TT/Outage والحساب/الباقة أولًا. افحص ASSIA/Clear View؛ عالج Physical/BLQ قبل Gaming. سجّل اسم اللعبة والجهاز والتقنية. Streaming/IPTV لا يصنف Gaming/IOT حسب guide.",
-    "source_reference": "day 12.pdf ص 7-11؛ day 10.pdf ص 14-17."
+    "source_reference": "day 12.pdf ص 7-11؛ day 10.pdf ص 14-17.",
+    "check_guidance": "حدد اسم اللعبة والجهاز، ثم افصل بين High Ping وبين إعدادات/توافق اللعبة. تأكد من حالة الخط قبل خطوات اللعب."
   },
   "gaming_assia": {
     "question": "افحص ASSIA/Clear View أولًا. هل يوجد Physical Fault أو مشكلة خط؟",
@@ -2986,7 +2998,8 @@
       }
     ],
     "action": "إذا ظهر Physical، لا تتابع حلول Ping قبل إتمام Physical/BLQ. No DSL Physical لا يضمن وحده أن المسار خالٍ من كل أسباب الشبكة.",
-    "source_reference": "day 12.pdf ص 7-9؛ day 11.pdf ص 1-4."
+    "source_reference": "day 12.pdf ص 7-9؛ day 11.pdf ص 1-4.",
+    "check_guidance": "اقرأ ASSIA/Clear View بعد التأكد من Line ID وحداثة القراءة؛ عالج Fault/Dispatch أو BLQ قبل تشخيص Ping."
   },
   "gaming_high_ping": {
     "question": "نفذ الخطوات المسموح بها بالترتيب واختبر Ping بعد كل خطوة. ما النتيجة؟",
@@ -3013,7 +3026,8 @@
       }
     ],
     "action": "اتبع إجراء اليوم لـMTU 1420 وDNS فقط، وغيّر خطوة واحدة كل مرة. لا تطلب بيانات دخول الراوتر ولا تنفذ إعدادًا غير معتمد.",
-    "source_reference": "day 12.pdf ص 8-10؛ MTU/DNS يتأكدان من الإجراء الحالي قبل النصح."
+    "source_reference": "day 12.pdf ص 8-10؛ MTU/DNS يتأكدان من الإجراء الحالي قبل النصح.",
+    "check_guidance": "غيّر خطوة واحدة في كل مرة حسب الإجراء المعتمد، وقِس Ping قبلها وبعدها على نفس اللعبة والجهاز."
   },
   "gaming_google_dns": {
     "question": "بعد Google DNS وإعادة الاختبار، هل تحسن Ping؟",
@@ -3070,7 +3084,8 @@
     "action": "ابحث عن IReport/Case مفتوحة أو In Progress أولًا؛ حدّثها ولا تكررها. سجل رقم الخدمة/الأرضي، العميل، اللعبة، High Ping أو Compatibility، Basic Troubleshooting، الجهاز، التقنية، الحالة ووسيلة الاتصال المطلوبة. بعد الإنشاء أبلغ العميل بالرقم الفعلي. مهلة 15 دقيقة في التدريب فقط؛ لا تعد بها إلا إذا ظهرت في النظام الحالي.",
     "customer_script": "سجلت المتابعة برقم {رقم الحالة الظاهر}. المهلة المتاحة عندي {المهلة الظاهرة بالنظام}.",
     "sla": "المهلة حسب IReport الحالي؛ لا تعتمد 15 دقيقة من ملف التدريب وحده.",
-    "source_reference": "day 12.pdf ص 9-11. مهلة 15 دقيقة ومهلة إعادة الفتح/48 ساعة تحتاج تأكيدًا من IReport الحالي."
+    "source_reference": "day 12.pdf ص 9-11. مهلة 15 دقيقة ومهلة إعادة الفتح/48 ساعة تحتاج تأكيدًا من IReport الحالي.",
+    "check_guidance": "ابحث في IReport عن Case لنفس الخدمة/اللعبة وحالتها قبل الإنشاء؛ سجّل نوع المشكلة والجهاز والتقنية ونتائج كل خطوة."
   },
   "gaming_compatibility": {
     "question": "مشكلة توافق/إعدادات اللعبة وليست Ping.",
@@ -3129,7 +3144,8 @@
     ],
     "customer_prompt": "هل الواي فاي بس اللي بيقطع أو بيتنقل بين شبكتين، ولا الإنترنت كله بيفصل؟",
     "action": "اسأل عن الأعراض ولا تفترض توفر Dual Band. جرّب جهازًا واحدًا قرب الراوتر إن أمكن، دون اعتباره شرطًا.",
-    "source_reference": "day 13.pdf ص 12-14."
+    "source_reference": "day 13.pdf ص 12-14.",
+    "check_guidance": "اسأل العميل هل الواي فاي وحده يتأخر عند الانتقال بين 2.4/5GHz أم أن الإنترنت كله يفصل؛ جرّب جهازًا قرب الراوتر عند الإمكان."
   },
   "logical_instability_band_switch": {
     "question": "المشكلة مرتبطة بانتقال Wi-Fi بين النطاقات.",
@@ -3175,7 +3191,8 @@
       }
     ],
     "action": "تحقق من الحساب نفسه على BSS قبل خطوات Logical. لو Suspended افحص الفاتورة وسبب الإيقاف من النظام؛ لا تنفذ Remove Suspension/Restart Port إلا إذا كانت الأداة والإجراء الحاليان يسمحان بذلك.",
-    "source_reference": "day 11.pdf ص 2-3؛ day 13.pdf ص 12. استخدم حالة BSS الحالية."
+    "source_reference": "day 11.pdf ص 2-3؛ day 13.pdf ص 12. استخدم حالة BSS الحالية.",
+    "check_guidance": "افتح BSS على رقم الخدمة وتحقق من حالة الخط Active/Suspended وسبب الإيقاف؛ لا تنفذ تغييرًا قبل ظهور الحالة بوضوح."
   },
   "logical_check_speed_variance": {
     "question": "هل توجد Speed Variance بين قراءة النظام والـProfile/السرعة المتعاقد عليها؟",
@@ -3194,7 +3211,8 @@
       }
     ],
     "action": "تعامل مع Speed Variance قبل بقية Logical حسب دليل verification. استبعد نفاد الباقة؛ لا تصنف انخفاض السرعة بسبب انتهاء السعة كـSpeed Variance.",
-    "source_reference": "day 11.pdf ص 2-3."
+    "source_reference": "day 11.pdf ص 2-3.",
+    "check_guidance": "قارن قراءة Operational/Sync Speed ببيانات Profile وContracted Speed في CST360/MATRIX الحالي، وتأكد أن الباقة لم تنفد. ظهور فرق مسجل هو Speed Variance؛ لا تعتمد على اختبار Wi-Fi وحده."
   },
   "logical_suspended_account": {
     "question": "حالة الحساب Suspended؛ أوقف تشخيص Logical مؤقتًا.",

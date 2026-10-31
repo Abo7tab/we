@@ -34,6 +34,8 @@ This is a source map for the local training set in `we data/`. The OCR files are
 - Intermediate Physical findings stop the Logical path and direct the CCA back to the Physical flow, avoiding a loop between the two trees.
 - Ticket/IR numbers are placeholders for the actual number returned by the system. The customer script distinguishes the employee's follow-up SLA from the customer's official ticket timeframe.
 - Search now recognizes Arabic/English variants for Logical Instability, BLQ, Gaming, Ping, and latency. The reference mode searches the local support tree and does not claim to be a generative AI or a live-system lookup.
+- Each guided step shows separate "how to check" and "what to do" guidance; where a step has no case-specific check text yet, the UI gives a safe instruction to verify the named customer/system result and avoid guessing.
+- The main screen has quick searchable SLA, close-code, and package panels. Package rows are searchable by published name, speed, quota, and other table fields; the source data does not define packages by number of household members, so the UI does not invent that mapping.
 
 ## Limits that must remain visible
 

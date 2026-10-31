@@ -92,6 +92,21 @@ function optionIcon(label = '') {
     return 'question';
 }
 
+function packageFieldLabel(key, language) {
+    const labels = language === 'ar' ? {
+        name: 'الاسم', plan: 'النظام', kind: 'نوع الإضافة', quota: 'السعة', speed: 'السرعة',
+        price: 'السعر', monthly_price: 'السعر الشهري', yearly_price: 'السعر السنوي', term: 'المدة',
+        minutes: 'الدقائق', family_lines: 'عدد خطوط الأسرة', mobile_data: 'إنترنت الموبايل',
+        home_choice: 'اختيار الإنترنت المنزلي', guidance: 'ملاحظات التحقق',
+    } : {
+        name: 'Name', plan: 'Plan', kind: 'Add-on type', quota: 'Quota', speed: 'Speed',
+        price: 'Price', monthly_price: 'Monthly price', yearly_price: 'Yearly price', term: 'Term',
+        minutes: 'Minutes', family_lines: 'Family lines', mobile_data: 'Mobile data',
+        home_choice: 'Home internet choice', guidance: 'Eligibility notes',
+    };
+    return labels[key] || key.replaceAll('_', ' ');
+}
+
 function normalizeSearch(value = '', language = 'ar') {
     let normalized = value
         .normalize('NFKC')
@@ -170,8 +185,12 @@ const COPY = {
         copied: 'تم نسخ نص العميل.', noScript: 'لا يوجد نص عميل لنسخه في هذه الخطوة.', copyError: 'تعذر النسخ تلقائيًا. يمكنك تحديد النص ونسخه يدويًا.',
         invalidStep: 'هذا الاختيار مرتبط بخطوة غير موجودة. أبلغ المسؤول عن الشجرة.', stepLimit: 'وصل المسار إلى الحد الآمن للتنقل. أعد البدء أو راجع الشجرة.',
         incomplete: 'بيانات الخطوة التالية غير مكتملة. أبلغ المسؤول عن الشجرة.', loadError: 'تعذر تحميل شجرة القرارات.', invalidTree: 'ملف شجرة القرارات غير مكتمل.',
-        askCustomer: 'اسأل العميل', referenceGuidance: 'رقم المتابعة الذي تقوله للعميل', staffCheck: 'خطوة الموظف على النظام (لا تُقرأ للعميل)',
+        askCustomer: 'اسأل العميل', referenceGuidance: 'رقم المتابعة الذي تقوله للعميل', staffCheck: 'أعرف منين وأعمل إيه؟',
         sourceReference: 'مصدر الإجراء وحدود الاعتماد',
+        howToCheck: 'أعرف منين وأعمل إيه؟', checkGuidance: 'أتحقق إزاي؟', whatToDo: 'أعمل إيه حسب النتيجة؟', generalCheckHint: 'اقرأ السؤال للعميل أو راجع الأداة المذكورة، ثم اختَر النتيجة المطابقة. لو النتيجة مش واضحة أو مش موجودة ضمن الاختيارات، ما تخمّنش وارجع للإجراء الحالي.',
+        quickSla: 'مواعيد الـSLA', quickCodes: 'أكواد الإغلاق', quickPackages: 'الباقات', quickToolSearch: 'ابحث بالاسم أو الحالة أو الرقم أو المدة…',
+        slaSearchPlaceholder: 'الحالة أو رقم الساعات/الأيام…', packageSearchPlaceholder: 'اسم الباقة أو السرعة أو السعة…', packagesNote: 'البحث يشمل السعة والسرعة والاسم والأسعار الموجودة في الجداول. عدد الأشخاص ليس تصنيفًا رسميًا في البيانات؛ استخدم الاستهلاك وعدد الأجهزة ولا تفترض سعة مناسبة من عدد الأفراد وحده.',
+        noQuickMatches: 'لا توجد نتيجة مطابقة.', sourceCaution: 'مرجع تدريبي؛ طابق المهلة مع التذكرة الحالية قبل إبلاغ العميل.', packageAddons: 'إضافات',
         guidedMode: 'وجّهني في المكالمة', referenceMode: 'مرجع الدعم', referenceIntro: 'ابحث بالعرض أو اسم الإجراء، أو افتح موضوعًا شائعًا. النتائج تعرض مسار الدعم ومصدر الإجراء عند توفره.',
         referenceTopics: ['Logical Instability', 'Slowness', 'Bad Line Quality', 'Gaming / Ping', 'Physical Instability', 'Outage'],
         descriptionCopied: 'تم نسخ Clear Description. راجع التصنيف قبل اللصق.',
@@ -192,8 +211,12 @@ const COPY = {
         copied: 'Customer script copied.', noScript: 'There is no customer script to copy at this step.', copyError: 'Automatic copy failed. Select and copy the text manually.',
         invalidStep: 'This option points to a missing step. Notify the tree administrator.', stepLimit: 'The safe step limit was reached. Restart or review the tree.',
         incomplete: 'The next step data is incomplete. Notify the tree administrator.', loadError: 'Could not load the decision tree.', invalidTree: 'The decision tree file is incomplete.',
-        askCustomer: 'Ask the customer', referenceGuidance: 'Reference number to give the customer', staffCheck: 'Agent system check (do not read to the customer)',
+        askCustomer: 'Ask the customer', referenceGuidance: 'Reference number to give the customer', staffCheck: 'How do I verify this and what should I do?',
         sourceReference: 'Procedure source and verification note',
+        howToCheck: 'How do I verify this and what should I do?', checkGuidance: 'How to check', whatToDo: 'What to do with the result', generalCheckHint: 'Ask the question shown or check the named tool, then choose the matching result. If the result is unclear or not listed, do not guess; check the current procedure.',
+        quickSla: 'SLA lookup', quickCodes: 'Close codes', quickPackages: 'Packages', quickToolSearch: 'Search by name, case, code, or timeframe…',
+        slaSearchPlaceholder: 'Case or hours/days…', packageSearchPlaceholder: 'Package name, speed, or quota…', packagesNote: 'Search covers the names, speeds, quotas, and prices in the available tables. Number of people is not an official package field; use actual usage and device count, and do not infer a quota from household size alone.',
+        noQuickMatches: 'No matching entries.', sourceCaution: 'Training reference; verify the current ticket SLA before telling the customer.', packageAddons: 'Add-ons',
         guidedMode: 'Guide the call', referenceMode: 'Support reference', referenceIntro: 'Search by symptom or procedure, or open a common topic. Results show the support path and its source when available.',
         referenceTopics: ['Logical Instability', 'Slowness', 'Bad Line Quality', 'Gaming / Ping', 'Physical Instability', 'Outage'],
         descriptionCopied: 'Clear Description copied. Verify the category before pasting.',
@@ -222,6 +245,9 @@ const App = {
         const theme = ref('light');
         const codeSearch = ref('');
         const quickSearch = ref('');
+        const quickToolsOpen = ref('');
+        const slaSearch = ref('');
+        const packageSearch = ref('');
         const workspaceMode = ref('guided');
         const packagePeriod = ref('monthly');
         const packageAccountMode = ref('');
@@ -291,12 +317,6 @@ const App = {
                     ...(step.options ?? []).map((option) => option.label)].filter(Boolean).join(' ');
                 entries.push({ kind: 'step', id, title: step.question, body: content, source: step.source_reference || (language.value === 'ar' ? 'شجرة الدعم' : 'Support tree') });
             }
-            const outageGuide = tree.value.operations_guide?.outage_fields;
-            if (outageGuide) entries.push({
-                kind: 'guide', id: 'outage-fields', title: outageGuide.title,
-                body: `${outageGuide.note} ${outageGuide.rows.map((row) => `${row.field}: ${row.meaning}`).join(' ')}`,
-                terms: outageGuide.terms, source: language.value === 'ar' ? 'دليل قراءة سجل الأعطال' : 'Outage record guide',
-            });
             for (const row of tree.value.operations_guide?.closure_codes ?? []) {
                 entries.push({ kind: 'code', id: row.code, title: `${t('codeLabel')} ${row.code}`, body: row.reason, source: language.value === 'ar' ? 'جدول تدريب الإغلاق' : 'Training close-code table' });
             }
@@ -321,6 +341,53 @@ const App = {
             }).filter((entry) => entry.matched > 0 && entry.coverage >= Math.min(0.5, 1 / groups.length))
                 .sort((a, b) => b.score - a.score || b.coverage - a.coverage || a.title.localeCompare(b.title, language.value))
                 .slice(0, 6);
+        });
+
+        const quickSlaRows = computed(() => {
+            if (!tree.value) return [];
+            const query = normalizeSearch(slaSearch.value, language.value);
+            return Object.entries(tree.value)
+                .filter(([id, step]) => id !== 'start' && step && typeof step === 'object' && typeof step.sla === 'string')
+                .map(([id, step]) => ({
+                    id,
+                    title: step.question || id,
+                    duration: step.sla,
+                    source: step.source_reference || (language.value === 'ar' ? 'راجع SLA التذكرة الحالية' : 'Check the current ticket SLA'),
+                    searchText: normalizeSearch(`${id} ${step.question} ${step.sla} ${step.action || ''} ${step.source_reference || ''}`, language.value),
+                }))
+                .filter((row) => !query || query.split(' ').every((token) => row.searchText.includes(token)))
+                .sort((a, b) => a.title.localeCompare(b.title, language.value));
+        });
+
+        const quickPackageRows = computed(() => {
+            if (!tree.value) return [];
+            const items = [];
+            for (const [stepId, step] of Object.entries(tree.value)) {
+                if (!step || typeof step !== 'object') continue;
+                const catalog = step.package_catalog;
+                if (catalog) {
+                    for (const [period, key] of [[t('packageMonthly'), 'monthly_rows'], [t('packageYearly'), 'yearly_rows'], [t('packageAddons'), 'addon_rows']]) {
+                        for (const [index, row] of (catalog[key] || []).entries()) items.push({
+                            id: `${stepId}-${key}-${index}`, title: catalog.title, period, row,
+                            source: [catalog.source_label, catalog.checked_on].filter(Boolean).join(' · '),
+                        });
+                    }
+                }
+                const productCatalog = step.product_catalog;
+                if (productCatalog) {
+                    for (const [sectionIndex, section] of (productCatalog.sections || []).entries()) {
+                        for (const [index, row] of (section.rows || []).entries()) items.push({
+                            id: `${stepId}-${sectionIndex}-${index}`, title: productCatalog.title, period: section.title, row,
+                            source: productCatalog.source_label || '',
+                        });
+                    }
+                }
+            }
+            const query = normalizeSearch(packageSearch.value, language.value);
+            return items.filter((item) => {
+                const terms = normalizeSearch(`${item.title} ${item.period} ${Object.values(item.row).join(' ')} ${item.source}`, language.value);
+                return !query || query.split(' ').every((token) => terms.includes(token));
+            });
         });
 
         const generatedComment = computed(() => {
@@ -348,16 +415,6 @@ const App = {
             ].join('\n');
         });
 
-        function openOutageGuide() {
-            workspaceMode.value = 'guided';
-            nextTick(() => {
-                const guide = document.querySelector('.operations-guide');
-                if (!guide) return;
-                guide.open = true;
-                guide.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            });
-        }
-
         function afterStepChange() {
             nextTick(() => window.scrollTo({ top: 0, behavior: 'smooth' }));
         }
@@ -365,6 +422,7 @@ const App = {
         function jumpToStep(stepId) {
             if (!tree.value?.[stepId]) return;
             workspaceMode.value = 'guided';
+            quickToolsOpen.value = '';
             currentStepId.value = stepId;
             history.value = [];
             pathSelections.value = [];
@@ -540,6 +598,47 @@ const App = {
                         h('button', { class: 'app-control rounded-xl border p-2', type: 'button', onClick: () => switchTheme(theme.value === 'light' ? 'dark' : 'light'), 'aria-label': theme.value === 'light' ? t('dark') : t('light'), title: theme.value === 'light' ? t('dark') : t('light') }, [icon(theme.value === 'light' ? 'moon' : 'sun')]),
                     ]),
                 ]),
+                (currentStepId.value === tree.value?.start || workspaceMode.value === 'reference') ? h('section', { class: 'mb-4 grid grid-cols-3 gap-2', 'aria-label': t('quickSla') }, [
+                    ...[['sla', t('quickSla'), 'clock'], ['codes', t('quickCodes'), 'ticket'], ['packages', t('quickPackages'), 'search']].map(([key, label, iconName]) => h('button', {
+                        class: `inline-flex min-h-[4.25rem] flex-col items-center justify-center gap-1 rounded-xl border px-2 py-2 text-center text-xs font-bold transition ${quickToolsOpen.value === key ? 'border-blue-400 bg-blue-50 text-blue-900' : 'app-control hover:bg-slate-50'}`,
+                        type: 'button', 'aria-expanded': quickToolsOpen.value === key,
+                        onClick: () => { quickToolsOpen.value = quickToolsOpen.value === key ? '' : key; },
+                    }, [icon(iconName, 'size-4'), label])),
+                ]) : null,
+                quickToolsOpen.value === 'sla' ? h('section', { class: 'mb-4 rounded-2xl border border-blue-100 bg-white p-3 sm:p-4' }, [
+                    h('h2', { class: 'mb-3 flex items-center gap-2 font-bold text-slate-900' }, [icon('clock', 'size-5 text-blue-700'), t('quickSla')]),
+                    h('input', { class: 'app-control mb-3 w-full rounded-xl border px-3 py-2.5 text-sm', type: 'search', value: slaSearch.value, placeholder: t('slaSearchPlaceholder'), onInput: (event) => { slaSearch.value = event.target.value; } }),
+                    h('div', { class: 'max-h-96 space-y-2 overflow-y-auto pe-1', 'aria-live': 'polite' }, quickSlaRows.value.length ? quickSlaRows.value.map((row) => h('article', { class: 'rounded-xl border border-slate-200 bg-slate-50 p-3', key: row.id }, [
+                        h('h3', { class: 'text-sm font-bold leading-6 text-slate-900' }, row.title),
+                        h('p', { class: 'mt-1 text-sm font-semibold text-blue-900' }, `${t('sla') || 'SLA'} ${row.duration}`),
+                        h('p', { class: 'mt-1 text-[11px] leading-5 text-slate-500' }, `${t('sourceReference')}: ${row.source}`),
+                        h('button', { class: 'mt-2 inline-flex min-h-9 items-center gap-1 rounded-lg px-2 py-1 text-xs font-bold text-blue-800 hover:bg-blue-100', type: 'button', onClick: () => jumpToStep(row.id) }, [icon('arrow', 'size-4'), t('openStep')]),
+                    ])) : h('p', { class: 'rounded-lg bg-slate-50 p-3 text-sm text-slate-600' }, t('noQuickMatches'))),
+                ]) : null,
+                quickToolsOpen.value === 'codes' ? h('section', { class: 'mb-4 rounded-2xl border border-blue-100 bg-white p-3 sm:p-4' }, [
+                    h('h2', { class: 'mb-3 flex items-center gap-2 font-bold text-slate-900' }, [icon('ticket', 'size-5 text-blue-700'), t('quickCodes')]),
+                    h('p', { class: 'mb-3 rounded-lg bg-amber-50 p-2.5 text-xs leading-5 text-amber-900' }, tree.value?.operations_guide?.codes_note || t('sourceCaution')),
+                    h('input', { class: 'app-control mb-3 w-full rounded-xl border px-3 py-2.5 text-sm', type: 'search', value: codeSearch.value, placeholder: t('codesSearch'), onInput: (event) => { codeSearch.value = event.target.value; } }),
+                    h('div', { class: 'max-h-96 space-y-2 overflow-y-auto pe-1', 'aria-live': 'polite' }, (tree.value?.operations_guide?.closure_codes || []).filter((row) => !codeSearch.value || normalizeSearch(`${row.code} ${row.reason}`, language.value).includes(normalizeSearch(codeSearch.value, language.value))).map((row) => h('article', { class: 'flex items-start gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3', key: row.code }, [
+                        h('span', { class: 'inline-flex min-w-10 items-center justify-center rounded-lg bg-indigo-100 px-2 py-1 font-bold text-indigo-900' }, row.code),
+                        h('p', { class: 'm-0 text-sm leading-6 text-slate-800' }, row.reason),
+                    ]))),
+                ]) : null,
+                quickToolsOpen.value === 'packages' ? h('section', { class: 'mb-4 rounded-2xl border border-blue-100 bg-white p-3 sm:p-4' }, [
+                    h('h2', { class: 'mb-3 flex items-center gap-2 font-bold text-slate-900' }, [icon('search', 'size-5 text-blue-700'), t('quickPackages')]),
+                    h('input', { class: 'app-control mb-2 w-full rounded-xl border px-3 py-2.5 text-sm', type: 'search', value: packageSearch.value, placeholder: t('packageSearchPlaceholder'), onInput: (event) => { packageSearch.value = event.target.value; } }),
+                    h('p', { class: 'mb-3 text-xs leading-5 text-slate-500' }, t('packagesNote')),
+                    h('div', { class: 'max-h-[28rem] space-y-2 overflow-y-auto pe-1', 'aria-live': 'polite' }, quickPackageRows.value.length ? quickPackageRows.value.map((item) => h('article', { class: 'rounded-xl border border-slate-200 bg-slate-50 p-3', key: item.id }, [
+                        h('div', { class: 'flex flex-wrap items-start justify-between gap-2' }, [
+                            h('h3', { class: 'm-0 text-sm font-bold leading-6 text-slate-900' }, item.title),
+                            h('span', { class: 'rounded-full bg-indigo-100 px-2 py-0.5 text-[10px] font-bold text-indigo-900' }, item.period),
+                        ]),
+                        h('dl', { class: 'mt-2 grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 text-xs leading-5' }, Object.entries(item.row).flatMap(([key, value]) => [
+                        h('dt', { class: 'font-medium text-slate-500' }, packageFieldLabel(key, language.value)), h('dd', { class: 'm-0 text-end font-semibold text-slate-800' }, String(value)),
+                        ])),
+                        item.source ? h('p', { class: 'mt-2 text-[10px] text-slate-500' }, item.source) : null,
+                    ])) : h('p', { class: 'rounded-lg bg-slate-50 p-3 text-sm text-slate-600' }, t('noQuickMatches'))),
+                ]) : null,
                 h('nav', { class: 'mb-4 grid grid-cols-2 gap-2 rounded-2xl bg-slate-100 p-1.5', 'aria-label': language.value === 'ar' ? 'وضع الاستخدام' : 'Workspace mode' }, [
                     ...[['guided', t('guidedMode'), 'question'], ['reference', t('referenceMode'), 'search']].map(([value, label, iconName]) => h('button', {
                         class: `inline-flex min-h-11 items-center justify-center gap-2 rounded-xl px-3 py-2 text-sm font-bold transition ${workspaceMode.value === value ? 'bg-white text-blue-800 shadow-sm' : 'text-slate-600 hover:bg-white/70'}`,
@@ -625,13 +724,20 @@ const App = {
                                     h('h3', { class: 'mb-1 flex items-center gap-2 font-bold text-sky-950' }, [icon('search', 'size-5'), language.value === 'ar' ? 'النتيجة التي وجدتها' : 'What we found']),
                                     h('p', { class: 'leading-7 text-sky-950' }, currentStep.value.finding || currentStep.value.question),
                                 ]) : null,
+                                isFinished.value ? h('section', { class: 'mb-5 rounded-2xl border border-indigo-200 bg-indigo-50 px-4 py-3.5 sm:px-5' }, [
+                                    h('h3', { class: 'mb-1 flex items-center gap-2 text-xs font-bold text-indigo-800' }, [icon('search', 'size-4'), t('checkGuidance')]),
+                                    h('p', { class: 'leading-7 text-indigo-950' }, currentStep.value.check_guidance || t('generalCheckHint')),
+                                ]) : null,
                                 currentStep.value.customer_prompt ? h('section', { class: 'customer-prompt mb-5 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3.5 sm:px-5', 'aria-label': t('askCustomer') }, [
                                     h('h3', { class: 'mb-1 flex items-center gap-2 text-xs font-bold text-emerald-800' }, [icon('chat', 'size-4'), t('askCustomer')]),
                                     h('p', { class: 'leading-7 text-emerald-950' }, currentStep.value.customer_prompt),
                                 ]) : null,
-                                currentStep.value.options?.length > 0 && currentStep.value.action ? h('section', { class: 'staff-check mb-5 rounded-2xl border border-indigo-200 bg-indigo-50 px-4 py-3.5 sm:px-5' }, [
-                                    h('h3', { class: 'mb-1 flex items-center gap-2 text-xs font-bold text-indigo-800' }, [icon('ticket', 'size-4'), t('staffCheck')]),
-                                    h('p', { class: 'leading-7 text-indigo-950' }, currentStep.value.action),
+                                currentStep.value.options?.length > 0 && currentStepId.value !== 'start_menu' && currentStepId.value !== 'tools_hub' ? h('section', { class: 'staff-check mb-5 rounded-2xl border border-indigo-200 bg-indigo-50 px-4 py-3.5 sm:px-5' }, [
+                                    h('h3', { class: 'mb-2 flex items-center gap-2 text-xs font-bold text-indigo-800' }, [icon('ticket', 'size-4'), t('staffCheck')]),
+                                    h('h4', { class: 'text-xs font-bold text-indigo-900' }, t('checkGuidance')),
+                                    h('p', { class: 'mt-1 leading-7 text-indigo-950' }, currentStep.value.check_guidance || t('generalCheckHint')),
+                                    h('h4', { class: 'mt-3 text-xs font-bold text-indigo-900' }, t('whatToDo')),
+                                    h('p', { class: 'mt-1 leading-7 text-indigo-950' }, currentStep.value.action || t('generalCheckHint')),
                                 ]) : null,
                                 currentStep.value.source_reference ? h('details', { class: 'mb-5 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2' }, [
                                     h('summary', { class: 'cursor-pointer text-xs font-bold text-slate-600' }, t('sourceReference')),
@@ -749,7 +855,7 @@ const App = {
                                             h('h3', { class: 'mb-2 flex items-center gap-2 font-bold text-orange-950' }, [
                                                 icon('alert', 'size-5'), t('action'),
                                             ]),
-                                            h('p', { class: 'leading-7 text-orange-950' }, currentStep.value.action || '—'),
+                                            h('p', { class: 'leading-7 text-orange-950' }, currentStep.value.action || t('generalCheckHint')),
                                         ]) : null,
                                         !isPackageInquiry.value && currentStep.value.reference_guidance ? h('section', { class: 'reference-guidance rounded-2xl border border-blue-200 bg-blue-50 p-4 sm:p-5' }, [
                                             h('h3', { class: 'mb-2 flex items-center gap-2 font-bold text-blue-950' }, [icon('ticket', 'size-5'), t('referenceGuidance')]),
@@ -831,40 +937,6 @@ const App = {
                                         }, [icon('question', 'size-4'), t('toolsHub')]) : null,
                                     ]),
                             ]) }),
-                tree.value?.operations_guide ? h('details', { class: 'operations-guide mt-5 rounded-2xl border border-blue-100 bg-blue-50/70 p-4' }, [
-                    h('summary', { class: 'cursor-pointer font-semibold text-blue-900' }, [icon('ticket', 'inline size-5'), h('span', { class: 'ms-2' }, t('operations'))]),
-                    h('div', { class: 'mt-4 space-y-4 leading-7 text-gray-700' }, [
-                        h('section', [h('h3', { class: 'flex items-center gap-2 font-bold text-gray-900' }, [icon('search', 'size-4'), t('searchTitle')]), h('p', tree.value.operations_guide.search)]),
-                        h('section', [h('h3', { class: 'flex items-center gap-2 font-bold text-gray-900' }, [icon('ticket', 'size-4'), t('recordTitle')]), h('p', tree.value.operations_guide.record)]),
-                        tree.value.operations_guide.outage_fields ? h('section', { class: 'rounded-xl border border-blue-100 bg-white/80 p-3' }, [
-                            h('h3', { class: 'font-bold text-gray-900' }, tree.value.operations_guide.outage_fields.title),
-                            h('p', { class: 'mt-1 text-sm leading-6' }, tree.value.operations_guide.outage_fields.note),
-                            h('div', { class: 'mt-3 overflow-x-auto rounded-lg border border-gray-200' }, [
-                                h('table', { class: 'w-full min-w-[34rem] text-start text-sm' }, [
-                                    h('thead', { class: 'bg-slate-100 text-gray-800' }, [h('tr', [h('th', { class: 'p-2' }, language.value === 'ar' ? 'الحقل' : 'Field'), h('th', { class: 'p-2' }, language.value === 'ar' ? 'ما الذي أتحقق منه؟' : 'What to check')])]),
-                                    h('tbody', tree.value.operations_guide.outage_fields.rows.map((row) => h('tr', { class: 'border-t border-gray-200', key: row.field }, [h('td', { class: 'p-2 font-semibold' }, row.field), h('td', { class: 'p-2' }, row.meaning)]))),
-                                ]),
-                            ]),
-                        ]) : null,
-                    ]),
-                    h('details', { class: 'mt-4 rounded-xl border border-blue-100 bg-white/70 p-3' }, [
-                        h('summary', { class: 'cursor-pointer font-semibold text-blue-900' }, t('codesTitle')),
-                        h('p', { class: 'my-3 text-sm leading-6 text-amber-800' }, tree.value.operations_guide.codes_note),
-                        h('label', { class: 'mb-3 flex items-center gap-2 text-sm text-gray-700' }, [icon('search', 'size-4'), h('input', {
-                            class: 'app-control min-w-0 flex-1 rounded-lg border border-gray-200 bg-white px-3 py-2',
-                            type: 'search', value: codeSearch.value, placeholder: t('codesSearch'),
-                            onInput: (event) => { codeSearch.value = event.target.value; },
-                        })]),
-                        h('div', { class: 'max-h-72 overflow-auto rounded-lg border border-gray-200' }, [
-                            h('table', { class: 'w-full text-start text-sm' }, [
-                                h('thead', { class: 'sticky top-0 bg-slate-100 text-gray-800' }, [h('tr', [h('th', { class: 'p-2' }, t('codeLabel')), h('th', { class: 'p-2' }, t('reasonLabel'))])]),
-                                h('tbody', tree.value.operations_guide.closure_codes
-                                    .filter((row) => !codeSearch.value || `${row.code} ${row.reason}`.toLocaleLowerCase().includes(codeSearch.value.trim().toLocaleLowerCase()))
-                                    .map((row) => h('tr', { class: 'border-t border-gray-200', key: row.code }, [h('td', { class: 'p-2 font-bold' }, row.code), h('td', { class: 'p-2' }, row.reason)]))),
-                            ]),
-                        ]),
-                    ]),
-                ]) : null,
                 notice.value ? h('p', {
                     class: 'mt-4 rounded-lg bg-gray-100 px-3 py-2 text-sm text-gray-700',
                     role: 'status',

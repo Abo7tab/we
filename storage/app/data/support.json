@@ -238,31 +238,6 @@
     "sla": "لا تعد بمدة قبل التحقق",
     "options": []
   },
-  "tools_hub": {
-    "question": "اختَر الدليل السريع الذي تحتاجه. لو المشكلة تحتاج تشخيصًا، ارجع للبداية واختر أعطال الإنترنت.",
-    "options": [
-      {
-        "label": "ASSIA ونتيجة Clear View",
-        "next_step": "assia_start"
-      },
-      {
-        "label": "مساعد اختيار Close Code",
-        "next_step": "close_code_start"
-      },
-      {
-        "label": "ضعف تغطية Wi-Fi والأجهزة",
-        "next_step": "wifi_devices_terminal"
-      },
-      {
-        "label": "خدمات الشركات وCNAM والأرقام المختصرة",
-        "next_step": "enterprise_terminal"
-      },
-      {
-        "label": "استثناء أو كود ظاهر في TTS History",
-        "next_step": "exceptions_start"
-      }
-    ]
-  },
   "assia_start": {
     "question": "في ASSIA: هل الخط Supported، وهل Collection Date اليوم؟",
     "customer_prompt": "هراجع نتيجة فحص الخط في ASSIA الأول، وبعدها أقول لحضرتك الخطوة المناسبة.",

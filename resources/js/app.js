@@ -192,9 +192,10 @@ const COPY = {
         quickSla: 'مواعيد الـSLA', quickCodes: 'أكواد الإغلاق', quickPackages: 'الباقات', quickToolSearch: 'ابحث بالاسم أو الحالة أو الرقم أو المدة…',
         quickChangePackage: 'تغيير باقة',
         quickAccess: 'الوصول السريع', closeDrawer: 'إغلاق',
+        openReference: 'مرجع الدعم', returnGuided: 'العودة لمساعد المكالمة',
         slaSearchPlaceholder: 'الحالة أو رقم الساعات/الأيام…', packageSearchPlaceholder: 'اسم الباقة أو السرعة أو السعة…', packagesNote: 'البحث يشمل السعة والسرعة والاسم والأسعار الموجودة في الجداول. عدد الأشخاص ليس تصنيفًا رسميًا في البيانات؛ استخدم الاستهلاك وعدد الأجهزة ولا تفترض سعة مناسبة من عدد الأفراد وحده.',
         noQuickMatches: 'لا توجد نتيجة مطابقة.', sourceCaution: 'مرجع تدريبي؛ طابق المهلة مع التذكرة الحالية قبل إبلاغ العميل.', packageAddons: 'إضافات',
-        guidedMode: 'وجّهني في المكالمة', referenceMode: 'مرجع الدعم', referenceIntro: 'ابحث بالعرض أو اسم الإجراء، أو افتح موضوعًا شائعًا. النتائج تعرض مسار الدعم ومصدر الإجراء عند توفره.',
+        referenceIntro: 'ابحث بالعرض أو اسم الإجراء، أو افتح موضوعًا شائعًا. النتائج تعرض مسار الدعم ومصدر الإجراء عند توفره.',
         referenceTopics: ['Logical Instability', 'Slowness', 'Bad Line Quality', 'Gaming / Ping', 'Physical Instability', 'Outage'],
         descriptionCopied: 'تم نسخ Clear Description. راجع التصنيف قبل اللصق.',
         clearDescription: 'Clear Description المقترح',
@@ -220,9 +221,10 @@ const COPY = {
         quickSla: 'SLA lookup', quickCodes: 'Close codes', quickPackages: 'Packages', quickToolSearch: 'Search by name, case, code, or timeframe…',
         quickChangePackage: 'Change package',
         quickAccess: 'Quick access', closeDrawer: 'Close',
+        openReference: 'Support reference', returnGuided: 'Return to call guide',
         slaSearchPlaceholder: 'Case or hours/days…', packageSearchPlaceholder: 'Package name, speed, or quota…', packagesNote: 'Search covers the names, speeds, quotas, and prices in the available tables. Number of people is not an official package field; use actual usage and device count, and do not infer a quota from household size alone.',
         noQuickMatches: 'No matching entries.', sourceCaution: 'Training reference; verify the current ticket SLA before telling the customer.', packageAddons: 'Add-ons',
-        guidedMode: 'Guide the call', referenceMode: 'Support reference', referenceIntro: 'Search by symptom or procedure, or open a common topic. Results show the support path and its source when available.',
+        referenceIntro: 'Search by symptom or procedure, or open a common topic. Results show the support path and its source when available.',
         referenceTopics: ['Logical Instability', 'Slowness', 'Bad Line Quality', 'Gaming / Ping', 'Physical Instability', 'Outage'],
         descriptionCopied: 'Clear Description copied. Verify the category before pasting.',
         clearDescription: 'Suggested Clear Description',
@@ -314,7 +316,7 @@ const App = {
             if (!groups.length) return [];
             const entries = [];
             for (const [id, step] of Object.entries(tree.value)) {
-                if (id === 'start' || id === 'operations_guide' || !step || typeof step !== 'object') continue;
+                if (id === 'start' || id === 'operations_guide' || id === 'tools_hub' || !step || typeof step !== 'object') continue;
                 const catalog = step.package_catalog;
                 const catalogText = catalog ? [catalog.title, ...catalog.monthly_rows.map((row) => `${row.speed} ${row.quota} ${row.price}`), ...catalog.yearly_rows.map((row) => `${row.plan} ${row.quota} ${row.price}`), ...catalog.addon_rows.map((row) => `${row.kind} ${row.quota} ${row.price} ${row.term}`)].join(' ') : '';
                 const productCatalog = step.product_catalog;
@@ -444,6 +446,12 @@ const App = {
             quickDrawerOpen.value = false;
             if (key === 'change') {
                 jumpToStep('package_change_quick');
+                return;
+            }
+            if (key === 'reference') {
+                workspaceMode.value = 'reference';
+                quickToolsOpen.value = '';
+                nextTick(() => window.scrollTo({ top: 0, behavior: 'smooth' }));
                 return;
             }
             if (quickToolsOpen.value === key) {
@@ -662,13 +670,6 @@ const App = {
                         item.source ? h('p', { class: 'mt-2 text-[10px] text-slate-500' }, item.source) : null,
                     ])) : h('p', { class: 'rounded-lg bg-slate-50 p-3 text-sm text-slate-600' }, t('noQuickMatches'))),
                 ]) : null,
-                h('nav', { class: 'mb-4 grid grid-cols-2 gap-2 rounded-2xl bg-slate-100 p-1.5', 'aria-label': language.value === 'ar' ? 'وضع الاستخدام' : 'Workspace mode' }, [
-                    ...[['guided', t('guidedMode'), 'question'], ['reference', t('referenceMode'), 'search']].map(([value, label, iconName]) => h('button', {
-                        class: `inline-flex min-h-11 items-center justify-center gap-2 rounded-xl px-3 py-2 text-sm font-bold transition ${workspaceMode.value === value ? 'bg-white text-blue-800 shadow-sm' : 'text-slate-600 hover:bg-white/70'}`,
-                        type: 'button', 'aria-pressed': workspaceMode.value === value,
-                        onClick: () => { workspaceMode.value = value; notice.value = ''; },
-                    }, [icon(iconName, 'size-4'), label])),
-                ]),
                 h('section', { class: 'quick-search-panel mb-5 rounded-2xl border border-slate-200 bg-white p-3 sm:p-4' }, [
                     h('label', { class: 'mb-2 flex items-center gap-2 text-sm font-bold text-slate-800', for: 'quick-support-search' }, [icon('search', 'size-4 text-blue-700'), t('quickSearch')]),
                     h('div', { class: 'flex gap-2' }, [
@@ -680,6 +681,8 @@ const App = {
                     ]),
                     h('p', { class: 'mt-2 text-xs leading-5 text-slate-500' }, t('searchHint')),
                     workspaceMode.value === 'reference' ? h('p', { class: 'mt-2 text-xs leading-5 text-slate-600' }, t('referenceIntro')) : null,
+                    currentStepId.value === tree.value?.start && workspaceMode.value !== 'reference' ? h('button', { class: 'mt-3 inline-flex min-h-10 items-center gap-2 rounded-xl border border-indigo-200 bg-indigo-50 px-3 py-2 text-xs font-bold text-indigo-900 transition hover:bg-indigo-100', type: 'button', onClick: () => { workspaceMode.value = 'reference'; } }, [icon('search', 'size-4'), t('openReference')]) : null,
+                    workspaceMode.value === 'reference' ? h('button', { class: 'mt-3 inline-flex min-h-10 items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-bold text-slate-700 transition hover:bg-slate-100', type: 'button', onClick: () => { workspaceMode.value = 'guided'; } }, [icon('back', 'size-4'), t('returnGuided')]) : null,
                     h('div', { class: 'mt-2 flex flex-wrap gap-2' }, t('searchExamples').map((example) => h('button', {
                         class: 'rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-medium text-slate-700 transition hover:border-blue-300 hover:bg-blue-50',
                         type: 'button', onClick: () => { quickSearch.value = example; },
@@ -980,7 +983,7 @@ const App = {
                     ]),
                     h('p', { class: 'mb-4 text-sm leading-6 text-slate-600' }, language.value === 'ar' ? 'اختار الأداة مباشرة من أي خطوة في المكالمة.' : 'Open a support tool directly from any call step.'),
                     h('div', { class: 'grid grid-cols-2 gap-2 sm:grid-cols-4' }, [
-                        ...[['sla', t('quickSla'), 'clock'], ['codes', t('quickCodes'), 'ticket'], ['packages', t('quickPackages'), 'search'], ['change', t('quickChangePackage'), 'ticket']].map(([key, label, iconName]) => h('button', {
+                        ...[['sla', t('quickSla'), 'clock'], ['codes', t('quickCodes'), 'ticket'], ['packages', t('quickPackages'), 'search'], ['change', t('quickChangePackage'), 'ticket'], ['reference', t('openReference'), 'search']].map(([key, label, iconName]) => h('button', {
                             class: 'app-control inline-flex min-h-20 flex-col items-center justify-center gap-2 rounded-2xl border px-3 py-3 text-center text-sm font-bold transition hover:border-blue-300 hover:bg-blue-50 active:scale-[0.98]',
                             type: 'button', onClick: () => openQuickTool(key),
                         }, [icon(iconName, 'size-5 text-blue-700'), label])),

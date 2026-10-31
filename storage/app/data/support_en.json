@@ -238,31 +238,6 @@
     "sla": "Do not promise a duration until verified",
     "options": []
   },
-  "tools_hub": {
-    "question": "Choose a quick guide. For troubleshooting, choose internet or line issues from the start.",
-    "options": [
-      {
-        "label": "ASSIA and Clear View",
-        "next_step": "assia_start"
-      },
-      {
-        "label": "Close Code helper",
-        "next_step": "close_code_start"
-      },
-      {
-        "label": "Weak Wi-Fi coverage and devices",
-        "next_step": "wifi_devices_terminal"
-      },
-      {
-        "label": "Enterprise, CNAM, and short numbers",
-        "next_step": "enterprise_terminal"
-      },
-      {
-        "label": "Exception or code shown in TTS History",
-        "next_step": "exceptions_start"
-      }
-    ]
-  },
   "assia_start": {
     "question": "In ASSIA, is the line Supported, and is Collection Date today?",
     "customer_prompt": "I will check the ASSIA result first, then explain the next step.",

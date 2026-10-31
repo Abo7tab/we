@@ -531,15 +531,15 @@
     ]
   },
   "technical_type": {
-    "question": "After checking history, outages, account, and package, which situation applies?",
+    "question": "Choose the issue type confirmed after the pre-checks.",
     "options": [
       {
-        "label": "Internet/DSL disconnection or poor performance",
-        "next_step": "voice_verification"
+        "label": "Internet issue (outage, slowness, or browsing)",
+        "next_step": "internet_working_check"
       },
       {
         "label": "Landline/voice problem",
-        "next_step": "voice_start"
+        "next_step": "voice_verification"
       },
       {
         "label": "Follow up a problem with an existing TT",
@@ -615,7 +615,8 @@
         "label": "Customer cannot identify the light",
         "next_step": "dsl_status_unknown"
       }
-    ]
+    ],
+    "action": "Classify from the DSL/ADSL light: off or blinking routes to Physical and power/wiring checks. A steady light routes to Logical even if the customer reports no internet; then check WAN IP. Do not record a cause or repair before a test confirms it."
   },
   "power_check": {
     "question": "Check the router power source and Power light status.",
@@ -629,14 +630,16 @@
         "label": "Yes, it is steady",
         "next_step": "data_down_logs"
       }
-    ]
+    ],
+    "action": "Confirm the router is powered and the Power light is steady. If power is normal, continue to line-log checks; if it is off or unstable, follow the device checks without opening it."
   },
   "dsl_status_unknown": {
     "question": "Ask the customer to read the DSL/ADSL light on the router, or check a router photo if available.",
     "action": "Do not classify the issue as physical or logical until the light status is known. Use the router model guide if the light has a different name.",
     "customer_script": "Could you check the router and tell me whether the DSL or ADSL light is off, steady, or blinking?",
     "sla": "Continue troubleshooting after identifying the light status",
-    "options": []
+    "options": [],
+    "customer_prompt": "Could you check the router lights and tell me whether DSL/ADSL is steady, off, or blinking?"
   },
   "power_terminal": {
     "question": "The router may have a power supply issue.",
@@ -644,7 +647,8 @@
     "customer_script": "Let us check the router power light and adapter, then try another outlet. If the issue continues, we can arrange an inspection through the approved process.",
     "reference_guidance": "If you open a device-inspection follow-up, give the customer its visible reference and current timeframe. Create a technical TT only when that path applies; do not share an internal IR number.",
     "sla": "Immediate diagnosis; follow-up according to the ticket",
-    "options": []
+    "options": [],
+    "customer_prompt": "Let’s try the router in another power outlet and check that its original power adapter is connected. Please do not open the device."
   },
   "data_down_logs": {
     "question": "Using internal diagnostic tools only, without sharing their details with the customer, what do the last 12 hours of system logs show?",
@@ -657,7 +661,9 @@
         "label": "That log rule does not apply; classify as Data Down",
         "next_step": "wiring_check"
       }
-    ]
+    ],
+    "customer_prompt": "I am checking the line from our support tools. I do not need your router login. I will continue once I have the result.",
+    "action": "Check the last 12 hours of logs in internal support tools only. Three or more logs, including one in the last three hours, route to the instability path; otherwise continue Data Down classification and wiring checks. Do not expose internal log details to the customer."
   },
   "wiring_check": {
     "question": "Identify how the router is connected to the telephone line.",
@@ -769,7 +775,8 @@
         "label": "No, the system routes this case to NOC / On Call",
         "next_step": "noc_escalation"
       }
-    ]
+    ],
+    "customer_prompt": "I will finish checking the line and wiring and record the appropriate follow-up. If a ticket is created, I will give you its reference and the displayed timeframe."
   },
   "logical_start": {
     "question": "Classify the reported symptoms before selecting internet-fault checks.",
@@ -795,7 +802,8 @@
         "label": "The line drops while the DSL light stays on",
         "next_step": "logical_logs"
       }
-    ]
+    ],
+    "action": "Confirm the DSL light is steady, then choose the observed symptom: no WAN IP, websites failing, slowness, a speed mismatch, or drops with steady DSL. Do not change CPE settings before the outage, account, and quota checks are complete."
   },
   "no_ip_check": {
     "question": "Using the approved support tool, and without asking for the customer's password, have you checked MAC status, CPE settings, and connection details?",
@@ -808,7 +816,9 @@
         "label": "Settings look correct, but there is still no IP",
         "next_step": "noc_escalation"
       }
-    ]
+    ],
+    "customer_prompt": "I will check the router’s internet connection in our system. Please do not share your router password; if a setting needs adjustment, I will guide you through it.",
+    "action": "Check MAC, WAN IP, and connection data in the approved tool. If settings are wrong, guide the customer through the approved CPE setup without requesting a password; if settings are correct and there is no IP, escalate with readings and tests."
   },
   "cpe_reconfigure": {
     "question": "After CPE setup, check whether the router received an IP and service returned.",
@@ -877,14 +887,17 @@
         "label": "Yes, it is below range or optimization has ended",
         "next_step": "slowness_troubleshoot"
       }
-    ]
+    ],
+    "action": "Check package usage/validity and the line speed recorded in the system. Ask for the approved speed test, then compare it with the line profile and any optimization period before choosing a path.",
+    "customer_prompt": "Could you run the usual speed test with the router connected directly? I will compare the result with the speed recorded for your line."
   },
   "speed_within_range": {
     "question": "The speed is within the expected range or the line is still in its optimization period.",
     "action": "Compare the measured speed with the line and package details in the system. Explain that DSL speed can be affected by line distance, network load, and shared capacity. Do not rely on old package prices or speed tables from training PDFs.",
     "customer_script": "I have checked the expected speed for your line. The service is within the current range/optimization period, and we can review it again when that period ends.",
     "sla": "According to the optimization period recorded for the line",
-    "options": []
+    "options": [],
+    "customer_prompt": "I will compare the line speed shown in our system with your speed-test result, then explain whether it is within the expected range."
   },
   "slowness_troubleshoot": {
     "question": "Run the approved speed test and confirm whether slowness continues.",
@@ -911,7 +924,9 @@
         "label": "No logs; test another CPE and check for an Outage",
         "next_step": "logical_recheck"
       }
-    ]
+    ],
+    "customer_prompt": "I will review the connection logs in our support tools, then ask you to try another router only if the check requires it.",
+    "action": "Review connection indicators in internal tools and confirm whether another CPE was tested. Do not ask the customer for a password. Record the findings before escalation or re-testing."
   },
   "logical_recheck": {
     "question": "After checking Outage and testing another CPE, identify whether the issue remains.",
@@ -946,7 +961,8 @@
         "label": "No, follow-up is outside the night window",
         "next_step": "noc_standard_terminal"
       }
-    ]
+    ],
+    "customer_prompt": "I will record the checks and send the case to the responsible team. Are you available for a call if the team needs to follow up overnight?"
   },
   "speed_variance_terminal": {
     "question": "The speed values differ between system tools.",
@@ -954,7 +970,8 @@
     "customer_script": "I found a mismatch in the speed information on our systems. I will send it for technical review before continuing other checks.",
     "reference_guidance": "After logging/escalating Speed Variance, give the customer the customer-facing TT/complaint reference and displayed SLA. Do not share an internal IR number.",
     "sla": "According to the Speed Variance path shown in the system",
-    "options": []
+    "options": [],
+    "customer_prompt": "I will compare the speed readings in our system and explain the result once I reconcile them."
   },
   "outage_terminal": {
     "question": "The issue may be related to a general network outage.",
@@ -1561,7 +1578,8 @@
     "action": "Retest the service and record the resolution and customer confirmation. Open the close-code table below and match its description to the actual TTS reason before closing. If none match, do not guess; ask the responsible lead.",
     "customer_script": "Great. Is the service working normally now? I have recorded the step that fixed the issue. Thank you for confirming.",
     "sla": "Resolved during the call",
-    "options": []
+    "options": [],
+    "customer_prompt": "After the steps we tried, is the internet back and working normally on your device?"
   },
   "exceptions_start": {
     "question": "Did TTS History show one of these special cases or close-code updates? Check open and closed history before troubleshooting.",
@@ -2479,5 +2497,24 @@
       "source_label": "Official WE current offers page",
       "selectable": false
     }
+  },
+  "internet_working_check": {
+    "question": "Is the customer’s internet working right now?",
+    "customer_prompt": "After checking outages, account status, and quota: is the internet working now? If yes, is it slow or are only some sites affected?",
+    "action": "Initial routing: a live connection with slowness/browsing/intermittency and a steady DSL light goes to Logical. A full loss of sync or DSL/ADSL light off/blinking goes to Physical. If DSL is steady but there is no IP, route to Logical after checking line sync; do not classify from “no internet” alone.",
+    "options": [
+      {
+        "label": "Internet works, but it is slow or browsing/specific sites are affected (Logical)",
+        "next_step": "logical_start"
+      },
+      {
+        "label": "Internet is fully down or DSL/ADSL is off/blinking (Physical)",
+        "next_step": "connection_check"
+      },
+      {
+        "label": "Customer cannot tell the internet or DSL-light status",
+        "next_step": "dsl_status_unknown"
+      }
+    ]
   }
 }

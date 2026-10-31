@@ -112,6 +112,51 @@ function normalizeSearch(value = '', language = 'ar') {
         .replace(/\s+/g, ' ');
 }
 
+const SEARCH_ALIASES = {
+    ar: {
+        'نت': ['انترنت', 'اتصال', 'dsl', 'adsl'], 'النت': ['انترنت', 'اتصال', 'dsl'],
+        'فاصل': ['انقطاع', 'تقطيع', 'يفصل', 'down'], 'بيفصل': ['انقطاع', 'تقطيع', 'يفصل'],
+        'واقع': ['انقطاع', 'down', 'مقطوع'], 'مقطوع': ['انقطاع', 'فاصل', 'down'],
+        'بطيء': ['بطئ', 'بطء', 'بطيئه', 'slow', 'سرعه'], 'بطئ': ['بطيء', 'بطء', 'بطيئه', 'slow', 'سرعه'], 'بطء': ['بطيء', 'بطئ', 'slow', 'سرعه'],
+        'بطيئه': ['بطء', 'بطيء', 'slow', 'سرعه'], 'بطئه': ['بطء', 'بطيء', 'slow', 'سرعه'], 'السرعه': ['بطء', 'slow', 'speed', 'slowness'],
+        'تقطيع': ['انقطاع', 'فاصل', 'يفصل', 'unstable'], 'مستقر': ['تقطيع', 'عدم استقرار', 'unstable'],
+        'تصفح': ['مواقع', 'يفتح', 'browsing', 'website'], 'مواقع': ['تصفح', 'يفتح', 'browsing'],
+        'لمبه': ['dsl', 'adsl', 'راوتر'], 'لمبات': ['dsl', 'adsl', 'راوتر'],
+        'حراره': ['tone', 'صوت', 'تليفون'], 'تليفون': ['صوت', 'tone', 'خط ارضي'],
+        'بيانات': ['ip', 'wan', 'راوتر'], 'ايبي': ['ip', 'wan'], 'راوتر': ['cpe', 'dsl', 'adsl'],
+        'شكوي': ['شكوى', 'تصعيد', 'tt'], 'تذكره': ['tt', 'تذكرة', 'شكوى'], 'تذكرة': ['tt', 'شكوى'],
+        'دفع': ['سداد', 'فوري', 'فاتوره'], 'فلوس': ['سداد', 'رصيد', 'فاتوره'],
+        'باقه': ['quota', 'سعه', 'تجديد'], 'خلصت': ['نفاد', 'استهلاك', 'سعه'],
+    },
+    en: {
+        'down': ['outage', 'disconnect', 'no internet', 'dsl'], 'disconnect': ['down', 'drop', 'unstable', 'dsl'],
+        'slow': ['slowness', 'speed', 'browsing'], 'speed': ['slow', 'slowness', 'profile'],
+        'websites': ['browsing', 'sites', 'dns'], 'site': ['browsing', 'website', 'dns'],
+        'router': ['cpe', 'dsl', 'adsl'], 'payment': ['bill', 'fawry', 'balance'],
+        'ticket': ['tt', 'complaint', 'sr'], 'quota': ['package', 'consumption', 'renewal'],
+    },
+};
+
+const SEARCH_STOP_WORDS = {
+    ar: new Set(['هل', 'هو', 'هي', 'في', 'من', 'عن', 'على', 'عندي', 'عند', 'العميل', 'حضرتك', 'مشكله', 'مشكلتي', 'عايز', 'اعرف', 'ايه', 'ما', 'لو', 'كان']),
+    en: new Set(['the', 'is', 'a', 'an', 'my', 'for', 'to', 'with', 'what', 'how', 'do', 'does', 'customer', 'issue', 'problem']),
+};
+
+function searchGroups(query, language) {
+    const normalized = normalizeSearch(query, language);
+    const groups = normalized.split(' ')
+        .filter((token) => (token.length > 1 || /^\d+$/.test(token)) && !SEARCH_STOP_WORDS[language].has(token))
+        .map((token) => [...new Set([token, ...(SEARCH_ALIASES[language][token] ?? []).map((alias) => normalizeSearch(alias, language))])]);
+    if (language === 'ar') {
+        if (/(النت|انترنت|اتصال).*(مش شغال|مش شغاله|فاصل|مقطوع|قاطع)/.test(normalized)) groups.push(['انقطاع', 'فاصل', 'dsl', 'adsl', 'physical']);
+        if (/(النت|انترنت|اتصال).*(شغال|بيشتغل).*(بطي|بطء|مواقع|تصفح)/.test(normalized)) groups.push(['logical', 'بطء', 'تصفح', 'سرعه']);
+    } else {
+        if (/no internet|internet down|connection down|not working/.test(normalized)) groups.push(['outage', 'disconnect', 'dsl', 'physical']);
+        if (/internet.*(slow|browsing|sites)/.test(normalized)) groups.push(['logical', 'slowness', 'speed', 'browsing']);
+    }
+    return groups;
+}
+
 const COPY = {
     ar: {
         brand: 'مساعد WE للدعم الفني', title: 'دليل الدعم الفني', fresh: 'جديد', loading: 'جاري تحميل شجرة القرارات…', retry: 'إعادة المحاولة',
@@ -120,7 +165,7 @@ const COPY = {
         copied: 'تم نسخ نص العميل.', noScript: 'لا يوجد نص عميل لنسخه في هذه الخطوة.', copyError: 'تعذر النسخ تلقائيًا. يمكنك تحديد النص ونسخه يدويًا.',
         invalidStep: 'هذا الاختيار مرتبط بخطوة غير موجودة. أبلغ المسؤول عن الشجرة.', stepLimit: 'وصل المسار إلى الحد الآمن للتنقل. أعد البدء أو راجع الشجرة.',
         incomplete: 'بيانات الخطوة التالية غير مكتملة. أبلغ المسؤول عن الشجرة.', loadError: 'تعذر تحميل شجرة القرارات.', invalidTree: 'ملف شجرة القرارات غير مكتمل.',
-        askCustomer: 'اسأل العميل', referenceGuidance: 'رقم المتابعة الذي تقوله للعميل',
+        askCustomer: 'اسأل العميل', referenceGuidance: 'رقم المتابعة الذي تقوله للعميل', staffCheck: 'خطوة الموظف على النظام (لا تُقرأ للعميل)',
         descriptionCopied: 'تم نسخ Clear Description. راجع التصنيف قبل اللصق.',
         clearDescription: 'Clear Description المقترح',
         searchSource: 'المصدر', openStep: 'فتح المسار', openGuide: 'عرض دليل Outage', copyDescription: 'نسخ Clear Description', oldReference: 'مرجع تدريبي قديم؛ راجع التصنيف والمهلة الحاليين قبل الاستخدام.',
@@ -129,7 +174,7 @@ const COPY = {
         commentRefType: 'نوع المرجع', commentRefNumber: 'رقم المرجع من النظام', commentRefPlaceholder: 'أدخل الرقم بعد إنشائه (اختياري)',
         refNone: 'لم تُنشأ تذكرة', refTT: 'TT', refSR: 'SR', refOrder: 'رقم الطلب', refIR: 'IR داخلي',
         copyComment: 'نسخ التعليق', commentCopied: 'تم نسخ التعليق. راجعه قبل لصقه في النظام.',
-        quickSearch: 'بحث سريع', quickSearchPlaceholder: 'ابحث عن إجراء أو كود أو مهلة…', noSearchResults: 'لا توجد نتيجة مطابقة مؤكدة؛ راجع النظام الحالي قبل الاعتماد عليها.', dark: 'الوضع الداكن', light: 'الوضع الفاتح',
+        quickSearch: 'مساعد البحث', quickSearchPlaceholder: 'اكتب المشكلة بطريقتك… مثال: النت فاصل ولمبة DSL بتفصل', searchHint: 'يفهم كلمات قريبة ويقترح أقرب سؤال أو مسار من دليل الدعم؛ لا يرسل بياناتك لخدمة خارجية.', searchExamples: ['النت فاصل', 'السرعة بطيئة', 'مواقع مش بتفتح', 'لمبة DSL بتفصل'], bestMatch: 'أقرب مسار', noSearchResults: 'لم أجد مسارًا واضحًا. جرّب وصفًا أقصر مثل: النت فاصل، بطء، أو لا توجد نغمة.', dark: 'الوضع الداكن', light: 'الوضع الفاتح',
         checkBeforeQuote: 'تحقّق قبل عرض السعر', packageMonthly: 'شهري', packageYearly: 'سنوي', packageQuarterly: 'ربع سنوي', packageAccountType: 'حدد نوع الحساب من BSS', packagePrepaid: 'Prepaid', packagePostpaid: 'Postpaid', packageSelect: 'اختار الباقة', packageNoQuarterly: 'WE Space للإنترنت فقط يعرض باقات شهرية وسنوية. الربع سنوي لباقات WE Ardy للخط الأرضي الصوتي، وليس باقة الإنترنت.', packagePlanScript: 'نص العرض بعد اختيار الباقة', packageNeedAccount: 'اختار نوع الحساب الظاهر في BSS علشان نعرض الكتالوج المناسب.', packageSourceNote: 'السعر النهائي والضريبة والأهلية تتأكد من BSS قبل تسجيل الطلب.', toolsHub: 'أدلة مساعدة', exceed: 'EXCEED', internalTool: 'أداة دعم داخلية', operations: 'رقم البحث والتسجيل في النظام', searchTitle: 'أبحث بأي رقم؟', recordTitle: 'أسجل إيه؟', codesTitle: 'أكواد الإغلاق الظاهرة في دليل التدريب', codesSearch: 'ابحث برقم الكود أو الوصف', codeLabel: 'الكود', reasonLabel: 'الوصف',
     },
     en: {
@@ -139,7 +184,7 @@ const COPY = {
         copied: 'Customer script copied.', noScript: 'There is no customer script to copy at this step.', copyError: 'Automatic copy failed. Select and copy the text manually.',
         invalidStep: 'This option points to a missing step. Notify the tree administrator.', stepLimit: 'The safe step limit was reached. Restart or review the tree.',
         incomplete: 'The next step data is incomplete. Notify the tree administrator.', loadError: 'Could not load the decision tree.', invalidTree: 'The decision tree file is incomplete.',
-        askCustomer: 'Ask the customer', referenceGuidance: 'Reference number to give the customer',
+        askCustomer: 'Ask the customer', referenceGuidance: 'Reference number to give the customer', staffCheck: 'Agent system check (do not read to the customer)',
         descriptionCopied: 'Clear Description copied. Verify the category before pasting.',
         clearDescription: 'Suggested Clear Description',
         searchSource: 'Source', openStep: 'Open path', openGuide: 'View Outage guide', copyDescription: 'Copy Clear Description', oldReference: 'Training reference may be outdated; verify the current category and SLA.',
@@ -148,7 +193,7 @@ const COPY = {
         commentRefType: 'Reference type', commentRefNumber: 'System reference number', commentRefPlaceholder: 'Enter after creation (optional)',
         refNone: 'No ticket created', refTT: 'TT', refSR: 'SR', refOrder: 'Order number', refIR: 'Internal IR',
         copyComment: 'Copy comment', commentCopied: 'Comment copied. Review it before pasting into the system.',
-        quickSearch: 'Quick search', quickSearchPlaceholder: 'Search a procedure, code, or SLA…', noSearchResults: 'No confirmed matching result. Check the current system before relying on it.', dark: 'Dark mode', light: 'Light mode',
+        quickSearch: 'Support search assistant', quickSearchPlaceholder: 'Describe the issue… e.g. internet drops and DSL blinks', searchHint: 'Finds related wording and suggests a support path locally; your search is not sent to an external AI service.', searchExamples: ['Internet down', 'Slow speed', 'Websites not opening', 'DSL light blinking'], bestMatch: 'Closest path', noSearchResults: 'No clear path found. Try a shorter phrase such as internet down, slow speed, or no dial tone.', dark: 'Dark mode', light: 'Light mode',
         checkBeforeQuote: 'Check before quoting', packageMonthly: 'Monthly', packageYearly: 'Yearly', packageQuarterly: 'Quarterly', packageAccountType: 'Select the account type shown in BSS', packagePrepaid: 'Prepaid', packagePostpaid: 'Postpaid', packageSelect: 'Select this package', packageNoQuarterly: 'WE Space internet-only plans are monthly or yearly. Quarterly cycles belong to WE Ardy fixed voice, not the internet-only package.', packagePlanScript: 'Customer wording for the selected plan', packageNeedAccount: 'Select the account type shown in BSS to view the catalog.', packageSourceNote: 'Confirm final price, tax, and eligibility in BSS before creating an order.', toolsHub: 'Quick guides', exceed: 'EXCEED', internalTool: 'Internal support tool', operations: 'Which ID and record should I use?', searchTitle: 'What should I search by?', recordTitle: 'What should I record?', codesTitle: 'Close codes listed in training guide', codesSearch: 'Search by code or reason', codeLabel: 'Code', reasonLabel: 'Reason',
     },
 };
@@ -221,7 +266,8 @@ const App = {
         const quickSearchResults = computed(() => {
             const query = normalizeSearch(quickSearch.value, language.value);
             if (!query || !tree.value) return [];
-            const terms = query.split(' ').filter(Boolean);
+            const groups = searchGroups(query, language.value);
+            if (!groups.length) return [];
             const entries = [];
             for (const [id, step] of Object.entries(tree.value)) {
                 if (id === 'start' || id === 'operations_guide' || !step || typeof step !== 'object') continue;
@@ -246,12 +292,23 @@ const App = {
                 entries.push({ kind: 'fact', id: fact.id, title: fact.title, body: fact.body, terms: fact.terms, template: fact.template, source: fact.source });
             }
             return entries.map((entry) => {
+                const title = normalizeSearch(entry.title, language.value);
                 const searchable = normalizeSearch(`${entry.title} ${entry.body} ${entry.terms ?? ''}`, language.value);
-                const matched = terms.filter((term) => searchable.includes(term)).length;
-                return { ...entry, score: matched, snippet: entry.body.length > 220 ? `${entry.body.slice(0, 217)}…` : entry.body };
-            }).filter((entry) => entry.score === terms.length)
-                .sort((a, b) => b.score - a.score || a.title.localeCompare(b.title, language.value))
-                .slice(0, 10);
+                let score = 0;
+                let matched = 0;
+                for (const group of groups) {
+                    const titleHit = group.find((term) => title.includes(term));
+                    const bodyHit = group.find((term) => searchable.includes(term));
+                    if (titleHit || bodyHit) {
+                        matched += 1;
+                        score += titleHit ? (titleHit === group[0] ? 4 : 2.5) : (bodyHit === group[0] ? 1.6 : 1);
+                    }
+                }
+                const coverage = matched / groups.length;
+                return { ...entry, score, matched, coverage, snippet: entry.body.length > 220 ? `${entry.body.slice(0, 217)}…` : entry.body };
+            }).filter((entry) => entry.matched > 0 && entry.coverage >= Math.min(0.5, 1 / groups.length))
+                .sort((a, b) => b.score - a.score || b.coverage - a.coverage || a.title.localeCompare(b.title, language.value))
+                .slice(0, 6);
         });
 
         const generatedComment = computed(() => {
@@ -476,10 +533,16 @@ const App = {
                             onInput: (event) => { quickSearch.value = event.target.value; },
                         }),
                     ]),
+                    h('p', { class: 'mt-2 text-xs leading-5 text-slate-500' }, t('searchHint')),
+                    h('div', { class: 'mt-2 flex flex-wrap gap-2' }, t('searchExamples').map((example) => h('button', {
+                        class: 'rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-medium text-slate-700 transition hover:border-blue-300 hover:bg-blue-50',
+                        type: 'button', onClick: () => { quickSearch.value = example; },
+                    }, example))),
                     quickSearch.value.trim() ? h('div', { class: 'mt-3 space-y-2', 'aria-live': 'polite' }, quickSearchResults.value.length
-                        ? quickSearchResults.value.map((result) => h('article', { class: 'search-result-card rounded-xl border border-slate-200 bg-slate-50/80 p-3', key: `${result.kind}-${result.id}` }, [
+                        ? quickSearchResults.value.map((result, index) => h('article', { class: 'search-result-card rounded-xl border border-slate-200 bg-slate-50/80 p-3', key: `${result.kind}-${result.id}` }, [
                             h('div', { class: 'flex items-start justify-between gap-3' }, [
                                 h('div', { class: 'min-w-0' }, [
+                                    index === 0 ? h('span', { class: 'mb-1 inline-flex rounded-full bg-blue-100 px-2 py-0.5 text-[10px] font-bold text-blue-800' }, t('bestMatch')) : null,
                                     h('h3', { class: 'font-semibold leading-6 text-slate-900' }, result.title),
                                     h('p', { class: 'mt-1 text-sm leading-6 text-slate-700' }, result.snippet),
                                     h('p', { class: 'mt-1 text-[11px] text-slate-500' }, `${t('searchSource')}: ${result.source}`),
@@ -532,6 +595,10 @@ const App = {
                                 currentStep.value.customer_prompt ? h('section', { class: 'customer-prompt mb-5 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3.5 sm:px-5', 'aria-label': t('askCustomer') }, [
                                     h('h3', { class: 'mb-1 flex items-center gap-2 text-xs font-bold text-emerald-800' }, [icon('chat', 'size-4'), t('askCustomer')]),
                                     h('p', { class: 'leading-7 text-emerald-950' }, currentStep.value.customer_prompt),
+                                ]) : null,
+                                currentStep.value.options?.length > 0 && currentStep.value.action ? h('section', { class: 'staff-check mb-5 rounded-2xl border border-indigo-200 bg-indigo-50 px-4 py-3.5 sm:px-5' }, [
+                                    h('h3', { class: 'mb-1 flex items-center gap-2 text-xs font-bold text-indigo-800' }, [icon('ticket', 'size-4'), t('staffCheck')]),
+                                    h('p', { class: 'leading-7 text-indigo-950' }, currentStep.value.action),
                                 ]) : null,
                                 currentStep.value.product_catalog ? (() => {
                                     const catalog = currentStep.value.product_catalog;

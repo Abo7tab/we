@@ -613,12 +613,21 @@
     ]
   },
   "physical_escalation": {
-    "question": "The physical fault or instability needs escalation.",
-    "action": "Record the customer confirmation, light status, wiring, ASSIA result, and visit details. Update the existing TT for the same fault, or create the correct TT/escalation if none exists. Create/update IR when required, and check outage, billing, and package status. Record the case reference and SLA from the system, then give both to the customer. Create an SR only if the process requires it.",
-    "customer_script": "I recorded the checks and sent/updated the case for the specialist team. Your case reference is (read it from the system), and the recorded SLA is (read it from the system). We will follow up using the latest update.",
-    "reference_guidance": "After updating/creating a TT, give the customer its actual TT reference and displayed SLA. If an SR was actually created with a customer-facing reference, share it too. Record IR internally; do not share its number unless it is explicitly customer-facing.",
-    "sla": "Usually 24 hours for IU cases; Outages and other fault types may differ. Check the case SLA.",
-    "options": []
+    "question": "Before closing the physical-fault path, confirm: is this a Physical Instability complaint routed to IU?",
+    "action": "For a standard Physical Instability case routed to IU, run ASSIA Clear View with Last fix within 24 hours, check Major Fault/Outage and Hayah Karima status, then update the existing TT or create the correct complaint. The Case Escalation (SLA) table lists 24 hours to resolve IU Physical Instability; confirm the actual case SLA and any special SLA in the system. Give the customer the TT/complaint reference and displayed SLA. Two hours is not the repair SLA for this IU complaint; it is the NOC follow-up call after resolution on the NOC path only. Do not apply NOC/On Call handling to an IU complaint unless the system directs it.",
+    "customer_script": "I logged the physical fault under reference (read the TT/complaint number). The SLA recorded for your case is (read the actual system SLA; the standard IU reference is 24 hours unless a special SLA or exception applies). We will follow up using the same complaint reference.",
+    "reference_guidance": "Give the customer their TT/complaint reference and displayed SLA. Share an SR number only if it was created and is approved as a customer-facing reference. Record IR internally and do not share it unless it is explicitly customer-facing. The 2-hour timing applies to NOC follow-up after resolution, not IU Physical Instability repair.",
+    "sla": "IU Physical Instability: 24 hours to resolve per the Case Escalation (SLA) table; verify the TT and any special SLA/Outage/Hayah Karima before quoting.",
+    "options": [
+      {
+        "label": "Yes, Physical Instability complaint routed to IU",
+        "next_step": "physical_iu_terminal"
+      },
+      {
+        "label": "No, the system routes this case to NOC / On Call",
+        "next_step": "noc_escalation"
+      }
+    ]
   },
   "logical_start": {
     "question": "Classify the reported symptoms before selecting internet-fault checks.",
@@ -781,12 +790,21 @@
     ]
   },
   "noc_escalation": {
-    "question": "The logical issue needs escalation to the relevant team.",
-    "action": "Record symptoms, start time, tested devices, CPE status, and MTU/DNS/trace or system-log results. Update the existing TT or create the correct TT if none exists; escalate to NOC and update/create IR if required. Record the case reference and SLA from the system and give both to the customer. Do not include credentials or internal addresses in customer-facing comments.",
-    "customer_script": "We completed the initial checks and recorded a technical follow-up. Your case reference is (read it from the system), and the recorded SLA is (read it from the system). We will follow up with the latest update.",
-    "reference_guidance": "Give the customer the TT/complaint reference shown for customer follow-up and its SLA. If an SR was opened with a customer-facing reference, share it. IR is internal; share only if the system makes it available to the customer.",
-    "sla": "Depends on the case and escalation path; check the system and do not quote one universal SLA",
-    "options": []
+    "question": "Before escalating to NOC: is the expected follow-up period between 10 PM and 8 AM?",
+    "action": "Record the symptoms, start time, tested devices, and troubleshooting results. Update the existing TT or create the correct one, and record its number and displayed SLA. If follow-up is expected between 10 PM and 8 AM, ask whether the customer is available for a call. If yes, create/update IR as required, select Case Type: On Call (To SLS), and record all troubleshooting steps. The NOC follow-up call is expected within two hours after the issue is resolved; this is a post-resolution follow-up, not a promise to fix the issue within two hours. If the customer is unavailable, say the team will follow up after 8 AM. Do not share internal IR numbers.",
+    "customer_script": "Your complaint/TT reference is (read the system number), and the recorded case SLA is (read it as shown). For NOC follow-up, the team will call within two hours after the issue is resolved. (If you are unavailable overnight: the team will follow up after 8 AM.)",
+    "reference_guidance": "Give the customer the customer-facing TT/complaint reference and actual case SLA. Share an SR number only if it was created with a customer-facing reference. IR is internal. Keep the case-resolution SLA separate from the NOC call within two hours after resolution.",
+    "sla": "NOC follow-up call: within two hours after resolution when applicable; case-resolution SLA depends on the case and the TT.",
+    "options": [
+      {
+        "label": "Yes, follow-up is between 10 PM and 8 AM",
+        "next_step": "noc_oncall_availability"
+      },
+      {
+        "label": "No, follow-up is outside the night window",
+        "next_step": "noc_standard_terminal"
+      }
+    ]
   },
   "speed_variance_terminal": {
     "question": "The speed values differ between system tools.",
@@ -1806,6 +1824,52 @@
     "action": "Record that a direct test was not completed. Do not claim internal wiring was fixed or confirmed as the cause without an actual result. Follow the approved wiring check or continue after testing the main socket.",
     "customer_script": "Before I identify the cause, we need to test the router directly on the main socket and check the wiring.",
     "sla": "Do not classify until checks are complete",
+    "options": []
+  },
+  "physical_iu_terminal": {
+    "question": "The Physical Instability complaint is routed to IU.",
+    "action": "Run the ASSIA check and review Outage/special SLA status, then open or update the correct TT. The training reference for IU Physical Instability is 24 hours. Read the actual case SLA from the system; do not quote two hours because that applies to NOC follow-up after resolution. Record the complaint number and give it to the customer with the displayed SLA.",
+    "customer_script": "Your physical-fault complaint reference is (TT number from the system), and the recorded SLA is (displayed SLA). We will follow up using the same complaint reference.",
+    "reference_guidance": "Give the TT/complaint reference and actual SLA. Do not share an internal IR number; share an SR only if it has a customer-facing reference.",
+    "sla": "24 hours is the standard IU reference; verify the actual case and any exception in the system.",
+    "options": []
+  },
+  "noc_oncall_availability": {
+    "question": "Is the customer available to receive a NOC follow-up call between 10 PM and 8 AM?",
+    "customer_prompt": "Would you be available to receive a follow-up call from the specialist team between 10 PM and 8 AM?",
+    "options": [
+      {
+        "label": "Yes, the customer is available",
+        "next_step": "noc_oncall_available_terminal"
+      },
+      {
+        "label": "No, the customer is unavailable",
+        "next_step": "noc_oncall_unavailable_terminal"
+      }
+    ]
+  },
+  "noc_oncall_available_terminal": {
+    "question": "The customer is available for NOC follow-up overnight.",
+    "action": "Create/update IR as required, select Case Type: On Call (To SLS), and add all completed troubleshooting steps. Update the TT/complaint and read its actual resolution SLA. Tell the customer the follow-up call is expected within two hours after the issue is resolved; do not promise the repair itself within two hours. Record the customer-facing TT number and keep the IR number internal.",
+    "customer_script": "Your complaint/TT reference is (system number). The specialist team will call within two hours after the issue is resolved. The recorded resolution SLA is (read the TT SLA as shown).",
+    "reference_guidance": "Give the TT/complaint reference and actual SLA. Do not share IR unless the system provides a customer-facing reference.",
+    "sla": "NOC call within two hours after resolution; read the case-resolution SLA from the TT.",
+    "options": []
+  },
+  "noc_oncall_unavailable_terminal": {
+    "question": "The customer is unavailable for NOC follow-up overnight.",
+    "action": "Do not select On Call (To SLS) without the customer’s availability. Update the TT/complaint with the correct process and record its number and actual SLA. Tell the customer the team will follow up after 8 AM. Do not share internal IR numbers.",
+    "customer_script": "Your complaint/TT reference is (system number), and the recorded case SLA is (read the TT SLA). Since you are unavailable for a night call, the team will follow up after 8 AM.",
+    "reference_guidance": "Give the TT/complaint reference and actual SLA, and clarify follow-up after 8 AM. Do not share internal IR.",
+    "sla": "Follow-up after 8 AM if unavailable overnight; case-resolution SLA is the one on the TT.",
+    "options": []
+  },
+  "noc_standard_terminal": {
+    "question": "The NOC path does not require overnight On Call handling.",
+    "action": "Update the TT/complaint with troubleshooting results and record its number and displayed SLA. The training guide says NOC follow-up is within two hours after the issue is resolved; tell the customer the actual case-resolution SLA separately. Do not share internal IR numbers.",
+    "customer_script": "Your complaint/TT reference is (system number), and the recorded resolution SLA is (read it). The NOC team will call within two hours after the issue is resolved.",
+    "reference_guidance": "Give the TT/complaint reference and displayed SLA. Distinguish the resolution SLA from the follow-up call after resolution. Do not share internal IR.",
+    "sla": "Resolution SLA: read the TT. NOC follow-up: within two hours after the issue is resolved per the training guide.",
     "options": []
   }
 }

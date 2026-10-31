@@ -407,7 +407,7 @@ const App = {
                         h('div', { class: 'min-w-0' }, [
                             h('div', { class: 'flex flex-wrap items-center gap-x-2 gap-y-1' }, [
                                 h('button', { class: 'block text-start text-xs font-bold tracking-wide text-purple-800 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500', type: 'button', onClick: restart }, t('brand')),
-                                h('span', { class: 'we-exceed rounded-full px-2 py-0.5 text-[10px] font-extrabold tracking-[0.14em]' }, t('exceed')),
+                                h('span', { class: 'we-exceed text-[10px] font-extrabold tracking-[0.14em]' }, t('exceed')),
                                 h('span', { class: 'we-internal text-[10px] font-medium' }, t('internalTool')),
                             ]),
                             h('h1', { class: 'truncate text-xl font-bold text-gray-900 sm:text-2xl' }, t('title')),

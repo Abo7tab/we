@@ -281,10 +281,10 @@ body {
     box-shadow: 0 10px 22px rgb(91 44 145 / 9%);
 }
 
-.we-exceed { background: #fbe9f4; color: #9c126b; }
+.we-exceed { color: #38bdf8; }
 .we-internal { color: #756783; }
 .we-brand .we-footer { border-color: #eee6f4; color: #756783; }
-.we-footer-exceed { color: var(--we-magenta); }
+.we-footer-exceed { color: #38bdf8; }
 .we-brand .package-catalog {
     border-color: #e6d9f2;
     background: linear-gradient(135deg, #faf7fd, #fff 72%);
@@ -292,7 +292,7 @@ body {
 
 .app-dark.we-brand { background: #0b1220 !important; }
 .app-dark.we-brand .app-card { border-top-color: #a578c8; }
-.app-dark .we-exceed { background: #47203d; color: #ffc5e8; }
+.app-dark .we-exceed { color: #7dd3fc; }
 .app-dark .we-internal,
 .app-dark .we-footer { color: #b8abc8; }
 .app-dark.we-brand .package-catalog { background: #172338 !important; border-color: #47345b !important; }

@@ -92,6 +92,26 @@ body {
     box-shadow: inset -3px 0 0 #60a5fa;
 }
 
+.app-dark .customer-prompt {
+    background: #173528 !important;
+    border-color: #286044 !important;
+}
+
+.app-dark .customer-prompt h3,
+.app-dark .customer-prompt p {
+    color: #b8f3d1 !important;
+}
+
+.app-dark .reference-guidance {
+    background: #1d3150 !important;
+    border-color: #365d91 !important;
+}
+
+.app-dark .reference-guidance h3,
+.app-dark .reference-guidance p {
+    color: #d4e7ff !important;
+}
+
 .app-dark .brand-mark {
     background-color: #2563eb !important;
 }

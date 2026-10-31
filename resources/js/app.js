@@ -103,6 +103,7 @@ const COPY = {
         startMic: 'اختيار صوتي', stopMic: 'إيقاف الاستماع', stopAudio: 'إيقاف الصوت', readResult: 'قراءة النتيجة',
         autoRead: 'قراءة السؤال تلقائيًا', voice: 'الصوت', language: 'اللغة', dark: 'الوضع الداكن', light: 'الوضع الفاتح',
         testVoice: 'اختبار الصوت', rateUnit: '×', voiceNotInstalled: 'لو مش ظاهر صوت عربي هنا، جودة القراءة تعتمد على الأصوات المثبتة في الجهاز والمتصفح.',
+        askCustomer: 'اسأل العميل', referenceGuidance: 'رقم المتابعة الذي تقوله للعميل',
         voicePrivacy: 'قد يعالج المتصفح الصوت عبر خدمة خارجية وبحاجة إلى الإنترنت؛ هذا الموقع لا يحفظ تسجيل الميكروفون.',
         operations: 'رقم البحث والتسجيل في النظام', searchTitle: 'أبحث بأي رقم؟', recordTitle: 'أسجل إيه؟', codesTitle: 'أكواد الإغلاق الظاهرة في دليل التدريب', codesSearch: 'ابحث برقم الكود أو الوصف', codeLabel: 'الكود', reasonLabel: 'الوصف',
         toolLabel: 'الأداة:', supportIssue: 'حدث خطأ أثناء التحميل.', retryMic: 'تعذر تشغيل الميكروفون. راجع إذن الميكروفون أو استخدم الأزرار.', micEnded: 'انتهى الاستماع بعد عدة محاولات. اضغط الميكروفون للمحاولة مجددًا.',
@@ -121,6 +122,7 @@ const COPY = {
         startMic: 'Voice choice', stopMic: 'Stop listening', stopAudio: 'Stop audio', readResult: 'Read result',
         autoRead: 'Read each question automatically', voice: 'Voice', language: 'Language', dark: 'Dark mode', light: 'Light mode',
         testVoice: 'Test voice', rateUnit: '×', voiceNotInstalled: 'If no Arabic voice appears here, speech quality depends on voices installed on the device and browser.',
+        askCustomer: 'Ask the customer', referenceGuidance: 'Reference number to give the customer',
         voicePrivacy: 'The browser may process audio through an online service; this site does not save microphone recordings.',
         operations: 'Which ID and record should I use?', searchTitle: 'What should I search by?', recordTitle: 'What should I record?', codesTitle: 'Close codes listed in training guide', codesSearch: 'Search by code or reason', codeLabel: 'Code', reasonLabel: 'Reason',
         toolLabel: 'Tool:', supportIssue: 'An error occurred while loading.', retryMic: 'Could not start the microphone. Check its permission or use the buttons.', micEnded: 'Listening ended after several attempts. Tap the microphone to try again.',
@@ -185,7 +187,9 @@ const App = {
             utterance.onend = utterance.onerror = () => { isSpeaking.value = false; };
             window.speechSynthesis.speak(utterance);
         }
-        function speakCurrentStep() { if (autoRead.value && currentStep.value) speak(currentStep.value.question); }
+        function speakCurrentStep() {
+            if (autoRead.value && currentStep.value) speak(currentStep.value.customer_prompt || currentStep.value.question);
+        }
         function readResult() { speak([currentStep.value?.action, currentStep.value?.sla, currentStep.value?.customer_script].filter(Boolean).join('. ')); }
         function testVoice() {
             speak(language.value === 'ar'
@@ -512,6 +516,10 @@ const App = {
                                 h('div', { class: 'question-panel mb-5 rounded-2xl border border-blue-100 bg-blue-50/70 px-4 py-4 sm:px-5 sm:py-5' }, [
                                     h('h2', { class: 'current-question text-xl font-bold leading-8 text-gray-900 sm:text-2xl sm:leading-9' }, currentStep.value.question),
                                 ]),
+                                currentStep.value.customer_prompt ? h('section', { class: 'customer-prompt mb-5 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3.5 sm:px-5', 'aria-label': t('askCustomer') }, [
+                                    h('h3', { class: 'mb-1 flex items-center gap-2 text-xs font-bold text-emerald-800' }, [icon('chat', 'size-4'), t('askCustomer')]),
+                                    h('p', { class: 'leading-7 text-emerald-950' }, currentStep.value.customer_prompt),
+                                ]) : null,
                                 isFinished.value
                                     ? h('div', { class: 'space-y-4', role: 'status' }, [
                                         h('div', { class: 'inline-flex items-center gap-2 rounded-full bg-slate-800 px-4 py-2 text-sm font-semibold text-white' }, [
@@ -525,6 +533,10 @@ const App = {
                                             ]),
                                             h('p', { class: 'leading-7 text-orange-950' }, currentStep.value.action || '—'),
                                         ]),
+                                        currentStep.value.reference_guidance ? h('section', { class: 'reference-guidance rounded-2xl border border-blue-200 bg-blue-50 p-4 sm:p-5' }, [
+                                            h('h3', { class: 'mb-2 flex items-center gap-2 font-bold text-blue-950' }, [icon('ticket', 'size-5'), t('referenceGuidance')]),
+                                            h('p', { class: 'leading-7 text-blue-950' }, currentStep.value.reference_guidance),
+                                        ]) : null,
                                         h('section', { class: 'rounded-2xl border border-green-200 bg-green-100 p-4 sm:p-5' }, [
                                             h('h3', { class: 'mb-2 flex items-center gap-2 font-bold text-green-950' }, [
                                                 icon('chat', 'size-5'), t('customerScript'),

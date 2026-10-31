@@ -9,7 +9,8 @@
     ]
   },
   "start_menu": {
-    "question": "What is the reason for the call? Choose the request type; for faults, check TTS History before troubleshooting.",
+    "question": "Identify the reason for the call and choose the matching path.",
+    "customer_prompt": "What are you calling about: internet, landline, an installation/order, a service inquiry, or a complaint?",
     "options": [
       { "label": "Internet outage/slow speed or DSL issue", "next_step": "preflight_start" },
       { "label": "Landline or voice issue", "next_step": "preflight_start" },
@@ -104,6 +105,7 @@
     "question": "Check fault tickets before creating a new one.",
     "action": "Search TTS History by service number. If an open TT exists for the same fault, record its reference and update it instead of creating a duplicate. Then return and check outage, account status, and package usage.",
     "customer_script": "I will first check the fault history for your line so I can follow the existing case and avoid creating a duplicate request.",
+    "reference_guidance": "If updating an existing TT, tell the customer its TTS reference and displayed SLA. Do not create a duplicate. IR is internal; share it only if the system explicitly marks it as a customer-facing reference.",
     "sla": "Use the SLA recorded on the existing ticket",
     "options": []
   },
@@ -111,6 +113,7 @@
     "question": "A general outage is possible, but it is not confirmed in the tool.",
     "action": "Check Customer360/Outage Tool. If the result remains unclear, ask the team leader to confirm before opening an individual fault ticket. If a Major Fault is confirmed, follow its process and record the announcement/reference. Attach a screenshot of the Major Fault message to its SR when that process requires it; screenshots are not a blanket requirement for every outage.",
     "customer_script": "I will verify the network status with the relevant team and share the official update time once the outage status is confirmed.",
+    "reference_guidance": "If a Major Fault is confirmed and an SR/TT is opened, share only the customer-facing reference. Record the outage reference internally. Attach a screenshot when the Major Fault process requires it, not for every outage. Do not share internal IR numbers.",
     "sla": "Use the official system SLA after status is confirmed",
     "options": []
   },
@@ -143,7 +146,8 @@
     "options": []
   },
   "physical_start": {
-    "question": "Ask the customer to check the router's DSL/ADSL light. What does it do during the issue?",
+    "question": "Identify the DSL/ADSL light status during the fault.",
+    "customer_prompt": "Please check the router and tell me whether the DSL/ADSL light is off, steady, or blinking.",
     "options": [
       { "label": "Off", "next_step": "power_check" },
       { "label": "Disconnecting or blinking", "next_step": "instability_visit" },
@@ -152,7 +156,8 @@
     ]
   },
   "power_check": {
-    "question": "Is the router Power light steady while the service is down?",
+    "question": "Check the router power source and Power light status.",
+    "customer_prompt": "When the service drops, is the Power light steady, off, or flickering?",
     "options": [
       { "label": "No, it is off or unstable", "next_step": "power_terminal" },
       { "label": "Yes, it is steady", "next_step": "data_down_logs" }
@@ -169,6 +174,7 @@
     "question": "The router may have a power supply issue.",
     "action": "Check the original adapter and power source. Try another outlet, then another router with a compatible adapter if available. If the issue continues, follow the approved device inspection or follow-up process. Do not ask the customer to open the device.",
     "customer_script": "Let us check the router power light and adapter, then try another outlet. If the issue continues, we can arrange an inspection through the approved process.",
+    "reference_guidance": "If you open a device-inspection follow-up, give the customer its visible reference and current timeframe. Create a technical TT only when that path applies; do not share an internal IR number.",
     "sla": "Immediate diagnosis; follow-up according to the ticket",
     "options": []
   },
@@ -180,7 +186,8 @@
     ]
   },
   "wiring_check": {
-    "question": "How is the router connected to the telephone line?",
+    "question": "Identify how the router is connected to the telephone line.",
+    "customer_prompt": "Is the router connected directly to the main line, or through a wall socket/filter?",
     "options": [
       { "label": "Main wire directly to the router", "next_step": "main_wire_check" },
       { "label": "Wall outlet or splitter/filter", "next_step": "wall_wiring_check" },
@@ -188,14 +195,16 @@
     ]
   },
   "main_wire_check": {
-    "question": "After checking the direct connection, has the DSL/ADSL light returned?",
+    "question": "After direct connection, check whether the DSL light returned.",
+    "customer_prompt": "After connecting the router directly to the main line, is the DSL light steady now?",
     "options": [
       { "label": "Yes, service is back", "next_step": "resolved_terminal" },
       { "label": "No, it is still down", "next_step": "physical_escalation" }
     ]
   },
   "wall_wiring_check": {
-    "question": "Are the wall outlet and splitter/filter connected correctly?",
+    "question": "Check the filter and internal wiring.",
+    "customer_prompt": "Can we check that the filter and wires are connected properly? Have we tried bypassing the filter?",
     "options": [
       { "label": "We corrected the wiring and service returned", "next_step": "resolved_terminal" },
       { "label": "We bypassed the splitter, but the issue remains", "next_step": "physical_escalation" },
@@ -203,7 +212,8 @@
     ]
   },
   "instability_visit": {
-    "question": "Was there a technician visit or wiring change before the instability started?",
+    "question": "Check whether a technician visit or wiring change preceded the instability.",
+    "customer_prompt": "Was there a technician visit or any wiring change before the issue started?",
     "options": [
       { "label": "Yes, there was a visit or change", "next_step": "after_visit_check" },
       { "label": "No visit took place", "next_step": "physical_escalation" },
@@ -211,7 +221,8 @@
     ]
   },
   "after_visit_check": {
-    "question": "After documenting the technician's steps and asking about changes, is the issue still present?",
+    "question": "Check the result of the visit/change and whether the fault remains.",
+    "customer_prompt": "After the visit or wiring change, is the service stable now or does the issue remain?",
     "options": [
       { "label": "Yes, the issue remains", "next_step": "physical_escalation" },
       { "label": "No, service is stable after the check", "next_step": "resolved_terminal" }
@@ -228,11 +239,13 @@
     "question": "The physical fault or instability needs escalation.",
     "action": "Record the customer confirmation, light status, wiring, ASSIA result, and visit details. Update the existing TT for the same fault, or create the correct TT/escalation if none exists. Create/update IR when required, and check outage, billing, and package status. Record the case reference and SLA from the system, then give both to the customer. Create an SR only if the process requires it.",
     "customer_script": "I recorded the checks and sent/updated the case for the specialist team. Your case reference is (read it from the system), and the recorded SLA is (read it from the system). We will follow up using the latest update.",
+    "reference_guidance": "After updating/creating a TT, give the customer its actual TT reference and displayed SLA. If an SR was actually created with a customer-facing reference, share it too. Record IR internally; do not share its number unless it is explicitly customer-facing.",
     "sla": "Usually 24 hours for IU cases; Outages and other fault types may differ. Check the case SLA.",
     "options": []
   },
   "logical_start": {
-    "question": "Which description best matches the issue?",
+    "question": "Classify the reported symptoms before selecting internet-fault checks.",
+    "customer_prompt": "Is the internet down, are only some websites unavailable, is the speed slow, or does the connection drop?",
     "options": [
       { "label": "The router has no WAN IP or internet", "next_step": "no_ip_check" },
       { "label": "Internet is connected, but websites do not open", "next_step": "browsing_check" },
@@ -249,28 +262,32 @@
     ]
   },
   "cpe_reconfigure": {
-    "question": "After configuring the CPE through the approved process, did the router obtain an IP?",
+    "question": "After CPE setup, check whether the router received an IP and service returned.",
+    "customer_prompt": "After configuring the router, is the Internet light on and is the service back?",
     "options": [
       { "label": "Yes, service is back", "next_step": "resolved_terminal" },
       { "label": "No, there is still no IP", "next_step": "noc_escalation" }
     ]
   },
   "browsing_check": {
-    "question": "Does the issue affect all sites/devices or only one site/device?",
+    "question": "Identify the scope of the browsing issue: all devices or a specific device/site.",
+    "customer_prompt": "Does browsing fail on all devices, or only on one device or website?",
     "options": [
       { "label": "All sites or more than one device", "next_step": "browsing_network_steps" },
       { "label": "Only one site or device", "next_step": "browsing_device_steps" }
     ]
   },
   "browsing_network_steps": {
-    "question": "After checking MTU and DNS and trying another device or CPE, does the issue remain?",
+    "question": "After network checks and another device/router test, confirm whether the fault remains.",
+    "customer_prompt": "After trying another device/router, is the issue still happening?",
     "options": [
       { "label": "No, browsing works again", "next_step": "resolved_terminal" },
       { "label": "Yes, attach a site trace according to the process", "next_step": "noc_escalation" }
     ]
   },
   "browsing_device_steps": {
-    "question": "Does browsing work on another device or browser?",
+    "question": "Test browsing on another device or browser.",
+    "customer_prompt": "Does browsing work if we try another device or browser?",
     "options": [
       { "label": "Yes, the issue is limited to one device/browser", "next_step": "device_terminal" },
       { "label": "No, it affects more than one device", "next_step": "browsing_network_steps" }
@@ -291,7 +308,8 @@
     "options": []
   },
   "slowness_troubleshoot": {
-    "question": "After testing one device with a direct connection according to the process, does the slowness continue?",
+    "question": "Run the approved speed test and confirm whether slowness continues.",
+    "customer_prompt": "After a direct speed test on one device, is the speed still slow?",
     "options": [
       { "label": "No, speed is acceptable now", "next_step": "resolved_terminal" },
       { "label": "Yes, the issue continues", "next_step": "noc_escalation" }
@@ -305,7 +323,8 @@
     ]
   },
   "logical_recheck": {
-    "question": "After checking for an Outage and testing another CPE, does the issue remain?",
+    "question": "After checking Outage and testing another CPE, identify whether the issue remains.",
+    "customer_prompt": "After trying another router and checking network status, does the issue remain?",
     "options": [
       { "label": "Yes, it remains", "next_step": "noc_escalation" },
       { "label": "No, service works", "next_step": "resolved_terminal" },
@@ -316,6 +335,7 @@
     "question": "The logical issue needs escalation to the relevant team.",
     "action": "Record symptoms, start time, tested devices, CPE status, and MTU/DNS/trace or system-log results. Update the existing TT or create the correct TT if none exists; escalate to NOC and update/create IR if required. Record the case reference and SLA from the system and give both to the customer. Do not include credentials or internal addresses in customer-facing comments.",
     "customer_script": "We completed the initial checks and recorded a technical follow-up. Your case reference is (read it from the system), and the recorded SLA is (read it from the system). We will follow up with the latest update.",
+    "reference_guidance": "Give the customer the TT/complaint reference shown for customer follow-up and its SLA. If an SR was opened with a customer-facing reference, share it. IR is internal; share only if the system makes it available to the customer.",
     "sla": "Depends on the case and escalation path; check the system and do not quote one universal SLA",
     "options": []
   },
@@ -323,6 +343,7 @@
     "question": "The speed values differ between system tools.",
     "action": "Check the package speed, profile, and operational speed in approved tools. Resolve the Speed Variance path before continuing other logical-fault checks. Record the readings and escalate to the responsible team using the SLA shown in the system.",
     "customer_script": "I found a mismatch in the speed information on our systems. I will send it for technical review before continuing other checks.",
+    "reference_guidance": "After logging/escalating Speed Variance, give the customer the customer-facing TT/complaint reference and displayed SLA. Do not share an internal IR number.",
     "sla": "According to the Speed Variance path shown in the system",
     "options": []
   },
@@ -330,11 +351,13 @@
     "question": "The issue may be related to a general network outage.",
     "action": "Confirm the outage, type, and end time in Outage Tool or Customer360, and record its announcement/reference. Do not open a duplicate individual TT during a confirmed general outage. Give the official SLA shown. If the outage is unclear, ask the team leader to confirm. If the outage window ends and the issue remains, resume individual diagnosis and update/create the correct TT. Create an SR and attach a screenshot only when the Major Fault/current process requires it; this is not a blanket requirement for every outage.",
     "customer_script": "I checked the network status, and the issue is related to a general outage (record the outage reference from the system). The official SLA and update time are the ones shown in our system. If the issue continues after the outage ends, we will continue checking your line and follow up using the recorded reference.",
+    "reference_guidance": "Share the outage reference only if it is approved for customers. Do not create an individual TT for a confirmed general outage. If the process creates a customer-facing SR/TT, read its actual reference; do not share an internal IR number.",
     "sla": "According to the official Outage notice; do not estimate a resolution time",
     "options": []
   },
   "voice_start": {
-    "question": "Is the landline voice/heat affected on its own, or together with the internet?",
+    "question": "Identify whether only landline voice or both voice and internet are affected.",
+    "customer_prompt": "Is only the landline dial tone affected, or are both landline and internet affected?",
     "options": [
       { "label": "Landline voice only", "next_step": "voice_down_terminal" },
       { "label": "Both voice and internet", "next_step": "data_down_logs" },
@@ -345,6 +368,7 @@
     "question": "A landline voice case has been identified.",
     "action": "Complete the required customer verification. Record whether this is Voice Down or Voice Overlapping, check visit/wiring history and Outages, then create or update the IU/specialist-team ticket according to the process. Record the customer's confirmation.",
     "customer_script": "I have recorded the landline issue and the verification results. I will send it to the specialist team for follow-up and contact you according to the case SLA.",
+    "reference_guidance": "After creating/updating the voice TT, give the customer its reference and SLA. If the process creates an SR with a customer-facing reference, share it too. Do not share internal IR numbers.",
     "sla": "24 hours for the listed IU cases; verify the actual case SLA",
     "options": []
   },
@@ -368,6 +392,7 @@
     "question": "An MSAN/TDM line request was identified.",
     "action": "Check address and availability in the approved tool, then submit through the correct channel. Quote the reference installation time only after confirming line type and order status.",
     "customer_script": "Once availability is confirmed and the request is submitted, the reference installation time for an MSAN/TDM line is up to 5 working days.",
+    "reference_guidance": "After submitting the installation request, give the customer the order reference generated by the system. Do not claim it was submitted or invent a number before it appears.",
     "sla": "5 working days after the request is completed, subject to availability",
     "options": []
   },
@@ -375,6 +400,7 @@
     "question": "An FTTH request was identified.",
     "action": "Check address, compound availability, and current subscription requirements in the approved systems. Do not confirm a fee or final date before checking the approved tool.",
     "customer_script": "I will first check fiber availability and the requirements for your address. After the request is accepted, the reference period is 7 days in Cairo, Giza, and Alexandria, and 10 days in other governorates.",
+    "reference_guidance": "After an FTTH request is accepted/submitted, give the customer its actual system reference. Do not invent a number or date.",
     "sla": "7 days in Cairo/Giza/Alexandria; 10 days in other governorates",
     "options": []
   },
@@ -382,11 +408,13 @@
     "question": "Availability must be confirmed before giving the customer a commitment.",
     "action": "Check the address and service number in the availability tool. Explain the Available/Valid result or the reason for unavailability, and submit an availability check request if the result is unclear. Do not promise an installation date before the result is available.",
     "customer_script": "I will check technical availability for your address. Once the result appears, I can explain the next step and expected time.",
+    "reference_guidance": "If you submit an availability SR, give the customer its actual SR reference when one is generated. Do not invent a number.",
     "sla": "Depends on the request type and channel; check the system SLA",
     "options": []
   },
   "order_followup": {
-    "question": "Does the customer have an order or ticket number?",
+    "question": "Check whether an installation order or ticket reference exists.",
+    "customer_prompt": "Do you have the installation order or follow-up reference number?",
     "options": [
       { "label": "Yes, check the current order status and activity", "next_step": "order_status_check" },
       { "label": "No, search for orders on the account", "next_step": "order_status_check" }
@@ -404,6 +432,7 @@
     "question": "The order is still within its SLA.",
     "action": "Tell the customer the current status and activity shown in the system. Do not create a duplicate request. Record the inquiry and check again if a new error appears.",
     "customer_script": "I checked your order, and it is still within the expected timeframe. Its current status is [status from the system], and we will follow any new update.",
+    "reference_guidance": "Use the existing installation order number and status from the system, and tell the customer its reference and remaining displayed timeframe. Do not create a second order.",
     "sla": "Remaining time shown in the system",
     "options": []
   },
@@ -411,11 +440,13 @@
     "question": "The installation order is delayed or has an error.",
     "action": "Review Order Query, the sub-activity, and the failure reason. Check whether a Delay TT was created automatically; do not duplicate it. If the SLA has expired or an error is present, create the required follow-up/escalation for the responsible team and include the order number, status, and notes.",
     "customer_script": "I found a delay/error in the order activity and recorded it for the responsible team. I will update you according to the timeframe shown in the system.",
+    "reference_guidance": "Use the order/TT reference created or updated by the system and tell the customer the reference and SLA. Share an automatic Delay TT only if it is marked customer-facing; IR is internal.",
     "sla": "Depends on the order type and activity; use the timeframe shown in the system",
     "options": []
   },
   "inquiry_start": {
-    "question": "What is the customer asking about?",
+    "question": "Classify the customer inquiry.",
+    "customer_prompt": "Are you asking about a package, service, bill/usage, or a service change?",
     "options": [
       { "label": "Package price or details", "next_step": "package_inquiry_terminal" },
       { "label": "Router, light, or setting", "next_step": "device_inquiry_terminal" },
@@ -428,6 +459,7 @@
     "question": "Package or offer inquiry.",
     "action": "Check current packages, prices, taxes, and eligibility in the approved system/sales channel. Do not use prices or offer values in training PDFs because they may have changed. Explain the benefits and expected line speed, then record the customer's choice.",
     "customer_script": "I will check the latest available packages and your eligibility, then confirm the tax-inclusive price and expected speed before submitting any request.",
+    "reference_guidance": "If the customer chooses a package and a request is submitted, give them the order reference generated by the system. For an inquiry only, do not create a ticket or say a request was made.",
     "sla": "Immediate inquiry; fulfillment depends on the service",
     "options": []
   },
@@ -442,11 +474,13 @@
     "question": "Request to activate or cancel an add-on service.",
     "action": "Complete the required verification and confirm the service name, customer request, and eligibility. Check current fees and SLA before activation/cancellation, then record the request and result.",
     "customer_script": "I will confirm the requested service, eligibility, and current fees before submitting it. I will then provide a reference number if one is generated.",
+    "reference_guidance": "After submitting the service request, give the customer the SR/order reference generated by the system. If no reference is generated, explain that it was recorded without inventing a number.",
     "sla": "Depends on the service and channel; check the system",
     "options": []
   },
   "billing_inquiry_start": {
-    "question": "Is this about the bill/balance/usage, or a payment that has not appeared?",
+    "question": "Identify whether this is a bill inquiry or an unposted payment.",
+    "customer_prompt": "Is this about a bill/usage, or a payment that has not appeared yet?",
     "options": [
       { "label": "Bill, balance, or usage", "next_step": "billing_inquiry_terminal" },
       { "label": "Payment is unclear or missing", "next_step": "payment_not_clear_terminal" }
@@ -456,6 +490,7 @@
     "question": "The payment has not appeared or is unclear.",
     "action": "Check the payment channel, transaction reference, and time. Distinguish a bill payment from a transfer to the company account. Review the receipt and system transaction. Never ask for the full card number or verification code. Select the complaint type for the payment channel and check its SLA.",
     "customer_script": "I will check the payment channel, reference, and time, then record the correct follow-up after verifying the receipt. Please do not send your card details or verification code.",
+    "reference_guidance": "After logging the payment complaint, tell the customer the complaint/reference number shown in the system and its SLA. Do not share an internal IR number.",
     "sla": "Depends on the payment channel; check the system timeframe",
     "options": []
   },
@@ -463,6 +498,7 @@
     "question": "Bill, balance, or usage inquiry.",
     "action": "Complete customer verification before disclosing information. Review the bill, usage, and payment record in the system. For a payment complaint, verify the channel and transaction reference, then select the correct complaint type.",
     "customer_script": "After verifying the account, I will review the bill/balance details and explain the items or next step.",
+    "reference_guidance": "If this becomes a payment complaint and you log it, give the customer its complaint reference and displayed SLA. A bill inquiry alone does not require a ticket number.",
     "sla": "Immediate inquiry; complaints depend on the transaction type",
     "options": []
   },
@@ -470,11 +506,13 @@
     "question": "Request to change or cancel a service/number.",
     "action": "Complete the required verification and check current policy before making any change. Review outstanding balance, eligibility, fees, and timeframe, then record customer consent and the request. Do not make an irreversible change without confirmation.",
     "customer_script": "I will check the current requirements, any outstanding amount, and the timeframe, then explain them before making a change.",
+    "reference_guidance": "After completing a service change/cancellation, give the customer the SR/order reference generated by the system. Do not make the change before consent or invent a number.",
     "sla": "Depends on the request type; check the current SLA",
     "options": []
   },
   "complaint_start": {
-    "question": "What is the complaint about?",
+    "question": "Classify the complaint before choosing its path.",
+    "customer_prompt": "Is the complaint about a technical issue, a technician/staff interaction, or a request to speak with a supervisor?",
     "options": [
       { "label": "Technical service issue", "next_step": "technical_complaint_terminal" },
       { "label": "Technician visit or staff conduct", "next_step": "conduct_complaint_terminal" },
@@ -485,6 +523,7 @@
     "question": "Technical complaint.",
     "action": "Record the customer's description, time, completed checks, and results. Link the complaint to an existing technical ticket if available. Select the escalation team and SLA for the issue. Do not promise a timeframe that is not shown in the system.",
     "customer_script": "I am sorry about the issue. I have recorded the details and checks completed, and I will follow it with the specialist team according to the stated timeframe.",
+    "reference_guidance": "Link the complaint to the existing TT or new complaint reference, then give the customer the follow-up reference and displayed timeframe. Do not share internal IR numbers.",
     "sla": "Depends on the complaint type and assigned team",
     "options": []
   },
@@ -492,6 +531,7 @@
     "question": "Complaint about a technician visit or staff conduct.",
     "action": "Record the time, location, visit details, reason for the complaint, and only the contact details needed. Create the complaint for the responsible team. Do not add unnecessary personal information.",
     "customer_script": "I have recorded the necessary details of your complaint and will send it to the responsible team for review and follow-up according to its SLA.",
+    "reference_guidance": "After logging the complaint, give the customer its reference and SLA if the system generated them. Do not guess or share an internal reference.",
     "sla": "Check the complaint team's SLA in the system",
     "options": []
   },
@@ -499,6 +539,7 @@
     "question": "The customer requests contact with a supervisor.",
     "action": "Offer a callback or immediate supervisor path according to current policy. Record the reason for dissatisfaction and confirm only the timeframe permitted by the procedure.",
     "customer_script": "I will record your request to speak with a supervisor and explain the approved follow-up method and timeframe before we end the call.",
+    "reference_guidance": "If a complaint/callback request was logged with a reference, give the customer the approved follow-up number and timeframe. Do not promise a number or SLA that is not shown.",
     "sla": "According to the escalation path in the system",
     "options": []
   },
@@ -538,14 +579,16 @@
     ]
   },
   "exception_74_cairo": {
-    "question": "Was the router inspected at a branch and does the issue remain, with BLQ, Physical Instability, or Data Down in TTS history?",
+    "question": "Check the result of the router inspection at the branch.",
+    "customer_prompt": "After the router was inspected at the branch, is the issue still happening?",
     "options": [
       {"label":"Yes, inspection and history criteria are met","next_step":"exception_74_escalate"},
       {"label":"No, inspection or another criterion is missing","next_step":"exception_74_branch"}
     ]
   },
   "exception_74_other": {
-    "question": "Was another router tested and does the issue remain, with BLQ, Physical Instability, or Data Down in TTS history?",
+    "question": "Check the result of the alternate-router test.",
+    "customer_prompt": "After trying another router, is the issue still happening?",
     "options": [
       {"label":"Yes, test and history criteria are met","next_step":"exception_74_escalate"},
       {"label":"No, test or another criterion is missing","next_step":"exception_74_test"}
@@ -569,6 +612,7 @@
     "question": "The issue remains after CPE inspection, and a qualifying TTS case is present.",
     "action": "The training guide says to close the current TTS complaint and create a new TT with Technical Visit category; it lists a 24-hour SLA and phone contact. If delayed, create/update IR and renew one day as instructed. Verify current category and SLA in the live system before acting.",
     "customer_script": "I have documented the router inspection and continuing issue. I will follow up with the specialist team by phone according to the SLA shown in the system.",
+    "reference_guidance": "After creating the new TT as required, give the customer its reference and current SLA. Any delay IR is internal; share it only if a separate customer-facing reference is provided.",
     "sla": "24 hours in the case guide; confirm in the system",
     "options": []
   },
@@ -583,6 +627,7 @@
     "question": "Close Code 81/82: internal or external cable maintenance.",
     "action": "Run the normal physical checks and verify Major Fault first. The guide says to assume direct connection and skip asking for another main-wire test. Then re-escalate the existing ticket and record the actual TTS code/result.",
     "customer_script": "I reviewed the fault history and checks, and will follow up on the existing case with the responsible team.",
+    "reference_guidance": "Re-escalate the existing ticket and give the customer its TT reference and SLA. Do not create a duplicate when the path requires re-escalating the same ticket; IR is internal.",
     "sla": "Check the current SLA in TTS",
     "options": []
   },
@@ -597,6 +642,7 @@
     "question": "The guide associates Close Code 67 with a Data Ports problem.",
     "action": "Check for a general outage, complete normal checks, and re-escalate the ticket to the responsible team. For Hayah Karima/repeated CPE, confirm the current path applies. Do not duplicate a ticket or use this code as proof the fault is fixed.",
     "customer_script": "I will check the general network status and test results, then follow up on the ticket with the responsible team.",
+    "reference_guidance": "Re-escalate the existing TT without duplicating it, and give the customer its reference and displayed SLA. Do not share internal IR numbers.",
     "sla": "Use the current ticket SLA",
     "options": []
   },
@@ -611,6 +657,7 @@
     "question": "An FTTH Migration Order exists.",
     "action": "Follow the current order stage and the approved FTTH Migration script in the Wiki. Search by service/order number, record the stage, and do not open a duplicate request.",
     "customer_script": "I will check the stage of your fiber migration order and explain its current update and next step.",
+    "reference_guidance": "Follow the existing FTTH Migration Order and give the customer its visible order reference; do not create a second request.",
     "sla": "According to the current order stage and system SLA",
     "options": []
   },
@@ -622,7 +669,8 @@
     "options": []
   },
   "exception_24": {
-    "question": "Does the landline have dial tone?",
+    "question": "Check whether the landline has dial tone.",
+    "customer_prompt": "When you pick up the landline handset, do you hear a dial tone or silence?",
     "options": [
       {"label":"Yes, dial tone works","next_step":"exception_24_on"},
       {"label":"No dial tone","next_step":"exception_24_off"}
@@ -639,6 +687,7 @@
     "question": "The line is shown Out of Service and has no dial tone.",
     "action": "Check invoices and service cancellation status. If there are outstanding invoices, explain approved payment steps. Otherwise follow Pending Fixing as shown in the system; the training file says 3 days and customer-initiated phone follow-up, but confirm the current SLA first.",
     "customer_script": "I will check the invoice and line status first, then explain the action and timeframe shown in the system.",
+    "reference_guidance": "If the system records Pending Fixing/TT, give the customer its customer-facing reference and current SLA. Do not share an internal IR number.",
     "sla": "Check current Pending Fixing; training guide says 3 days",
     "options": []
   },
@@ -653,6 +702,7 @@
     "question": "Outside TEData update: a ticket exists in another department on the same line.",
     "action": "Do not withdraw or duplicate the ticket. Give the normal SLA shown on it. For a delay, check ADF: renew SLA if the complaint is open; if closed, troubleshoot again. Contact by phone only; create only one SR with category FBB Tech Problem > System issue > Outside TEData alongside the other steps.",
     "customer_script": "I found a related case in another department on the same line. I will follow its ticket and SLA, then contact you by phone as specified.",
+    "reference_guidance": "Give the customer the existing other-department ticket reference and SLA. If you create the SR required by Outside TEData, share its customer-facing reference; do not duplicate it or share an internal IR.",
     "sla": "According to the ticket and ADF; verify in system",
     "options": []
   },
@@ -664,7 +714,8 @@
     ]
   },
   "exception_major": {
-    "question": "For a previous Data and Voice Down Major Fault, has dial tone returned while internet remains affected?",
+    "question": "Check whether dial tone returned while internet remains affected.",
+    "customer_prompt": "Has the landline dial tone returned while the internet is still down?",
     "options": [
       {"label":"Yes, voice is back and internet remains affected","next_step":"exception_major_data"},
       {"label":"No, voice remains affected too","next_step":"exception_major_action"}
@@ -674,6 +725,7 @@
     "question": "A Major Fault is still active or affecting both voice and internet.",
     "action": "Verify Outage Tool/CST360 and ADF or a maintenance-team update; do not classify a Major Fault from symptoms alone. Give the official timeframe shown and review history before creating another ticket.",
     "customer_script": "A major/general fault update is recorded. I will follow the official timeframe and update you with confirmed information.",
+    "reference_guidance": "If a TT/SR is created or updated under the Major Fault process, give the customer its follow-up reference and official SLA. Attach a Major Fault message screenshot to the SR when that path requires it; IR is internal.",
     "sla": "According to the recorded Major Fault/Outage",
     "options": []
   },
@@ -688,11 +740,13 @@
     "question": "Voice has returned, but internet remains affected after a Major Fault.",
     "action": "Repeat the Data Down steps only after voice returns. Escalate the remaining internet issue through the current Data Down path; do not repeat voice checks that are resolved.",
     "customer_script": "Since the landline is working again, I will focus on checking the internet and follow the next appropriate step.",
+    "reference_guidance": "After completing the path, give the customer the required TT/SR reference that is customer-facing and the displayed SLA. Do not share an internal IR number.",
     "sla": "According to the current Data Down path",
     "options": []
   },
   "exception_28": {
-    "question": "Did the customer actually refuse technician access or the visit?",
+    "question": "Confirm whether the customer actually refused access/visit.",
+    "customer_prompt": "Did you refuse technician access, or was the visit unable to be completed?",
     "options": [
       {"label":"Yes, the customer refused the visit/access","next_step":"exception_28_action"},
       {"label":"No, the customer did not refuse or another failure occurred","next_step":"exception_no_major"}
@@ -706,7 +760,8 @@
     "options": []
   },
   "exception_contradiction": {
-    "question": "Does the customer report instability/DSL light drops while ASSIA Clear View shows No DSL Physical Layer?",
+    "question": "Record when the line drops and the DSL light status reported by the customer.",
+    "customer_prompt": "Please tell me when the line drops and whether the DSL light turns off at that time.",
     "options": [
       {"label":"Yes, customer report conflicts with ASSIA","next_step":"exception_contradiction_hdm"},
       {"label":"No, result and symptoms agree","next_step":"exception_no_major"}
@@ -720,7 +775,8 @@
     ]
   },
   "exception_contradiction_cpe": {
-    "question": "Did the customer test another router for a full day from the main line, and does the issue remain?",
+    "question": "Check the full-day alternate-router test result from the main line.",
+    "customer_prompt": "After testing another router from the main line for a full day, does the connection still drop?",
     "options": [
       {"label":"Yes, test completed and issue remains","next_step":"exception_contradiction_escalate"},
       {"label":"No, test was not completed or no alternate router is available","next_step":"exception_contradiction_test"}
@@ -744,6 +800,7 @@
     "question": "The customer report still conflicts with validated tools after the documented test.",
     "action": "Create a Physical Instability Contradiction complaint after Voice Verification. Select the system category that matches the actual result. Record HDM/ASSIA results and router test duration. Check Hayah Karima handling and current complaint requirements. The guide lists a 24-hour SLA; renew the SLA and create a Delay Ticket on IR/Case if delayed, following the current system process.",
     "customer_script": "After reviewing the line results and router test, I have recorded the case for technical review. We will follow up according to the SLA shown in the system.",
+    "reference_guidance": "After logging the Physical Instability Contradiction complaint, give the customer its customer-facing reference and current SLA. IR/Delay records are internal; share them only if the system provides a customer-facing reference.",
     "sla": "24 hours in the training guide; verify the current SLA",
     "options": []
   }

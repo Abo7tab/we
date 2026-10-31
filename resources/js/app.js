@@ -43,6 +43,7 @@ function icon(name, className = 'size-5') {
         ],
         search: [h('circle', { cx: '10.8', cy: '10.8', r: '6.8' }), h('path', { d: 'm16 16 5 5' })],
         ticket: [h('path', { d: 'M4 6h16v4a2 2 0 0 0 0 4v4H4v-4a2 2 0 0 0 0-4V6Z' }), h('path', { d: 'M13 6v2m0 4v2m0 4v2' })],
+        grid: [h('rect', { x: '3', y: '3', width: '7', height: '7', rx: '1.5' }), h('rect', { x: '14', y: '3', width: '7', height: '7', rx: '1.5' }), h('rect', { x: '3', y: '14', width: '7', height: '7', rx: '1.5' }), h('rect', { x: '14', y: '14', width: '7', height: '7', rx: '1.5' })],
         sun: [h('circle', { cx: '12', cy: '12', r: '4' }), h('path', { d: 'M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42' })],
         moon: [h('path', { d: 'M20.9 13A8.5 8.5 0 0 1 11 3.1 8.5 8.5 0 1 0 20.9 13Z' })],
     };
@@ -190,6 +191,7 @@ const COPY = {
         howToCheck: 'أعرف منين وأعمل إيه؟', checkGuidance: 'أتحقق إزاي؟', whatToDo: 'أعمل إيه حسب النتيجة؟', generalCheckHint: 'اقرأ السؤال للعميل أو راجع الأداة المذكورة، ثم اختَر النتيجة المطابقة. لو النتيجة مش واضحة أو مش موجودة ضمن الاختيارات، ما تخمّنش وارجع للإجراء الحالي.',
         quickSla: 'مواعيد الـSLA', quickCodes: 'أكواد الإغلاق', quickPackages: 'الباقات', quickToolSearch: 'ابحث بالاسم أو الحالة أو الرقم أو المدة…',
         quickChangePackage: 'تغيير باقة',
+        quickAccess: 'الوصول السريع', closeDrawer: 'إغلاق',
         slaSearchPlaceholder: 'الحالة أو رقم الساعات/الأيام…', packageSearchPlaceholder: 'اسم الباقة أو السرعة أو السعة…', packagesNote: 'البحث يشمل السعة والسرعة والاسم والأسعار الموجودة في الجداول. عدد الأشخاص ليس تصنيفًا رسميًا في البيانات؛ استخدم الاستهلاك وعدد الأجهزة ولا تفترض سعة مناسبة من عدد الأفراد وحده.',
         noQuickMatches: 'لا توجد نتيجة مطابقة.', sourceCaution: 'مرجع تدريبي؛ طابق المهلة مع التذكرة الحالية قبل إبلاغ العميل.', packageAddons: 'إضافات',
         guidedMode: 'وجّهني في المكالمة', referenceMode: 'مرجع الدعم', referenceIntro: 'ابحث بالعرض أو اسم الإجراء، أو افتح موضوعًا شائعًا. النتائج تعرض مسار الدعم ومصدر الإجراء عند توفره.',
@@ -217,6 +219,7 @@ const COPY = {
         howToCheck: 'How do I verify this and what should I do?', checkGuidance: 'How to check', whatToDo: 'What to do with the result', generalCheckHint: 'Ask the question shown or check the named tool, then choose the matching result. If the result is unclear or not listed, do not guess; check the current procedure.',
         quickSla: 'SLA lookup', quickCodes: 'Close codes', quickPackages: 'Packages', quickToolSearch: 'Search by name, case, code, or timeframe…',
         quickChangePackage: 'Change package',
+        quickAccess: 'Quick access', closeDrawer: 'Close',
         slaSearchPlaceholder: 'Case or hours/days…', packageSearchPlaceholder: 'Package name, speed, or quota…', packagesNote: 'Search covers the names, speeds, quotas, and prices in the available tables. Number of people is not an official package field; use actual usage and device count, and do not infer a quota from household size alone.',
         noQuickMatches: 'No matching entries.', sourceCaution: 'Training reference; verify the current ticket SLA before telling the customer.', packageAddons: 'Add-ons',
         guidedMode: 'Guide the call', referenceMode: 'Support reference', referenceIntro: 'Search by symptom or procedure, or open a common topic. Results show the support path and its source when available.',
@@ -250,6 +253,7 @@ const App = {
         const quickToolsOpen = ref('');
         const slaSearch = ref('');
         const packageSearch = ref('');
+        const quickDrawerOpen = ref(false);
         const workspaceMode = ref('guided');
         const packagePeriod = ref('monthly');
         const packageAccountMode = ref('');
@@ -425,6 +429,7 @@ const App = {
             if (!tree.value?.[stepId]) return;
             workspaceMode.value = 'guided';
             quickToolsOpen.value = '';
+            quickDrawerOpen.value = false;
             currentStepId.value = stepId;
             history.value = [];
             pathSelections.value = [];
@@ -433,6 +438,20 @@ const App = {
             quickSearch.value = '';
             resetPackageControls();
             afterStepChange();
+        }
+
+        function openQuickTool(key) {
+            quickDrawerOpen.value = false;
+            if (key === 'change') {
+                jumpToStep('package_change_quick');
+                return;
+            }
+            if (quickToolsOpen.value === key) {
+                quickToolsOpen.value = '';
+                return;
+            }
+            quickToolsOpen.value = key;
+            nextTick(() => window.scrollTo({ top: 0, behavior: 'smooth' }));
         }
 
         async function copyText(value, success, failure = t('copyError')) {
@@ -600,18 +619,11 @@ const App = {
                         h('button', { class: 'app-control rounded-xl border p-2', type: 'button', onClick: () => switchTheme(theme.value === 'light' ? 'dark' : 'light'), 'aria-label': theme.value === 'light' ? t('dark') : t('light'), title: theme.value === 'light' ? t('dark') : t('light') }, [icon(theme.value === 'light' ? 'moon' : 'sun')]),
                     ]),
                 ]),
-                (currentStepId.value === tree.value?.start || workspaceMode.value === 'reference') ? h('section', { class: 'mb-4 grid grid-cols-2 gap-2 sm:grid-cols-4', 'aria-label': t('quickSla') }, [
-                    ...[['sla', t('quickSla'), 'clock'], ['codes', t('quickCodes'), 'ticket'], ['packages', t('quickPackages'), 'search'], ['change', t('quickChangePackage'), 'ticket']].map(([key, label, iconName]) => h('button', {
-                        class: `inline-flex min-h-[4.25rem] flex-col items-center justify-center gap-1 rounded-xl border px-2 py-2 text-center text-xs font-bold transition ${quickToolsOpen.value === key ? 'border-blue-400 bg-blue-50 text-blue-900' : 'app-control hover:bg-slate-50'}`,
-                        type: 'button', 'aria-expanded': quickToolsOpen.value === key,
-                        onClick: () => {
-                            if (key === 'change') jumpToStep('package_change_quick');
-                            else quickToolsOpen.value = quickToolsOpen.value === key ? '' : key;
-                        },
-                    }, [icon(iconName, 'size-4'), label])),
-                ]) : null,
                 quickToolsOpen.value === 'sla' ? h('section', { class: 'mb-4 rounded-2xl border border-blue-100 bg-white p-3 sm:p-4' }, [
-                    h('h2', { class: 'mb-3 flex items-center gap-2 font-bold text-slate-900' }, [icon('clock', 'size-5 text-blue-700'), t('quickSla')]),
+                    h('div', { class: 'mb-3 flex items-center justify-between gap-3' }, [
+                        h('h2', { class: 'm-0 flex items-center gap-2 font-bold text-slate-900' }, [icon('clock', 'size-5 text-blue-700'), t('quickSla')]),
+                        h('button', { class: 'app-control rounded-lg px-3 py-2 text-xs font-semibold', type: 'button', onClick: () => { quickToolsOpen.value = ''; } }, t('closeDrawer')),
+                    ]),
                     h('input', { class: 'app-control mb-3 w-full rounded-xl border px-3 py-2.5 text-sm', type: 'search', value: slaSearch.value, placeholder: t('slaSearchPlaceholder'), onInput: (event) => { slaSearch.value = event.target.value; } }),
                     h('div', { class: 'max-h-96 space-y-2 overflow-y-auto pe-1', 'aria-live': 'polite' }, quickSlaRows.value.length ? quickSlaRows.value.map((row) => h('article', { class: 'rounded-xl border border-slate-200 bg-slate-50 p-3', key: row.id }, [
                         h('h3', { class: 'text-sm font-bold leading-6 text-slate-900' }, row.title),
@@ -621,7 +633,10 @@ const App = {
                     ])) : h('p', { class: 'rounded-lg bg-slate-50 p-3 text-sm text-slate-600' }, t('noQuickMatches'))),
                 ]) : null,
                 quickToolsOpen.value === 'codes' ? h('section', { class: 'mb-4 rounded-2xl border border-blue-100 bg-white p-3 sm:p-4' }, [
-                    h('h2', { class: 'mb-3 flex items-center gap-2 font-bold text-slate-900' }, [icon('ticket', 'size-5 text-blue-700'), t('quickCodes')]),
+                    h('div', { class: 'mb-3 flex items-center justify-between gap-3' }, [
+                        h('h2', { class: 'm-0 flex items-center gap-2 font-bold text-slate-900' }, [icon('ticket', 'size-5 text-blue-700'), t('quickCodes')]),
+                        h('button', { class: 'app-control rounded-lg px-3 py-2 text-xs font-semibold', type: 'button', onClick: () => { quickToolsOpen.value = ''; } }, t('closeDrawer')),
+                    ]),
                     h('p', { class: 'mb-3 rounded-lg bg-amber-50 p-2.5 text-xs leading-5 text-amber-900' }, tree.value?.operations_guide?.codes_note || t('sourceCaution')),
                     h('input', { class: 'app-control mb-3 w-full rounded-xl border px-3 py-2.5 text-sm', type: 'search', value: codeSearch.value, placeholder: t('codesSearch'), onInput: (event) => { codeSearch.value = event.target.value; } }),
                     h('div', { class: 'max-h-96 space-y-2 overflow-y-auto pe-1', 'aria-live': 'polite' }, (tree.value?.operations_guide?.closure_codes || []).filter((row) => !codeSearch.value || normalizeSearch(`${row.code} ${row.reason}`, language.value).includes(normalizeSearch(codeSearch.value, language.value))).map((row) => h('article', { class: 'flex items-start gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3', key: row.code }, [
@@ -630,7 +645,10 @@ const App = {
                     ]))),
                 ]) : null,
                 quickToolsOpen.value === 'packages' ? h('section', { class: 'mb-4 rounded-2xl border border-blue-100 bg-white p-3 sm:p-4' }, [
-                    h('h2', { class: 'mb-3 flex items-center gap-2 font-bold text-slate-900' }, [icon('search', 'size-5 text-blue-700'), t('quickPackages')]),
+                    h('div', { class: 'mb-3 flex items-center justify-between gap-3' }, [
+                        h('h2', { class: 'm-0 flex items-center gap-2 font-bold text-slate-900' }, [icon('search', 'size-5 text-blue-700'), t('quickPackages')]),
+                        h('button', { class: 'app-control rounded-lg px-3 py-2 text-xs font-semibold', type: 'button', onClick: () => { quickToolsOpen.value = ''; } }, t('closeDrawer')),
+                    ]),
                     h('input', { class: 'app-control mb-2 w-full rounded-xl border px-3 py-2.5 text-sm', type: 'search', value: packageSearch.value, placeholder: t('packageSearchPlaceholder'), onInput: (event) => { packageSearch.value = event.target.value; } }),
                     h('p', { class: 'mb-3 text-xs leading-5 text-slate-500' }, t('packagesNote')),
                     h('div', { class: 'max-h-[28rem] space-y-2 overflow-y-auto pe-1', 'aria-live': 'polite' }, quickPackageRows.value.length ? quickPackageRows.value.map((item) => h('article', { class: 'rounded-xl border border-slate-200 bg-slate-50 p-3', key: item.id }, [
@@ -936,10 +954,6 @@ const App = {
                                                 h('span', { class: 'text-blue-700 transition-transform group-hover:-translate-x-1' }, [icon('arrow', 'size-4')]),
                                             ]),
                                         )),
-                                        currentStepId.value === tree.value.start && tree.value.tools_hub ? h('button', {
-                                            class: 'inline-flex min-h-11 items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold text-blue-800 transition hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500',
-                                            type: 'button', onClick: () => jumpToStep('tools_hub'),
-                                        }, [icon('question', 'size-4'), t('toolsHub')]) : null,
                                     ]),
                             ]) }),
                 notice.value ? h('p', {
@@ -956,6 +970,28 @@ const App = {
                     h('p', { class: 'm-0' }, t('footer')),
                 ]),
             ]),
+            quickDrawerOpen.value ? h('div', { class: 'fixed inset-0 z-50 flex items-end justify-center', role: 'presentation' }, [
+                h('button', { class: 'absolute inset-0 bg-slate-950/40 backdrop-blur-[2px]', type: 'button', 'aria-label': t('closeDrawer'), onClick: () => { quickDrawerOpen.value = false; } }),
+                h('section', { class: 'quick-drawer relative z-10 w-full max-w-3xl rounded-t-3xl border border-slate-200 bg-white p-4 pb-6 shadow-2xl sm:mb-4 sm:rounded-3xl sm:p-5', role: 'dialog', 'aria-modal': 'true', 'aria-label': t('quickAccess') }, [
+                    h('div', { class: 'mx-auto mb-3 h-1 w-10 rounded-full bg-slate-300 sm:hidden' }),
+                    h('div', { class: 'mb-4 flex items-center justify-between gap-3' }, [
+                        h('h2', { class: 'm-0 text-lg font-bold text-slate-900' }, t('quickAccess')),
+                        h('button', { class: 'app-control rounded-lg px-3 py-2 text-xs font-semibold', type: 'button', onClick: () => { quickDrawerOpen.value = false; } }, t('closeDrawer')),
+                    ]),
+                    h('p', { class: 'mb-4 text-sm leading-6 text-slate-600' }, language.value === 'ar' ? 'اختار الأداة مباشرة من أي خطوة في المكالمة.' : 'Open a support tool directly from any call step.'),
+                    h('div', { class: 'grid grid-cols-2 gap-2 sm:grid-cols-4' }, [
+                        ...[['sla', t('quickSla'), 'clock'], ['codes', t('quickCodes'), 'ticket'], ['packages', t('quickPackages'), 'search'], ['change', t('quickChangePackage'), 'ticket']].map(([key, label, iconName]) => h('button', {
+                            class: 'app-control inline-flex min-h-20 flex-col items-center justify-center gap-2 rounded-2xl border px-3 py-3 text-center text-sm font-bold transition hover:border-blue-300 hover:bg-blue-50 active:scale-[0.98]',
+                            type: 'button', onClick: () => openQuickTool(key),
+                        }, [icon(iconName, 'size-5 text-blue-700'), label])),
+                    ]),
+                ]),
+            ]) : null,
+            h('button', {
+                class: 'quick-access-launcher fixed bottom-3 left-1/2 z-40 inline-flex min-h-12 -translate-x-1/2 items-center justify-center gap-2 rounded-full border border-white/80 bg-slate-900 px-5 py-3 text-sm font-bold text-white shadow-xl shadow-slate-900/20 transition hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2',
+                type: 'button', 'aria-haspopup': 'dialog', 'aria-expanded': quickDrawerOpen.value,
+                onClick: () => { quickDrawerOpen.value = true; },
+            }, [icon('grid', 'size-5'), t('quickAccess')]),
 
         ]);
     },

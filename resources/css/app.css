@@ -86,6 +86,63 @@ body {
     border-color: #34445e !important;
 }
 
+.app-dark .quick-search-panel,
+.app-dark .noc-updates,
+.app-dark .comment-generator,
+.app-dark .search-result-card,
+.app-dark .noc-updates article,
+.app-dark .comment-generator textarea {
+    background: #172338 !important;
+    border-color: #34445e !important;
+}
+
+.app-dark .bg-slate-50,
+.app-dark .bg-slate-50\/80 {
+    background-color: #172338 !important;
+}
+
+.app-dark .text-slate-900,
+.app-dark .text-slate-800,
+.app-dark .text-slate-700,
+.app-dark .text-slate-600 {
+    color: #e2e8f0 !important;
+}
+
+.app-dark .text-slate-500 {
+    color: #aab8cc !important;
+}
+
+.app-dark .bg-rose-50,
+.app-dark .bg-rose-50\/80 {
+    background-color: #40232d !important;
+}
+
+.app-dark .border-rose-100,
+.app-dark .border-rose-200 {
+    border-color: #70404e !important;
+}
+
+.app-dark .text-rose-900,
+.app-dark .text-rose-950,
+.app-dark .text-rose-800 {
+    color: #ffd5dc !important;
+}
+
+.app-dark .bg-emerald-50 {
+    background-color: #173528 !important;
+}
+
+.app-dark .text-emerald-950,
+.app-dark .text-emerald-900,
+.app-dark .text-emerald-800 {
+    color: #b8f3d1 !important;
+}
+
+.app-dark .border-emerald-100,
+.app-dark .border-emerald-200 {
+    border-color: #286044 !important;
+}
+
 .app-dark .question-panel {
     background: #172b49 !important;
     border-color: #29466d !important;
@@ -110,6 +167,16 @@ body {
 .app-dark .reference-guidance h3,
 .app-dark .reference-guidance p {
     color: #d4e7ff !important;
+}
+
+.app-dark .clear-description {
+    background: #252549 !important;
+    border-color: #494987 !important;
+}
+
+.app-dark .clear-description h3,
+.app-dark .clear-description p {
+    color: #e0ddff !important;
 }
 
 .app-dark .brand-mark {

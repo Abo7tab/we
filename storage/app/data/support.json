@@ -479,12 +479,38 @@
     "options": []
   },
   "billing_inquiry_start": {
-    "question": "حدد هل الطلب استفسار فاتورة أم مشكلة في عملية دفع.",
-    "customer_prompt": "الاستفسار عن الفاتورة أو الاستهلاك، ولا عن عملية دفع لسه ما ظهرتش؟",
+    "question": "حدد هل الطلب استفسار فاتورة، سداد غير ظاهر، أم سداد على رقم آخر بالخطأ.",
+    "customer_prompt": "استفسار حضرتك عن الفاتورة، ولا دفعة ما ظهرتش، ولا دفعت على رقم WE تاني بالغلط؟",
     "options": [
       { "label": "الفاتورة أو الرصيد أو الاستهلاك", "next_step": "billing_inquiry_terminal" },
-      { "label": "عملية سداد غير واضحة أو غير مضافة", "next_step": "payment_not_clear_terminal" }
+      { "label": "عملية سداد غير واضحة أو غير مضافة", "next_step": "payment_not_clear_terminal" },
+      { "label": "سداد على رقم آخر بالخطأ", "next_step": "wrong_number_payment_check" }
     ]
+  },
+  "wrong_number_payment_check": {
+    "question": "راجع رقم العملية والإيصال، ثم حدّد موافقة العميل على Balance Transfer.",
+    "customer_prompt": "هل حضرتك موافق نراجع طلب نقل المبلغ للرقم الصحيح، ولا عايز نتحقق من إمكانية الاسترداد؟",
+    "options": [
+      { "label": "العميل موافق على Balance Transfer", "next_step": "wrong_number_transfer_terminal" },
+      { "label": "العميل لا يوافق أو يطلب Refund", "next_step": "wrong_number_refund_terminal" }
+    ]
+  },
+  "wrong_number_transfer_terminal": {
+    "question": "سداد على رقم آخر والعميل وافق على Balance Transfer.",
+    "action": "طابق الإيصال ورقم العملية والرقم الذي تم الشحن/السداد عليه والرقم المقصود، وتحقق من موافقة العميل. اختر تصنيف TTS الحالي الخاص بـ Balance Transfer / Paid on wrong number. جدول التدريب يذكر TT: 3 ساعات بشرط موافقة العميل؛ أكّد التصنيف والـSLA الحاليين قبل التسجيل. لا تطلب رقم بطاقة كاملًا أو OTP.",
+    "customer_script": "بعد ما أتأكد من تفاصيل العملية وموافقتك، هسجل طلب متابعة نقل المبلغ للرقم الصحيح، وأبلغ حضرتك برقم المتابعة والمهلة الظاهرين عندي.",
+    "reference_guidance": "بعد إنشاء/تحديث TT، أعطِ العميل رقمها الفعلي والـSLA الحالي. لا تقل رقم IR الداخلي. استخدم Clear Description أدناه فقط بعد التأكد من تصنيف TTS الحالي.",
+    "clear_description": "Paid on another number by mistake - Level 3 Billing",
+    "sla": "جدول التدريب يذكر TT خلال 3 ساعات إذا وافق العميل؛ تحقق من SLA الحالي في TTS",
+    "options": []
+  },
+  "wrong_number_refund_terminal": {
+    "question": "العميل لا يوافق على Balance Transfer أو يطلب استرداد المبلغ.",
+    "action": "تحقق من تفاصيل العملية وأهلية الاسترداد والقناة الصحيحة في الإجراء الحالي. لا تسجل Balance Transfer كأن العميل وافق، ولا تعد بمبلغ/مهلة غير مؤكدة. جدول SLA التدريبي يذكر Refund via Branch: 5 أيام عمل؛ لا تستخدمها إلا بعد تأكيد انطباقها والمهلة الحالية.",
+    "customer_script": "هراجع أهلية الاسترداد والقناة والمدة المعتمدة للعملية، وبعد التأكد هسجل الطلب المناسب وأبلغ حضرتك برقم المتابعة إن صدر.",
+    "reference_guidance": "لو تم تسجيل طلب/شكوى Refund، أعطِ العميل رقم SR/الشكوى الذي أصدره النظام والمهلة الحالية. لا تشارك رقم IR الداخلي ولا تستخدم تصنيف Balance Transfer دون موافقة العميل.",
+    "sla": "تحقق من نوع Refund والقناة في النظام الحالي؛ مرجع التدريب يذكر 5 أيام عمل لRefund via Branch",
+    "options": []
   },
   "payment_not_clear_terminal": {
     "question": "عملية الدفع لم تظهر أو غير واضحة.",

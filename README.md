@@ -7,6 +7,25 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
+## Support assistant tools
+
+- Quick search indexes the loaded Arabic/English decision tree, close-code reference, current NOC updates, and explicitly marked training facts. Confirm time-sensitive categories and SLAs in the live support system.
+- The terminal ticket-comment generator summarizes selected checks. Review it, add only actions actually taken, and insert a real ticket reference before pasting. Do not enter customer passwords or payment credentials.
+- NOC updates are shared by this server and stored in `storage/app/noc_updates.json`; they are not committed to Git and do not use a database. PHP must be able to write to `storage/app`.
+- Configure `NOC_UPDATES_ADMIN_KEY` in the server `.env` with a randomly generated secret before managers add, edit, or remove updates. Keep the key out of Git and do not share it with agents. Update writes are rate-limited; public reads contain only the outage notice fields.
+
+Generate a manager key on the server and copy it directly into `.env`:
+
+```bash
+php -r 'echo bin2hex(random_bytes(32)), PHP_EOL;'
+```
+
+Then clear cached configuration:
+
+```bash
+php artisan optimize:clear
+```
+
 ## About Laravel
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:

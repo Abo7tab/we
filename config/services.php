@@ -35,4 +35,8 @@ return [
         ],
     ],
 
+    'noc_updates' => [
+        'admin_key' => env('NOC_UPDATES_ADMIN_KEY'),
+    ],
+
 ];

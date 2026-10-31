@@ -1469,6 +1469,15 @@ body {
 .scene-review .review-intro,.scene-review .review-progress-label { color: #687387 !important; }
 .scene-review .review-topic-search { border-color: #dfe3eb !important; background: #f9fafc !important; color: #202638 !important; }
 .scene-review .review-topic-card { min-height: 10rem; border-color: #e4dce9 !important; border-radius: 1rem; background: linear-gradient(145deg,#fff,#faf7fc) !important; box-shadow: 0 5px 16px #31254109; }
+.scene-review .review-topic-card { display: grid; grid-template-columns: 4.8rem 1fr auto; grid-template-rows: auto 1fr auto; align-items: center; gap: .35rem .7rem; }
+.review-topic-art { display: flex; grid-row: 1 / span 3; min-height: 5.5rem; flex-direction: column; align-items: center; justify-content: center; gap: .35rem; border-radius: .8rem; background: #f2edf7; color: #734b94; }
+.review-topic-art svg { width: 4.1rem; height: 1.6rem; overflow: visible; }
+.review-topic-wire { fill: none; stroke: #a68bbb; stroke-width: 1.7; }
+.review-topic-dot { fill: #fff; stroke: #8a67a5; stroke-width: 1.8; }
+.review-topic-number { align-self: end; }
+.review-topic-meta { justify-self: end; }
+.review-topic-title { align-self: start; }
+.review-topic-start { grid-column: 2 / -1; }
 .scene-review .review-topic-title { color: #202638 !important; }
 .scene-review .review-topic-meta { background: #f0e9f6 !important; color: #68428b !important; }
 .scene-review .review-presenter-head { border-bottom: 1px solid #ece7f0; padding-bottom: .7rem; }
@@ -1503,7 +1512,29 @@ body {
 .review-lesson-card.is-ask { border-top: 2px solid #4e96b4; }
 .review-lesson-card.is-check { border-top: 2px solid #8b6ca7; }
 .review-lesson-card.is-act { border-top: 2px solid #37a078; }
+.review-lesson-details { grid-column: 1 / -1; margin-top: .25rem; border-top: 1px solid #e7e9ef; padding-top: .35rem; }
+.review-lesson-details summary { cursor: pointer; color: #68488a; font-size: .65rem; font-weight: 850; }
+.review-lesson-details p { margin-top: .4rem !important; }
 .review-lesson-connector { position: absolute; z-index: 2; top: 50%; inset-inline-end: -.65rem; color: #8e73a7; font-size: 1rem; }
+.review-time-comparison { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: .65rem; margin: .75rem 0; }
+.review-time-card { display: grid; grid-template-columns: auto 1fr; gap: .35rem .6rem; min-width: 0; border: 1px solid #dfe4ec; border-radius: .9rem; background: #fff; padding: .75rem; }
+.review-time-card.is-sla { border-top: 3px solid #7851a0; }
+.review-time-card.is-noc { border-top: 3px solid #2a9b87; }
+.review-time-icon { display: grid; grid-row: span 3; width: 2.2rem; height: 2.2rem; place-items: center; border-radius: .7rem; background: #f0eaf7; color: #704891; }
+.review-time-card.is-noc .review-time-icon { background: #eaf7f3; color: #24836f; }
+.review-time-name { align-self: center; color: #697387; font-size: .58rem; font-weight: 950; letter-spacing: .04em; }
+.review-time-card strong { color: #23293b; font-size: .92rem; }
+.review-time-card p { margin: 0; color: #5f6a7c; font-size: .68rem; line-height: 1.6; }
+.review-time-line { display: flex; grid-column: 1 / -1; align-items: center; gap: .4rem; margin-top: .45rem; border-radius: .6rem; background: #f5f6fa; padding: .4rem .5rem; color: #657085; font-size: .57rem; font-weight: 800; }
+.review-time-line i,.review-time-line b { width: .48rem; height: .48rem; flex: 0 0 auto; border-radius: 50%; background: #7851a0; }
+.review-time-card.is-noc .review-time-line i,.review-time-card.is-noc .review-time-line b { background: #2a9b87; }
+.review-time-line b { margin-inline-start: auto; }
+.review-oncall-window { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: .4rem .7rem; margin: .7rem 0; border: 1px solid #e6d7bd; border-radius: .9rem; background: #fff9ee; padding: .65rem .8rem; }
+.oncall-clock-face { display: grid; grid-row: span 2; justify-items: center; gap: .2rem; color: #926221; }
+.oncall-clock-face strong { font-size: .74rem; }
+.review-oncall-window > div:nth-child(2) b { color: #534632; font-size: .68rem; }
+.review-oncall-window > div:nth-child(2) p { margin: .2rem 0 0; color: #645b4d; font-size: .68rem; line-height: 1.55; }
+.review-oncall-window > small { color: #806e50; font-size: .6rem; }
 .scene-review .review-branch-link { border-color: #e1d8e9 !important; background: #faf8fc !important; }
 .scene-review .review-branch-link strong { color: #30384a !important; }
 .scene-review .review-branch-link small { color: #6e7789 !important; }
@@ -1556,6 +1587,9 @@ body {
 .app-dark.scene-review .review-intro,.app-dark.scene-review .review-progress-label { color: #aeb9c9 !important; }
 .app-dark.scene-review .review-topic-search { border-color: #354154 !important; background: #0d1520 !important; color: #f0f3f8 !important; }
 .app-dark.scene-review .review-topic-card,.app-dark.scene-review .review-lesson-card { border-color: #303d50 !important; background: #182230 !important; }
+.app-dark.scene-review .review-topic-art { background: #282138; color: #d9b9f0; }
+.app-dark.scene-review .review-topic-wire { stroke: #9677ac; }
+.app-dark.scene-review .review-topic-dot { fill: #172231; stroke: #c4a1dd; }
 .app-dark.scene-review .review-topic-title,.app-dark.scene-review .review-lesson-card b { color: #f0f3f8 !important; }
 .app-dark.scene-review .review-topic-meta { background: #2a2038 !important; color: #dfc6f5 !important; }
 .app-dark.scene-review .review-slide-visual { border-color: #39425a; background: linear-gradient(110deg,#211c31,#142b2b); }
@@ -1564,6 +1598,8 @@ body {
 .app-dark.scene-review .review-diagram-node.is-start { fill: #392748; }
 .app-dark.scene-review .review-takeaway { border-color: #315063; background: #142632; color: #cfeaf2; }
 .app-dark.scene-review .review-lesson-card p { color: #c0cad8; }
+.app-dark.scene-review .review-lesson-details { border-color: #303d50; }
+.app-dark.scene-review .review-lesson-details summary { color: #d3b5ea; }
 .app-dark.scene-review .review-lesson-icon { background: #2a2038; color: #dcc3f2; }
 .app-dark.scene-review .review-branch-link,.app-dark.scene-review .review-back-topics,.app-dark.scene-review .review-nav-button { border-color: #303d50 !important; background: #182230 !important; color: #dbc7ed !important; }
 .app-dark.scene-review .review-branch-link strong,.app-dark.scene-review .review-deck-heading strong { color: #f0f3f8 !important; }
@@ -1573,6 +1609,15 @@ body {
 .app-dark.scene-review .review-slide-panel b { color: #f0f3f8; }
 .app-dark.scene-review .review-customer-script { background: #143129 !important; }
 .app-dark.scene-review .review-sla { border-color: #31536c !important; background: #14283a !important; color: #cde9ff !important; }
+.app-dark.scene-review .review-time-card { border-color: #303d50; background: #17212e; }
+.app-dark.scene-review .review-time-name { color: #aeb9c9; }
+.app-dark.scene-review .review-time-card strong { color: #f1f4f9; }
+.app-dark.scene-review .review-time-card p { color: #c0cad8; }
+.app-dark.scene-review .review-time-line { background: #202c3a; color: #c3ccda; }
+.app-dark.scene-review .review-oncall-window { border-color: #665033; background: #2c2418; }
+.app-dark.scene-review .oncall-clock-face { color: #e6bc73; }
+.app-dark.scene-review .review-oncall-window > div:nth-child(2) b { color: #f0dfbd; }
+.app-dark.scene-review .review-oncall-window > div:nth-child(2) p,.app-dark.scene-review .review-oncall-window > small { color: #d7c7a8; }
 
 @media (max-width: 700px) {
     .scene-home .portal-grid { grid-template-columns: 1fr; }
@@ -1582,6 +1627,8 @@ body {
     .review-slide-diagram { grid-column: 2; grid-row: 1 / span 2; }
     .review-diagram-legend { grid-column: 1 / -1; display: flex; gap: .65rem; }
     .review-lesson-sequence { grid-template-columns: 1fr; gap: .5rem; }
+    .scene-review .review-topic-card { grid-template-columns: 4.5rem 1fr auto; }
+    .review-time-comparison { grid-template-columns: 1fr; }
     .review-lesson-connector { top: auto; bottom: -.7rem; inset-inline-end: 50%; transform: rotate(-90deg); }
     .scene-review .review-endings { grid-template-columns: 1fr; }
     .scene-review .review-sla { grid-row: auto; }

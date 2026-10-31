@@ -328,7 +328,7 @@ const App = {
         })));
         const reviewDecks = computed(() => {
             const startOptions = tree.value?.[tree.value?.start]?.options || [];
-            return startOptions.map((option) => {
+            const guidedDecks = startOptions.map((option) => {
                 const visited = new Set();
                 const slides = [];
                 const queue = [option.next_step];
@@ -342,6 +342,24 @@ const App = {
                 }
                 return { id: option.next_step, title: option.label, slides };
             }).filter((deck) => deck.slides.length);
+            const curated = [
+                {
+                    id: 'review_installation',
+                    title: language.value === 'ar' ? 'التركيب ومتابعة الطلب' : 'Installation and order follow-up',
+                    icon: 'ticket',
+                    slides: ['request_start', 'availability_check', 'copper_install_terminal', 'fiber_install_terminal', 'availability_terminal', 'order_followup', 'order_status_check', 'order_within_sla', 'installation_delay'],
+                },
+                {
+                    id: 'review_sla_noc',
+                    title: language.value === 'ar' ? 'الفرق بين SLA وNOC' : 'SLA vs NOC',
+                    icon: 'clock',
+                    slides: ['physical_escalation', 'physical_iu_terminal', 'noc_escalation', 'noc_oncall_availability', 'noc_oncall_available_terminal', 'noc_oncall_unavailable_terminal', 'noc_standard_terminal'],
+                },
+            ].map((deck) => ({
+                ...deck,
+                slides: deck.slides.filter((id) => tree.value?.[id]?.question).map((id) => ({ id, step: tree.value[id] })),
+            })).filter((deck) => deck.slides.length);
+            return [...curated, ...guidedDecks];
         });
         const activeReviewDeck = computed(() => reviewDecks.value.find((deck) => deck.id === reviewDeckId.value) || null);
         const reviewSlide = computed(() => activeReviewDeck.value?.slides?.[reviewSlideIndex.value] || null);
@@ -731,6 +749,10 @@ const App = {
                     ]),
                     h('input', { class: 'review-topic-search', type: 'search', value: reviewSearch.value, placeholder: t('reviewChooseTopic'), onInput: (event) => { reviewSearch.value = event.target.value; } }),
                     h('div', { class: 'review-topic-grid' }, visibleReviewDecks.value.length ? visibleReviewDecks.value.map((deck, index) => h('button', { class: 'review-topic-card', type: 'button', key: deck.id, onClick: () => selectReviewDeck(deck.id) }, [
+                        h('div', { class: 'review-topic-art', 'aria-hidden': 'true' }, [
+                            icon(deck.icon || (deck.id === 'request_start' ? 'ticket' : deck.id === 'inquiry_start' ? 'search' : 'router'), 'size-7'),
+                            h('svg', { viewBox: '0 0 112 40' }, [h('path', { d: 'M8 20h34m0 0c18 0 14-12 29-12h32m-32 12c18 0 14 12 29 12h32', class: 'review-topic-wire' }), ...[[8,20],[42,20],[71,8],[103,8],[71,32],[103,32]].map(([cx, cy], dot) => h('circle', { key: deck.id + '-topic-dot-' + dot, cx: String(cx), cy: String(cy), r: dot < 2 ? '4' : '3', class: 'review-topic-dot' }))]),
+                        ]),
                         h('span', { class: 'review-topic-number' }, String(index + 1).padStart(2, '0')),
                         h('span', { class: 'review-topic-title' }, deck.title),
                         h('span', { class: 'review-topic-meta' }, deck.slides.length + ' ' + t('reviewSlides')),
@@ -755,6 +777,19 @@ const App = {
                 step.check_guidance ? { icon: 'search', label: t('checkGuidance'), text: step.check_guidance, kind: 'check' } : null,
                 step.action ? { icon: 'ticket', label: t('whatToDo'), text: step.action, kind: 'act' } : null,
             ].filter(Boolean);
+            const actionTakeaways = {
+                installation_delay: language.value === 'ar' ? 'Order Query ← المرحلة وسبب الفشل ← تحقق من Delay TT ← حدّث أو صعّد بدون تكرار.' : 'Order Query → stage and failure reason → check Delay TT → update/escalate without duplication.',
+                physical_escalation: language.value === 'ar' ? 'Clear View + Outage/Hayah Karima ← حدّد IU أو NOC ← حدّث TT وأبلغ بالرقم والـSLA.' : 'Clear View + Outage/Hayah Karima → select IU or NOC → update the TT and share its number and SLA.',
+                physical_iu_terminal: language.value === 'ar' ? 'ASSIA وOutage أولًا ← شكوى TT الصحيحة ← اقرأ SLA الحالة من النظام.' : 'Check ASSIA and Outage → use the correct complaint TT → read its SLA from the system.',
+                noc_escalation: language.value === 'ar' ? 'سجّل الفحوص وحدّث TT ← افحص وقت 10م–8ص وإتاحة العميل ← IR داخلي عند انطباق On Call.' : 'Record checks and update TT → check the 10pm–8am window and customer availability → internal IR for On Call when applicable.',
+                noc_standard_terminal: language.value === 'ar' ? 'حدّث TT. اذكر مهلة الحل كما تظهر، وافصل عنها اتصال NOC بعد الحل.' : 'Update the TT. Give the displayed resolution SLA separately from the NOC callback after resolution.',
+                noc_oncall_availability: language.value === 'ar' ? '10 مساءً–8 صباحًا: موافق؟ سجّل On Call في IR؛ غير متاح؟ متابعة بعد 8 صباحًا.' : '10pm–8am: if available, record On Call in IR; if unavailable, follow up after 8am.',
+                noc_oncall_available_terminal: language.value === 'ar' ? 'بموافقة العميل: سجّل On Call (To SLS) في IR، واحتفظ برقم IR داخليًا. اتصال NOC خلال ساعتين من الحل؛ اقرأ SLA الحل من TT.' : 'With consent, record On Call (To SLS) in IR and keep its number internal. NOC calls within 2h after resolution; read the repair SLA from the TT.',
+                noc_oncall_unavailable_terminal: language.value === 'ar' ? 'لا تسجّل On Call بدون موافقة. حدّث TT وبلّغ العميل بمتابعة بعد 8 صباحًا.' : 'Do not record On Call without consent. Update the TT and tell the customer to expect follow-up after 8am.',
+                order_within_sla: language.value === 'ar' ? 'الطلب داخل المهلة: اشرح المرحلة الحالية ولا تنشئ طلبًا مكررًا.' : 'Order is within SLA: explain the current stage; do not create a duplicate order.',
+            };
+            const slaNocReview = reviewDeckId.value === 'review_sla_noc';
+            const showOnCallWindow = slaNocReview && ['noc_escalation', 'noc_oncall_availability', 'noc_oncall_available_terminal', 'noc_oncall_unavailable_terminal'].includes(row.id);
             const branchCount = Math.min(step.options?.length || 0, 4);
             const diagramTargets = branchCount ? Array.from({ length: branchCount }, (_, index) => {
                 const x = 50 + ((index - (branchCount - 1) / 2) * Math.min(24, 72 / Math.max(1, branchCount - 1)));
@@ -792,12 +827,34 @@ const App = {
                             h('span', [h('i', { class: 'legend-end' }), language.value === 'ar' ? 'الإجراء' : 'ACTION']),
                         ]),
                     ]),
+                    slaNocReview ? h('section', { class: 'review-time-comparison', 'aria-label': language.value === 'ar' ? 'الفرق بين مهلة الحل ومتابعة NOC' : 'Resolution SLA versus NOC follow-up' }, [
+                        h('article', { class: 'review-time-card is-sla' }, [
+                            h('span', { class: 'review-time-icon' }, icon('clock', 'size-5')),
+                            h('span', { class: 'review-time-name' }, language.value === 'ar' ? 'SLA حل الحالة' : 'CASE RESOLUTION SLA'),
+                            h('strong', language.value === 'ar' ? 'حسب TT' : 'From the TT'),
+                            h('p', language.value === 'ar' ? 'في شكوى Physical Instability إلى IU: المرجع التدريبي 24 ساعة. اقرأ المهلة الفعلية وأي استثناء من النظام.' : 'For Physical Instability to IU, the training reference is 24 hours. Read the actual SLA and exceptions from the system.'),
+                            h('div', { class: 'review-time-line' }, [h('i'), h('span', language.value === 'ar' ? 'تسجيل الشكوى' : 'CASE LOGGED'), h('b'), h('span', language.value === 'ar' ? 'حل ضمن المهلة' : 'RESOLVE BY SLA')]),
+                        ]),
+                        h('article', { class: 'review-time-card is-noc' }, [
+                            h('span', { class: 'review-time-icon' }, icon('chat', 'size-5')),
+                            h('span', { class: 'review-time-name' }, language.value === 'ar' ? 'متابعة NOC' : 'NOC FOLLOW-UP'),
+                            h('strong', language.value === 'ar' ? 'خلال ساعتين بعد الحل' : 'Within 2h after resolution'),
+                            h('p', language.value === 'ar' ? 'موعد مكالمة متابعة عند انطباق مسار NOC؛ ليس مهلة إصلاح العطل.' : 'A follow-up call when the NOC route applies; it is not the repair SLA.'),
+                            h('div', { class: 'review-time-line' }, [h('i'), h('span', language.value === 'ar' ? 'حل المشكلة' : 'ISSUE RESOLVED'), h('b'), h('span', language.value === 'ar' ? 'اتصال NOC' : 'NOC CALL')]),
+                        ]),
+                    ]) : null,
+                    showOnCallWindow ? h('section', { class: 'review-oncall-window' }, [
+                        h('div', { class: 'oncall-clock-face' }, [icon('clock', 'size-6'), h('strong', language.value === 'ar' ? '10م–8ص' : '10pm–8am')]),
+                        h('div', [h('b', language.value === 'ar' ? 'تحقق من إتاحة العميل' : 'Check customer availability'), h('p', actionTakeaways[row.id] || '')]),
+                        h('small', language.value === 'ar' ? 'IR للتسجيل الداخلي؛ لا تشارك رقمه مع العميل.' : 'IR is internal; do not share its number with the customer.'),
+                    ]) : null,
                     step.finding ? h('section', { class: 'review-takeaway' }, [icon('alert', 'size-5'), h('div', [h('b', t('mapFound')), h('p', step.finding)])]) : null,
                     lessonCards.length ? h('section', { class: 'review-lesson-sequence', 'aria-label': language.value === 'ar' ? 'تسلسل التنفيذ' : 'Action sequence' }, lessonCards.map((card, index) => h('article', { class: 'review-lesson-card is-' + card.kind, key: card.kind }, [
                         h('span', { class: 'review-lesson-number' }, String(index + 1).padStart(2, '0')),
                         h('span', { class: 'review-lesson-icon' }, icon(card.icon, 'size-5')),
                         h('b', card.label),
-                        h('p', card.text),
+                        h('p', card.kind === 'act' ? (actionTakeaways[row.id] || (card.text.length > 190 ? card.text.slice(0, 190).trim() + '…' : card.text)) : card.text),
+                        card.kind === 'act' && card.text.length > 190 ? h('details', { class: 'review-lesson-details' }, [h('summary', language.value === 'ar' ? 'اقرأ الإجراء الكامل' : 'Read full procedure'), h('p', card.text)]) : null,
                         index < lessonCards.length - 1 ? h('span', { class: 'review-lesson-connector', 'aria-hidden': 'true' }, language.value === 'ar' ? '←' : '→') : null,
                     ]))) : null,
                     step.options?.length ? h('section', { class: 'review-branches' }, [h('h3', t('reviewCaseMap')), ...options]) : h('section', { class: 'review-endings' }, [

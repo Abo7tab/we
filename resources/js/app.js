@@ -127,6 +127,9 @@ const SEARCH_ALIASES = {
         'شكوي': ['شكوى', 'تصعيد', 'tt'], 'تذكره': ['tt', 'تذكرة', 'شكوى'], 'تذكرة': ['tt', 'شكوى'],
         'دفع': ['سداد', 'فوري', 'فاتوره'], 'فلوس': ['سداد', 'رصيد', 'فاتوره'],
         'باقه': ['quota', 'سعه', 'تجديد'], 'خلصت': ['نفاد', 'استهلاك', 'سعه'],
+        'لوجيكال': ['logical', 'منطقي', 'logical instability'], 'انستابيليتي': ['instability', 'تقطيع', 'فصل ورجوع'],
+        'جوده': ['quality', 'bad line quality', 'blq'], 'جيمينج': ['gaming', 'game', 'ping', 'العاب'], 'العاب': ['gaming', 'game', 'ping'],
+        'بنج': ['ping', 'gaming', 'latency'], 'بينج': ['ping', 'gaming', 'latency'], 'تأخير': ['ping', 'latency', 'gaming'],
     },
     en: {
         'down': ['outage', 'disconnect', 'no internet', 'dsl'], 'disconnect': ['down', 'drop', 'unstable', 'dsl'],
@@ -134,6 +137,8 @@ const SEARCH_ALIASES = {
         'websites': ['browsing', 'sites', 'dns'], 'site': ['browsing', 'website', 'dns'],
         'router': ['cpe', 'dsl', 'adsl'], 'payment': ['bill', 'fawry', 'balance'],
         'ticket': ['tt', 'complaint', 'sr'], 'quota': ['package', 'consumption', 'renewal'],
+        'gaming': ['game', 'ping', 'latency', 'compatibility'], 'ping': ['gaming', 'latency', 'game'],
+        'blq': ['bad line quality', 'line quality', 'assia'], 'instability': ['logical instability', 'drops', 'disconnect'],
     },
 };
 
@@ -166,6 +171,9 @@ const COPY = {
         invalidStep: 'هذا الاختيار مرتبط بخطوة غير موجودة. أبلغ المسؤول عن الشجرة.', stepLimit: 'وصل المسار إلى الحد الآمن للتنقل. أعد البدء أو راجع الشجرة.',
         incomplete: 'بيانات الخطوة التالية غير مكتملة. أبلغ المسؤول عن الشجرة.', loadError: 'تعذر تحميل شجرة القرارات.', invalidTree: 'ملف شجرة القرارات غير مكتمل.',
         askCustomer: 'اسأل العميل', referenceGuidance: 'رقم المتابعة الذي تقوله للعميل', staffCheck: 'خطوة الموظف على النظام (لا تُقرأ للعميل)',
+        sourceReference: 'مصدر الإجراء وحدود الاعتماد',
+        guidedMode: 'وجّهني في المكالمة', referenceMode: 'مرجع الدعم', referenceIntro: 'ابحث بالعرض أو اسم الإجراء، أو افتح موضوعًا شائعًا. النتائج تعرض مسار الدعم ومصدر الإجراء عند توفره.',
+        referenceTopics: ['Logical Instability', 'Slowness', 'Bad Line Quality', 'Gaming / Ping', 'Physical Instability', 'Outage'],
         descriptionCopied: 'تم نسخ Clear Description. راجع التصنيف قبل اللصق.',
         clearDescription: 'Clear Description المقترح',
         searchSource: 'المصدر', openStep: 'فتح المسار', openGuide: 'عرض دليل Outage', copyDescription: 'نسخ Clear Description', oldReference: 'مرجع تدريبي قديم؛ راجع التصنيف والمهلة الحاليين قبل الاستخدام.',
@@ -185,6 +193,9 @@ const COPY = {
         invalidStep: 'This option points to a missing step. Notify the tree administrator.', stepLimit: 'The safe step limit was reached. Restart or review the tree.',
         incomplete: 'The next step data is incomplete. Notify the tree administrator.', loadError: 'Could not load the decision tree.', invalidTree: 'The decision tree file is incomplete.',
         askCustomer: 'Ask the customer', referenceGuidance: 'Reference number to give the customer', staffCheck: 'Agent system check (do not read to the customer)',
+        sourceReference: 'Procedure source and verification note',
+        guidedMode: 'Guide the call', referenceMode: 'Support reference', referenceIntro: 'Search by symptom or procedure, or open a common topic. Results show the support path and its source when available.',
+        referenceTopics: ['Logical Instability', 'Slowness', 'Bad Line Quality', 'Gaming / Ping', 'Physical Instability', 'Outage'],
         descriptionCopied: 'Clear Description copied. Verify the category before pasting.',
         clearDescription: 'Suggested Clear Description',
         searchSource: 'Source', openStep: 'Open path', openGuide: 'View Outage guide', copyDescription: 'Copy Clear Description', oldReference: 'Training reference may be outdated; verify the current category and SLA.',
@@ -211,6 +222,7 @@ const App = {
         const theme = ref('light');
         const codeSearch = ref('');
         const quickSearch = ref('');
+        const workspaceMode = ref('guided');
         const packagePeriod = ref('monthly');
         const packageAccountMode = ref('');
         const selectedPackage = ref(null);
@@ -275,9 +287,9 @@ const App = {
                 const catalogText = catalog ? [catalog.title, ...catalog.monthly_rows.map((row) => `${row.speed} ${row.quota} ${row.price}`), ...catalog.yearly_rows.map((row) => `${row.plan} ${row.quota} ${row.price}`), ...catalog.addon_rows.map((row) => `${row.kind} ${row.quota} ${row.price} ${row.term}`)].join(' ') : '';
                 const productCatalog = step.product_catalog;
                 const productCatalogText = productCatalog ? [productCatalog.title, productCatalog.scope_note, ...productCatalog.sections.flatMap((section) => [section.title, ...section.rows.flatMap((row) => Object.values(row))]), ...productCatalog.notes].join(' ') : '';
-                const content = [step.question, step.customer_prompt, step.action, step.customer_script, step.reference_guidance, step.clear_description, step.sla, catalogText, productCatalogText,
+                const content = [step.question, step.customer_prompt, step.action, step.customer_script, step.reference_guidance, step.source_reference, step.clear_description, step.sla, catalogText, productCatalogText,
                     ...(step.options ?? []).map((option) => option.label)].filter(Boolean).join(' ');
-                entries.push({ kind: 'step', id, title: step.question, body: content, source: language.value === 'ar' ? 'شجرة الدعم' : 'Support tree' });
+                entries.push({ kind: 'step', id, title: step.question, body: content, source: step.source_reference || (language.value === 'ar' ? 'شجرة الدعم' : 'Support tree') });
             }
             const outageGuide = tree.value.operations_guide?.outage_fields;
             if (outageGuide) entries.push({
@@ -337,10 +349,13 @@ const App = {
         });
 
         function openOutageGuide() {
-            const guide = document.querySelector('.operations-guide');
-            if (!guide) return;
-            guide.open = true;
-            guide.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            workspaceMode.value = 'guided';
+            nextTick(() => {
+                const guide = document.querySelector('.operations-guide');
+                if (!guide) return;
+                guide.open = true;
+                guide.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
         }
 
         function afterStepChange() {
@@ -349,6 +364,7 @@ const App = {
 
         function jumpToStep(stepId) {
             if (!tree.value?.[stepId]) return;
+            workspaceMode.value = 'guided';
             currentStepId.value = stepId;
             history.value = [];
             pathSelections.value = [];
@@ -524,6 +540,13 @@ const App = {
                         h('button', { class: 'app-control rounded-xl border p-2', type: 'button', onClick: () => switchTheme(theme.value === 'light' ? 'dark' : 'light'), 'aria-label': theme.value === 'light' ? t('dark') : t('light'), title: theme.value === 'light' ? t('dark') : t('light') }, [icon(theme.value === 'light' ? 'moon' : 'sun')]),
                     ]),
                 ]),
+                h('nav', { class: 'mb-4 grid grid-cols-2 gap-2 rounded-2xl bg-slate-100 p-1.5', 'aria-label': language.value === 'ar' ? 'وضع الاستخدام' : 'Workspace mode' }, [
+                    ...[['guided', t('guidedMode'), 'question'], ['reference', t('referenceMode'), 'search']].map(([value, label, iconName]) => h('button', {
+                        class: `inline-flex min-h-11 items-center justify-center gap-2 rounded-xl px-3 py-2 text-sm font-bold transition ${workspaceMode.value === value ? 'bg-white text-blue-800 shadow-sm' : 'text-slate-600 hover:bg-white/70'}`,
+                        type: 'button', 'aria-pressed': workspaceMode.value === value,
+                        onClick: () => { workspaceMode.value = value; notice.value = ''; },
+                    }, [icon(iconName, 'size-4'), label])),
+                ]),
                 h('section', { class: 'quick-search-panel mb-5 rounded-2xl border border-slate-200 bg-white p-3 sm:p-4' }, [
                     h('label', { class: 'mb-2 flex items-center gap-2 text-sm font-bold text-slate-800', for: 'quick-support-search' }, [icon('search', 'size-4 text-blue-700'), t('quickSearch')]),
                     h('div', { class: 'flex gap-2' }, [
@@ -534,10 +557,15 @@ const App = {
                         }),
                     ]),
                     h('p', { class: 'mt-2 text-xs leading-5 text-slate-500' }, t('searchHint')),
+                    workspaceMode.value === 'reference' ? h('p', { class: 'mt-2 text-xs leading-5 text-slate-600' }, t('referenceIntro')) : null,
                     h('div', { class: 'mt-2 flex flex-wrap gap-2' }, t('searchExamples').map((example) => h('button', {
                         class: 'rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-medium text-slate-700 transition hover:border-blue-300 hover:bg-blue-50',
                         type: 'button', onClick: () => { quickSearch.value = example; },
                     }, example))),
+                    workspaceMode.value === 'reference' ? h('div', { class: 'mt-2 flex flex-wrap gap-2' }, t('referenceTopics').map((topic) => h('button', {
+                        class: 'rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1.5 text-xs font-semibold text-indigo-900 transition hover:bg-indigo-100',
+                        type: 'button', onClick: () => { quickSearch.value = topic; },
+                    }, topic))) : null,
                     quickSearch.value.trim() ? h('div', { class: 'mt-3 space-y-2', 'aria-live': 'polite' }, quickSearchResults.value.length
                         ? quickSearchResults.value.map((result, index) => h('article', { class: 'search-result-card rounded-xl border border-slate-200 bg-slate-50/80 p-3', key: `${result.kind}-${result.id}` }, [
                             h('div', { class: 'flex items-start justify-between gap-3' }, [
@@ -558,7 +586,12 @@ const App = {
                         ]))
                         : h('p', { class: 'rounded-xl bg-amber-50 px-3 py-2 text-sm leading-6 text-amber-900' }, t('noSearchResults'))) : null,
                 ]),
-                loading.value
+                workspaceMode.value === 'reference'
+                    ? h('section', { class: 'rounded-2xl border border-blue-100 bg-blue-50/60 p-4 text-sm leading-6 text-slate-700' }, [
+                        h('p', { class: 'font-semibold text-slate-900' }, t('referenceIntro')),
+                        h('p', { class: 'mt-2 text-xs text-slate-600' }, t('searchHint')),
+                    ])
+                    : loading.value
                     ? h('p', { class: 'py-8 text-center text-gray-500', role: 'status' }, t('loading'))
                     : loadError.value
                         ? h('div', { class: 'space-y-4', role: 'alert' }, [
@@ -599,6 +632,10 @@ const App = {
                                 currentStep.value.options?.length > 0 && currentStep.value.action ? h('section', { class: 'staff-check mb-5 rounded-2xl border border-indigo-200 bg-indigo-50 px-4 py-3.5 sm:px-5' }, [
                                     h('h3', { class: 'mb-1 flex items-center gap-2 text-xs font-bold text-indigo-800' }, [icon('ticket', 'size-4'), t('staffCheck')]),
                                     h('p', { class: 'leading-7 text-indigo-950' }, currentStep.value.action),
+                                ]) : null,
+                                currentStep.value.source_reference ? h('details', { class: 'mb-5 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2' }, [
+                                    h('summary', { class: 'cursor-pointer text-xs font-bold text-slate-600' }, t('sourceReference')),
+                                    h('p', { class: 'mt-2 text-xs leading-5 text-slate-600' }, currentStep.value.source_reference),
                                 ]) : null,
                                 currentStep.value.product_catalog ? (() => {
                                     const catalog = currentStep.value.product_catalog;

@@ -314,7 +314,7 @@
     "options": [
       {
         "label": "ADSL stays steady during the disconnection",
-        "next_step": "logical_start"
+        "next_step": "logical_verify_account"
       },
       {
         "label": "ADSL disconnects or goes off",
@@ -335,7 +335,7 @@
     "options": [
       {
         "label": "ADSL stays steady during the disconnection",
-        "next_step": "logical_start"
+        "next_step": "logical_verify_account"
       },
       {
         "label": "ADSL disconnects or goes off",
@@ -779,31 +779,31 @@
     "customer_prompt": "I will finish checking the line and wiring and record the appropriate follow-up. If a ticket is created, I will give you its reference and the displayed timeframe."
   },
   "logical_start": {
-    "question": "Classify the reported symptoms before selecting internet-fault checks.",
+    "question": "Choose the actual logical symptom after excluding outage, account, and quota.",
     "customer_prompt": "Is the internet down, are only some websites unavailable, is the speed slow, or does the connection drop?",
     "options": [
       {
-        "label": "The router has no WAN IP or internet",
-        "next_step": "no_ip_check"
+        "label": "Drops while DSL stays steady; Logical Instability",
+        "next_step": "logical_instability_start"
       },
       {
-        "label": "Internet is connected, but websites do not open",
-        "next_step": "browsing_check"
+        "label": "General slowness or speed below profile",
+        "next_step": "slowness_start"
       },
       {
-        "label": "Internet speed is slow",
-        "next_step": "slowness_check"
+        "label": "Poor line quality/low speed; check BLQ",
+        "next_step": "blq_assia"
       },
       {
-        "label": "Speed values differ between system tools",
-        "next_step": "speed_variance_terminal"
+        "label": "Gaming or ping issue",
+        "next_step": "gaming_start"
       },
       {
-        "label": "The line drops while the DSL light stays on",
-        "next_step": "logical_logs"
+        "label": "WAN IP, browsing, or inconsistent readings",
+        "next_step": "logical_other_symptom"
       }
     ],
-    "action": "Confirm the DSL light is steady, then choose the observed symptom: no WAN IP, websites failing, slowness, a speed mismatch, or drops with steady DSL. Do not change CPE settings before the outage, account, and quota checks are complete."
+    "action": "Complete initial checks before technical steps. Select the specific case; do not equate slowness with BLQ or skip Physical checks before Gaming."
   },
   "no_ip_check": {
     "question": "Using the approved support tool, and without asking for the customer's password, have you checked MAC status, CPE settings, and connection details?",
@@ -2505,7 +2505,7 @@
     "options": [
       {
         "label": "Internet works, but it is slow or browsing/specific sites are affected (Logical)",
-        "next_step": "logical_start"
+        "next_step": "logical_verify_account"
       },
       {
         "label": "Internet is fully down or DSL/ADSL is off/blinking (Physical)",
@@ -2516,5 +2516,726 @@
         "next_step": "dsl_status_unknown"
       }
     ]
+  },
+  "logical_instability_start": {
+    "question": "Logical Instability: does internet drop and recover while the DSL/ADSL light stays steady?",
+    "options": [
+      {
+        "label": "Yes, the light stays steady during drops",
+        "next_step": "logical_instability_congestion"
+      },
+      {
+        "label": "No, the light turns off or blinks",
+        "next_step": "physical_from_logical_terminal"
+      },
+      {
+        "label": "Unknown; ask about the light during the issue",
+        "next_step": "dsl_status_unknown"
+      }
+    ],
+    "customer_prompt": "When the internet drops, does the DSL/ADSL light stay steady or turn off/blink?",
+    "action": "Confirm open-TT, outage, account, and quota checks are complete. Ask the customer to stay near the router if possible; one device or Ethernet can help but is not mandatory. Steady DSL routes to Logical; off/blinking routes to Physical.",
+    "source_reference": "day 11.pdf pp. 1-4; day 13.pdf pp. 10-14; SLA.pdf pp. 11, 13. The 3-minute Multiple Login heading conflicts with its explanation; verify current Wiki/TTS. Training lists 2h for NOC follow-up; do not confuse it with the customer SLA."
+  },
+  "logical_instability_congestion": {
+    "question": "Check Congested status in CST360 > Port Details. What is shown?",
+    "options": [
+      {
+        "label": "Congested",
+        "next_step": "logical_instability_congested_terminal"
+      },
+      {
+        "label": "Within Ratio",
+        "next_step": "logical_instability_ratio_terminal"
+      },
+      {
+        "label": "Not Congested",
+        "next_step": "logical_instability_assia"
+      },
+      {
+        "label": "Unavailable or unclear",
+        "next_step": "logical_instability_unclear_terminal"
+      }
+    ],
+    "action": "This is an internal check; do not ask the customer about Congested status. If Congested or Within Ratio appears, use approved wording and stop individual troubleshooting unless the system directs otherwise.",
+    "source_reference": "day 13.pdf pp. 11 and 13. Use the current Utilization script; do not promise an ETA not shown in the system."
+  },
+  "logical_instability_congested_terminal": {
+    "question": "Network status is Congested; stop individual troubleshooting.",
+    "options": [],
+    "action": "Record the status per current procedure. Do not create a duplicate individual TT for a network-wide issue. Use approved wording and give an ETA only if officially shown.",
+    "customer_script": "Our network view shows congestion. I will follow the approved update and continue troubleshooting if the issue remains after it.",
+    "sla": "Use current status update; training alone does not confirm a repair time.",
+    "source_reference": "day 13.pdf pp. 11-13. Training sometimes mentions a two-week follow-up; use no fixed interval unless shown in the current NOC update."
+  },
+  "logical_instability_ratio_terminal": {
+    "question": "Status is Within Ratio; do not escalate as a logical fault without verification.",
+    "options": [],
+    "action": "Check the current update/Utilization and use approved wording. Do not log it as a technical fault or promise an unconfirmed ETA.",
+    "customer_script": "The current line reading is within the range shown in the system. If there is a new update or symptoms change, I will review it with you.",
+    "sla": "Use the current update; no separate confirmed SLA here.",
+    "source_reference": "day 13.pdf pp. 12-13; use current CST360/MATRIX data."
+  },
+  "logical_instability_assia": {
+    "question": "Check ASSIA: is the line supported and are Collection Date/Fix Mode current?",
+    "options": [
+      {
+        "label": "Supported and data is current; open Clear View",
+        "next_step": "logical_instability_assia_result"
+      },
+      {
+        "label": "Supported but data is stale; run Clear View within 24 hours",
+        "next_step": "logical_instability_assia_result"
+      },
+      {
+        "label": "Not Supported by ASSIA",
+        "next_step": "logical_instability_not_supported"
+      },
+      {
+        "label": "Cannot confirm",
+        "next_step": "logical_instability_unclear_terminal"
+      }
+    ],
+    "customer_prompt": "I am checking the line in our diagnostic tool.",
+    "action": "Verify Line ID matches the service. If data is stale, run the permitted analysis and confirm Last Fix within 24 hours before relying on the result.",
+    "source_reference": "day 13.pdf p. 10; day 11.pdf pp. 1-4. No DSL Physical alone does not prove a logical cause."
+  },
+  "logical_instability_assia_result": {
+    "question": "What is the current Clear View result?",
+    "options": [
+      {
+        "label": "No DSL Physical-Layer issue is detected",
+        "next_step": "logical_instability_logs"
+      },
+      {
+        "label": "Technician Dispatch or Physical-Layer Fault",
+        "next_step": "physical_from_logical_terminal"
+      },
+      {
+        "label": "Different Advice/Fault",
+        "next_step": "logical_instability_fault_review"
+      }
+    ],
+    "action": "Match Advice/Fault with the issue time. If Physical Fault or Technician Dispatch appears, stop Logical and route to Physical/BLQ as appropriate.",
+    "source_reference": "day 13.pdf pp. 10-11; day 9.pdf pp. 3-7."
+  },
+  "logical_instability_not_supported": {
+    "question": "ASSIA does not support the line. What does the ADSL light do during the drop?",
+    "options": [
+      {
+        "label": "Steady during the drop",
+        "next_step": "logical_instability_logs"
+      },
+      {
+        "label": "Turns off or blinks",
+        "next_step": "physical_from_logical_terminal"
+      },
+      {
+        "label": "Unknown",
+        "next_step": "dsl_status_unknown"
+      }
+    ],
+    "customer_prompt": "When the internet drops, does ADSL stay steady or turn off/blink?",
+    "action": "Not Supported does not establish a cause. Use the light status during the issue and the approved alternative diagnostic tool.",
+    "source_reference": "day 13.pdf p. 10; day 11.pdf p. 1."
+  },
+  "logical_instability_logs": {
+    "question": "Review the last 24 hours of NST logs, excluding customer/power/port restarts. What remains?",
+    "options": [
+      {
+        "label": "Two or more unexplained logs; possible Multiple Login",
+        "next_step": "logical_instability_interval"
+      },
+      {
+        "label": "One log or logs explained by restart; No Multiple Login",
+        "next_step": "logical_instability_single_login"
+      },
+      {
+        "label": "Log cause/timing unclear",
+        "next_step": "logical_instability_unclear_terminal"
+      }
+    ],
+    "customer_prompt": "Did you restart the router or lose power around the time of the issue?",
+    "action": "Use NST in CST360 for the last 24 hours. Exclude CPE/power/port restarts. Compare timestamps with the customer’s account; do not classify from count alone.",
+    "source_reference": "day 13.pdf p. 11; day 11.pdf pp. 3-4."
+  },
+  "logical_instability_interval": {
+    "question": "Record the log interval, but do not auto-classify it: day13 conflicts at the 3-minute boundary. Continue the shared procedure.",
+    "options": [
+      {
+        "label": "Over 3 minutes; record interval",
+        "next_step": "logical_instability_multiple_common"
+      },
+      {
+        "label": "3 minutes or less; record interval",
+        "next_step": "logical_instability_multiple_common"
+      },
+      {
+        "label": "Timestamp unclear",
+        "next_step": "logical_instability_unclear_terminal"
+      }
+    ],
+    "action": "Do not select a Multiple Login subtype from conflicting heading/explanation. Apply shared Reset & Reconfigure steps, record timestamps, and verify the subtype in current Wiki.",
+    "source_reference": "day 13.pdf p. 11; source wording conflicts around the threshold; verify current Wiki/TTS."
+  },
+  "logical_instability_multiple_over3": {
+    "question": "Multiple Login with gap over 3 minutes: after Reset & Reconfigure, is service stable?",
+    "options": [
+      {
+        "label": "Yes",
+        "next_step": "resolved_terminal"
+      },
+      {
+        "label": "No; issue recurred; test another CPE",
+        "next_step": "logical_instability_device_check"
+      },
+      {
+        "label": "Could not complete setup",
+        "next_step": "logical_instability_unclear_terminal"
+      }
+    ],
+    "customer_prompt": "We will reconfigure the router using the approved procedure and test together.",
+    "action": "If the issue recurs, test another CPE if available; technical visits depend on current availability/eligibility. Escalate to NOC if unresolved.",
+    "source_reference": "day 13.pdf p. 11; verify the current threshold rule."
+  },
+  "logical_instability_multiple_under3": {
+    "question": "Multiple Login with gap 3 minutes or less: after Reset & Reconfigure, is service stable?",
+    "options": [
+      {
+        "label": "Yes",
+        "next_step": "resolved_terminal"
+      },
+      {
+        "label": "No; still dropping; escalate Logical Instability",
+        "next_step": "logical_instability_escalation"
+      },
+      {
+        "label": "Could not complete setup",
+        "next_step": "logical_instability_unclear_terminal"
+      }
+    ],
+    "customer_prompt": "We will reconfigure the router using the approved steps and test the connection during the call.",
+    "action": "If drops persist after testing, update/create the correct NOC complaint and document findings.",
+    "source_reference": "day 13.pdf p. 11; SLA.pdf p. 13 lists 2 hours; verify current TTS."
+  },
+  "logical_instability_escalation": {
+    "question": "Logical Instability persists after checks; prepare escalation.",
+    "options": [],
+    "action": "Update the existing TT or create one only if none exists. Select Broadband > Technical > ADSL/VDSL > Care > Logical Instability as available. Attach NST, ASSIA, IP and Dispatch Score if requested, plus callback details. Record the actual TT/IR reference and displayed SLA; never invent a number. Confirm availability for overnight follow-up 10pm–8am.",
+    "customer_script": "I have recorded the follow-up under reference {system ticket number}. The displayed timeframe is {system SLA}. Will you be available if the team needs to contact you?",
+    "sla": "Agent follow-up within 2h per SLA.pdf; customer timeframe is only the official value shown in TTS/ticket.",
+    "source_reference": "day 13.pdf pp. 12-14; SLA.pdf p. 13 lists 2h for NOC, verify in current TTS. Do not promise the customer 24h if your own follow-up is due in 2h."
+  },
+  "logical_instability_device_check": {
+    "question": "After testing another CPE, does the connection still drop?",
+    "options": [
+      {
+        "label": "Stable",
+        "next_step": "resolved_terminal"
+      },
+      {
+        "label": "Still drops; escalate with test results",
+        "next_step": "logical_instability_escalation"
+      },
+      {
+        "label": "No alternate CPE available",
+        "next_step": "logical_instability_escalation"
+      }
+    ],
+    "customer_prompt": "If available, can we test another router to check whether it is related to the CPE?",
+    "action": "Record CPE type and test time. Do not block escalation solely because an alternate device is unavailable.",
+    "source_reference": "day 13.pdf pp. 10-14; day 11.pdf pp. 1-4. Verify classification and SLA in current NST/Wiki/TTS."
+  },
+  "logical_instability_single_login": {
+    "question": "No unexplained Multiple Login. Is the quota exhausted?",
+    "options": [
+      {
+        "label": "Yes; follow quota check",
+        "next_step": "quota_terminal"
+      },
+      {
+        "label": "No; quota remains",
+        "next_step": "logical_instability_wifi_or_drop"
+      },
+      {
+        "label": "Usage unclear",
+        "next_step": "quota_verify_terminal"
+      }
+    ],
+    "action": "Check current usage in CST360/BSS. Quota exhaustion is not a Logical fault; do not rely on old usage values.",
+    "source_reference": "day 13.pdf pp. 12-14."
+  },
+  "logical_instability_fault_review": {
+    "question": "ASSIA returned a different fault; classify it before continuing Logical.",
+    "options": [],
+    "action": "Match Advice/Fault to the current procedure and issue time. Physical Fault/Technician Dispatch routes to Physical/BLQ; congestion routes to Outage/Utilization. If unlisted or unclear, do not guess—check the current source/supervisor and record ASSIA results.",
+    "customer_script": "A diagnostic indicator needs technical review before I choose the right next step. I will verify the recorded result and update you.",
+    "source_reference": "day 13.pdf pp. 10-11."
+  },
+  "slowness_start": {
+    "question": "Slowness: does it affect all use, or only a game/site/device?",
+    "options": [
+      {
+        "label": "All sites/use are slow",
+        "next_step": "slowness_scope"
+      },
+      {
+        "label": "Online game/high ping",
+        "next_step": "gaming_start"
+      },
+      {
+        "label": "One site or streaming service",
+        "next_step": "slowness_site_specific"
+      },
+      {
+        "label": "One device or Wi-Fi coverage in a room",
+        "next_step": "slowness_wifi"
+      }
+    ],
+    "customer_prompt": "Is it slow across all devices and sites, or only with one game, site, or device?",
+    "action": "Before technical checks, review open TT, outage, account status, and quota. Do not classify as BLQ before excluding quota exhaustion and outage.",
+    "source_reference": "day 9.pdf pp. 1-2, 16-21; SLA.pdf p. 13. Verify measurements and SLA in current CST360/TTS."
+  },
+  "slowness_scope": {
+    "question": "Using the current approved test on one device near the router, how does it compare with recorded line speed?",
+    "options": [
+      {
+        "label": "Within expected range/optimization period",
+        "next_step": "speed_within_range"
+      },
+      {
+        "label": "Below recorded; ASSIA shows Physical/Dispatch",
+        "next_step": "blq_assia"
+      },
+      {
+        "label": "Below recorded; no Physical and Need Optimization",
+        "next_step": "blq_optimization"
+      },
+      {
+        "label": "Below recorded; no Physical or inconclusive",
+        "next_step": "blq_line_quality"
+      },
+      {
+        "label": "Outage/congestion shown",
+        "next_step": "outage_terminal"
+      },
+      {
+        "label": "Reliable test unavailable",
+        "next_step": "slowness_inconclusive"
+      }
+    ],
+    "customer_prompt": "We will run the approved test near the router. Is it below the speed recorded for your line?",
+    "action": "Compare with the current profile/contracted speed, quota, and optimization window. Ethernet is useful if available, not mandatory. Do not treat old PDF thresholds as live values.",
+    "source_reference": "day 9.pdf pp. 1-3, 16-21; day 13.pdf pp. 16-19."
+  },
+  "slowness_site_specific": {
+    "question": "Slowness is limited to one site/service.",
+    "options": [],
+    "action": "Compare other sites and another device; check line health and outage. If other browsing works and only a third-party service is affected, do not log a line fault or allege blocking; direct the customer to that provider. If line indicators exist, return to Slowness/BLQ.",
+    "customer_script": "This appears limited to that site/service. I will compare other browsing and check the line before identifying the responsible provider.",
+    "source_reference": "day 9.pdf pp. 18-21; no WE SLA for a third-party service absent a confirmed line fault."
+  },
+  "slowness_wifi": {
+    "question": "Slowness is limited to a device or Wi-Fi coverage.",
+    "options": [],
+    "action": "Test near the router and with another device; separate coverage from line speed. Check 2.4/5GHz only according to customer package and CPE. If near-router speed remains below profile, return to Slowness/BLQ.",
+    "customer_script": "Let’s test near the router and on another device to distinguish Wi-Fi coverage from line speed.",
+    "source_reference": "day 9.pdf pp. 16-21; device/band advice depends on current customer equipment."
+  },
+  "slowness_inconclusive": {
+    "question": "No reliable speed measurement is available.",
+    "options": [],
+    "action": "Do not classify as BLQ or promise an SLA. Record why testing failed, check system tools, then retry or follow the approved support path. If a TT is created, provide only its displayed reference and timeframe.",
+    "customer_script": "I cannot rely on a clear measurement right now. I will record why and check the right next step before confirming a result.",
+    "source_reference": "day 9.pdf pp. 1-3."
+  },
+  "blq_assia": {
+    "question": "ASSIA/Clear View: does Line ID match, is Collection Date current, and is Last Fix within 24 hours?",
+    "options": [
+      {
+        "label": "Match/current; Physical Fault or Technician Dispatch",
+        "next_step": "physical_from_logical_terminal"
+      },
+      {
+        "label": "Match/current; No Physical Fault",
+        "next_step": "blq_line_quality"
+      },
+      {
+        "label": "Last Fix older than 24h or data mismatch",
+        "next_step": "blq_refresh"
+      },
+      {
+        "label": "ASSIA unsupported/unavailable",
+        "next_step": "blq_alternate_check"
+      }
+    ],
+    "customer_prompt": "I will check your line quality in our diagnostic tool.",
+    "action": "Verify Line ID before reading results. Physical Fault/Dispatch routes to Physical. BLQ requires valid Clear View; run the approved refresh after Main Wire if permitted.",
+    "source_reference": "day 9.pdf pp. 3-7; SLA.pdf pp. 11, 13."
+  },
+  "blq_refresh": {
+    "question": "Correct the data source, then run approved Clear View. Is Last Fix now within 24 hours?",
+    "options": [
+      {
+        "label": "Yes; Physical Fault/Dispatch appears",
+        "next_step": "physical_from_logical_terminal"
+      },
+      {
+        "label": "Yes; no Physical Fault",
+        "next_step": "blq_line_quality"
+      },
+      {
+        "label": "Could not refresh or Line ID mismatch",
+        "next_step": "blq_alternate_check"
+      }
+    ],
+    "action": "Confirm Main Wire as guided; remove a splitter only if safe and approved. Never ask the customer to handle unsafe wiring.",
+    "source_reference": "day 9.pdf pp. 3-6; Last Fix recency is not a customer SLA."
+  },
+  "blq_alternate_check": {
+    "question": "ASSIA unavailable; what approved alternative result is available?",
+    "options": [
+      {
+        "label": "Physical/Dispatch indicator",
+        "next_step": "physical_from_logical_terminal"
+      },
+      {
+        "label": "No Physical; measurement below profile",
+        "next_step": "blq_line_quality"
+      },
+      {
+        "label": "No valid measurement/result",
+        "next_step": "slowness_inconclusive"
+      }
+    ],
+    "action": "Do not infer BLQ from missing ASSIA. Use current Matrix/CST360 and document ASSIA unavailability.",
+    "source_reference": "day 9.pdf pp. 3-7."
+  },
+  "blq_line_quality": {
+    "question": "No Physical Fault; compare Operational/Attainable/Profile/Contracted speed in current tools. What is the result?",
+    "options": [
+      {
+        "label": "Within current matrix/range",
+        "next_step": "speed_within_range"
+      },
+      {
+        "label": "Abnormal line quality; eligible BLQ",
+        "next_step": "blq_escalation"
+      },
+      {
+        "label": "No dial tone/voice affected",
+        "next_step": "voice_down_terminal"
+      },
+      {
+        "label": "Does not match current matrix",
+        "next_step": "slowness_inconclusive"
+      }
+    ],
+    "action": "Use ADSL/VDSL thresholds from current Matrix/CST360 only; day 9 values are historical. Complete Voice Verification if required for this complaint type. No Physical does not automatically mean speed is fine.",
+    "source_reference": "day 9.pdf pp. 5-10; SLA.pdf pp. 11, 13."
+  },
+  "blq_optimization": {
+    "question": "Need Optimization shown with no Physical Fault.",
+    "options": [],
+    "action": "Record ASSIA/Matrix, profile, and follow current Optimization path. Do not escalate BLQ before optimization is complete or eligibility is confirmed. SLA.pdf lists 1h for Optimization; verify in TTS.",
+    "customer_script": "The line needs an optimization step before I can confirm the right complaint. I will check the current procedure and timeframe and update you.",
+    "sla": "Use the TTS displayed timeframe; training lists 1h for Optimization.",
+    "source_reference": "SLA.pdf p. 13 lists 1h for Need Optimization; verify in current TTS."
+  },
+  "blq_escalation": {
+    "question": "Line quality is outside current range; prepare a BLQ complaint.",
+    "options": [],
+    "action": "Confirm quota, measurement, ASSIA/Last Fix, and Line ID; complete Voice Verification if required. Record steps and Clear View/Matrix results, then update/create only an eligible BLQ ticket. Give its actual number and displayed SLA. SLA.pdf lists 24h; verify TTS.",
+    "customer_script": "The measurement indicates a line-quality issue. I will log it under {displayed ticket number} with the displayed timeframe {system SLA}.",
+    "sla": "SLA.pdf: 24h; communicate only the official TTS/ticket timeframe.",
+    "source_reference": "day 9.pdf pp. 5-10; SLA.pdf pp. 11, 13 lists 24h; confirm in TTS."
+  },
+  "gaming_start": {
+    "question": "Gaming issue: high ping/drops, or game will not launch/compatibility?",
+    "options": [
+      {
+        "label": "High ping or drops while gaming",
+        "next_step": "gaming_assia"
+      },
+      {
+        "label": "Game will not launch or compatibility/settings",
+        "next_step": "gaming_compatibility"
+      },
+      {
+        "label": "Streaming or IPTV/SIP-TV",
+        "next_step": "slowness_site_specific"
+      }
+    ],
+    "customer_prompt": "Is the issue high ping while playing, or does the game fail to launch/have a compatibility issue?",
+    "action": "Check TT/outage and account/quota first. Check ASSIA/Clear View; resolve Physical/BLQ before Gaming. Record game, device, and access technology. Guide classifies streaming/IPTV separately from Gaming/IOT.",
+    "source_reference": "day 12.pdf pp. 7-11; day 10.pdf pp. 14-17."
+  },
+  "gaming_assia": {
+    "question": "Check ASSIA/Clear View first. Is there a Physical Fault or line issue?",
+    "options": [
+      {
+        "label": "Physical Fault/Dispatch or BLQ",
+        "next_step": "physical_from_logical_terminal"
+      },
+      {
+        "label": "No DSL Physical-Layer issue; no line fault",
+        "next_step": "gaming_high_ping"
+      },
+      {
+        "label": "ASSIA unsupported/inconclusive",
+        "next_step": "gaming_review"
+      }
+    ],
+    "action": "If Physical appears, resolve Physical/BLQ before ping troubleshooting. No DSL Physical alone does not rule out every network cause.",
+    "source_reference": "day 12.pdf pp. 7-9; day 11.pdf pp. 1-4."
+  },
+  "gaming_high_ping": {
+    "question": "Follow approved steps in order and retest ping after each. What happened?",
+    "options": [
+      {
+        "label": "Improved after approved MTU 1420",
+        "next_step": "resolved_terminal"
+      },
+      {
+        "label": "No change; try Google DNS then retest",
+        "next_step": "gaming_google_dns"
+      },
+      {
+        "label": "Still high; try Cloudflare DNS then retest",
+        "next_step": "gaming_cloudflare"
+      },
+      {
+        "label": "CST360 shows Congestion/Within Ratio",
+        "next_step": "logical_instability_congested_terminal"
+      },
+      {
+        "label": "Unclear or no authorization",
+        "next_step": "gaming_review"
+      }
+    ],
+    "action": "Follow current approved MTU 1420/DNS procedure only, changing one item at a time. Never request router credentials or use unapproved settings.",
+    "source_reference": "day 12.pdf pp. 8-10; verify MTU/DNS against current procedure."
+  },
+  "gaming_google_dns": {
+    "question": "After Google DNS and retest, did ping improve?",
+    "options": [
+      {
+        "label": "Yes",
+        "next_step": "resolved_terminal"
+      },
+      {
+        "label": "No; continue to next approved step",
+        "next_step": "gaming_cloudflare"
+      }
+    ],
+    "action": "Use values from current company procedure; do not make them permanent if unapproved.",
+    "source_reference": "day 12.pdf p. 9."
+  },
+  "gaming_cloudflare": {
+    "question": "After Cloudflare DNS and retest, did ping improve?",
+    "options": [
+      {
+        "label": "Yes",
+        "next_step": "resolved_terminal"
+      },
+      {
+        "label": "No; check CST360 congestion/ratio",
+        "next_step": "gaming_congestion"
+      }
+    ],
+    "action": "Record before/after results, device, and game.",
+    "source_reference": "day 12.pdf pp. 9-10."
+  },
+  "gaming_congestion": {
+    "question": "Does CST360 show Congested/Within Ratio or Not Congested?",
+    "options": [
+      {
+        "label": "Congested/Within Ratio",
+        "next_step": "logical_instability_congested_terminal"
+      },
+      {
+        "label": "Not Congested; issue persists",
+        "next_step": "gaming_ticket"
+      },
+      {
+        "label": "Unavailable/unclear",
+        "next_step": "gaming_review"
+      }
+    ],
+    "action": "For congestion, use current NOC/Utilization wording; do not create duplicate Gaming ticket without eligibility.",
+    "source_reference": "day 12.pdf pp. 9-10; day 13.pdf pp. 11-13."
+  },
+  "gaming_ticket": {
+    "question": "Gaming steps did not resolve issue; check existing cases, then log if eligible.",
+    "options": [],
+    "action": "Search for an open/In Progress IReport/Case first; update it, do not duplicate. Record service/landline, customer, game, High Ping or Compatibility, troubleshooting, device, technology, status, and required contact. Give the actual reference. Training mentions 15m follow-up; promise only if current system shows it.",
+    "customer_script": "I recorded the case under {displayed reference}. The available timeframe is {system displayed SLA}.",
+    "sla": "Use current IReport SLA; do not rely on 15m from training alone.",
+    "source_reference": "day 12.pdf pp. 9-11. 15m follow-up and reopen/48h rules must be verified in current IReport."
+  },
+  "gaming_compatibility": {
+    "question": "Game compatibility/settings issue, not ping.",
+    "options": [],
+    "action": "Record game, device/platform, and error. Where possible test another device/network and other services. Check compatibility/settings in approved game documentation. Do not randomly open ports or weaken security. If only one game is affected, use the IReport Compatibility category and check existing cases.",
+    "customer_script": "I will determine whether this is game/device-specific or connectivity-related and check the error and approved steps.",
+    "source_reference": "day 12.pdf pp. 9-11. Game settings vary by title/platform; there is no universal value."
+  },
+  "gaming_review": {
+    "question": "ASSIA/measurement is inconclusive; do not change settings blindly.",
+    "options": [],
+    "action": "Recheck Line ID, Clear View timestamp, and current tools. If still inconclusive, consult current procedure/supervisor and record findings rather than attributing fault to gaming or customer.",
+    "customer_script": "The check is not enough to identify a cause. I will review it before directing you to an unsuitable step.",
+    "source_reference": "day 12.pdf pp. 7-10."
+  },
+  "logical_other_symptom": {
+    "question": "Choose the other symptom",
+    "options": [
+      {
+        "label": "No WAN IP",
+        "next_step": "no_ip_check"
+      },
+      {
+        "label": "Websites do not open",
+        "next_step": "browsing_check"
+      },
+      {
+        "label": "Conflicting readings or diagnostic-tool error",
+        "next_step": "logical_variance_unclear"
+      }
+    ],
+    "customer_prompt": "I will check the symptom shown and follow its troubleshooting path."
+  },
+  "logical_instability_unclear_terminal": {
+    "question": "Result unclear; stop classification rather than guessing.",
+    "options": [],
+    "action": "Recheck Line ID, timestamps, and ASSIA/NST in current sources. If still unclear, consult current procedure or supervisor and record verified facts only. Do not create a complaint under an unconfirmed category.",
+    "customer_script": "I need to verify the line reading before classifying the issue or giving a timeframe. I will check it and explain the next step.",
+    "source_reference": "day 11.pdf pp. 1-4; day 13.pdf pp. 10-14. Incomplete data does not support a safe conclusion."
+  },
+  "logical_instability_wifi_or_drop": {
+    "question": "With quota exhaustion excluded, is the issue Wi-Fi band switching or an actual service drop?",
+    "options": [
+      {
+        "label": "Device lags while switching between 2.4 and 5GHz",
+        "next_step": "logical_instability_band_switch"
+      },
+      {
+        "label": "The service itself drops",
+        "next_step": "logical_instability_reset"
+      },
+      {
+        "label": "Unclear; another test is needed",
+        "next_step": "logical_instability_device_check"
+      }
+    ],
+    "customer_prompt": "Is Wi-Fi only switching/dropping, or does the internet service itself disconnect?",
+    "action": "Ask about symptoms and do not assume Dual Band is available. If possible, test one device near the router; this is not mandatory.",
+    "source_reference": "day 13.pdf pp. 12-14."
+  },
+  "logical_instability_band_switch": {
+    "question": "Issue is related to Wi-Fi band switching.",
+    "options": [],
+    "action": "Confirm device, router, and package support 2.4/5GHz. If HDM/testing confirms band switching, follow the current band procedure; do not ask to disable 5GHz unless approved for this CPE. Retest.",
+    "customer_script": "The indicators suggest delay while Wi-Fi switches bands. I will check the setting for your router and retest.",
+    "source_reference": "day 13.pdf pp. 13-14. Training mentions disabling 5GHz; verify current procedure and CPE compatibility first."
+  },
+  "logical_instability_reset": {
+    "question": "After approved Reset & Reconfigure, is the connection stable?",
+    "options": [
+      {
+        "label": "Yes, stable",
+        "next_step": "resolved_terminal"
+      },
+      {
+        "label": "No; still drops; test another CPE if available",
+        "next_step": "logical_instability_device_check"
+      },
+      {
+        "label": "Unable to complete setup",
+        "next_step": "logical_instability_unclear_terminal"
+      }
+    ],
+    "customer_prompt": "I will guide you through the approved router setup, then we will test whether it is stable.",
+    "action": "Reconfigure under the current procedure. If unresolved, test another device/OS or CPE if available, then record the result.",
+    "source_reference": "day 13.pdf pp. 12-14."
+  },
+  "logical_verify_account": {
+    "question": "In BSS, is the broadband account Active?",
+    "options": [
+      {
+        "label": "Active",
+        "next_step": "logical_check_speed_variance"
+      },
+      {
+        "label": "Suspended or abnormal",
+        "next_step": "logical_suspended_account"
+      },
+      {
+        "label": "Status unclear",
+        "next_step": "billing_verify_terminal"
+      }
+    ],
+    "action": "Verify the account in BSS before Logical steps. If suspended, check bill and reason in the system; do not remove suspension/restart port unless current tool and procedure authorize it.",
+    "source_reference": "day 11.pdf pp. 2-3; day 13.pdf p. 12. Use current BSS status."
+  },
+  "logical_check_speed_variance": {
+    "question": "Is there a Speed Variance between system reading and the profile/contracted speed?",
+    "options": [
+      {
+        "label": "Yes; Speed Variance confirmed",
+        "next_step": "speed_variance_terminal"
+      },
+      {
+        "label": "No; classify the logical symptom",
+        "next_step": "logical_start"
+      },
+      {
+        "label": "Unclear or quota exhausted",
+        "next_step": "logical_variance_unclear"
+      }
+    ],
+    "action": "Handle Speed Variance before other Logical cases per verification guide. Exclude quota exhaustion; reduced speed after quota depletion is not Speed Variance.",
+    "source_reference": "day 11.pdf pp. 2-3."
+  },
+  "logical_suspended_account": {
+    "question": "Account is Suspended; pause Logical troubleshooting.",
+    "options": [],
+    "action": "Check suspension reason and bill in BSS. If dues exist, follow billing. If no dues, restore service only through the authorized procedure, then retest. If the issue remains while Active, return to Logical classification.",
+    "customer_script": "The account currently shows suspended. I will check the reason and bill before continuing connection troubleshooting.",
+    "source_reference": "day 11.pdf p. 2; verify current suspension details and removal procedure in BSS."
+  },
+  "logical_variance_unclear": {
+    "question": "Speed Variance or quota status cannot be confirmed.",
+    "options": [],
+    "action": "Verify Active status, quota, and Profile/Speed in current CST360/BSS before proceeding. Do not escalate Speed Variance from stale readings or after quota exhaustion.",
+    "customer_script": "I need to check the speed reading and quota in the system before classifying the issue.",
+    "source_reference": "day 11.pdf pp. 2-3."
+  },
+  "physical_from_logical_terminal": {
+    "question": "Indicators point to Physical; stop the Logical path.",
+    "options": [],
+    "action": "Stop Logical steps. Return to the main menu and start the Physical path; complete Voice Verification before Physical escalation when required. Check Outage/Major Fault and inspect wiring safely.",
+    "customer_script": "The reading points to a physical line issue. I will continue through the wiring and physical checks.",
+    "source_reference": "day 9.pdf pp. 3-9; day 11.pdf p. 1; day 13.pdf p. 10. Restart the Physical path to avoid mixing Logical and Physical procedures."
+  },
+  "logical_instability_multiple_common": {
+    "question": "Perform approved Reset & Reconfigure and retest. What happened?",
+    "options": [
+      {
+        "label": "Connection is stable",
+        "next_step": "resolved_terminal"
+      },
+      {
+        "label": "Drops continue; test another CPE if available",
+        "next_step": "logical_instability_device_check"
+      },
+      {
+        "label": "Could not reconfigure or no alternate test",
+        "next_step": "logical_instability_escalation"
+      }
+    ],
+    "customer_prompt": "We will reconfigure the router using the approved steps, then test the connection.",
+    "action": "If the issue persists, test another CPE/device if available, then escalate if eligible. Record results and times instead of assuming the Login subtype.",
+    "source_reference": "day 13.pdf pp. 11-12; threshold classification needs verification."
   }
 }

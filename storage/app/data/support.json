@@ -314,7 +314,7 @@
     "options": [
       {
         "label": "لمبة ADSL ثابتة وقت الانقطاع",
-        "next_step": "logical_start"
+        "next_step": "logical_verify_account"
       },
       {
         "label": "لمبة ADSL تفصل أو تنطفئ",
@@ -335,7 +335,7 @@
     "options": [
       {
         "label": "لمبة ADSL ثابتة وقت الانقطاع",
-        "next_step": "logical_start"
+        "next_step": "logical_verify_account"
       },
       {
         "label": "لمبة ADSL تفصل أو تنطفئ",
@@ -779,31 +779,31 @@
     "customer_prompt": "هكمل فحص الخط والتوصيلات وأسجل المتابعة المناسبة. لو اتسجلت تذكرة هبلغ حضرتك برقمها والمهلة الظاهرة."
   },
   "logical_start": {
-    "question": "صنّف وصف المشكلة قبل اختيار فحوصات الإنترنت المنطقية.",
+    "question": "اختر العرض المنطقي الفعلي بعد استبعاد العطل العام والحساب والباقة.",
     "customer_prompt": "المشكلة عند حضرتك إن الإنترنت مش شغال، ولا مواقع معينة مش بتفتح، ولا السرعة بطيئة، ولا الخط بيفصل؟",
     "options": [
       {
-        "label": "الراوتر لا يحصل على WAN IP أو لا يوجد إنترنت",
-        "next_step": "no_ip_check"
+        "label": "الخط يفصل وDSL ثابتة؛ Logical Instability",
+        "next_step": "logical_instability_start"
       },
       {
-        "label": "الإنترنت يعمل لكن مواقع لا تفتح",
-        "next_step": "browsing_check"
+        "label": "بطء عام أو أداء أقل من المسجل",
+        "next_step": "slowness_start"
       },
       {
-        "label": "بطء في السرعة",
-        "next_step": "slowness_check"
+        "label": "جودة خط/سرعة منخفضة؛ فحص BLQ",
+        "next_step": "blq_assia"
       },
       {
-        "label": "السرعة المسجلة مختلفة بين أدوات النظام",
-        "next_step": "speed_variance_terminal"
+        "label": "مشكلة Gaming أو Ping",
+        "next_step": "gaming_start"
       },
       {
-        "label": "الخط يفصل رغم أن لمبة DSL ثابتة",
-        "next_step": "logical_logs"
+        "label": "WAN IP أو تصفح أو اختلاف قراءة",
+        "next_step": "logical_other_symptom"
       }
     ],
-    "action": "تأكد أن لمبة DSL ثابتة، ثم اختار العرض الفعلي: لا يوجد WAN IP، مواقع لا تفتح، بطء، اختلاف سرعة، أو تقطيع مع ثبات DSL. لا تبدأ فحص إعدادات CPE قبل استبعاد العطل العام والحساب والباقة."
+    "action": "لا تبدأ بخطوات تقنية قبل إتمام الفحوصات الأولية. اختر الحالة المحددة؛ لا تخلط البطء مع BLQ، ولا Gaming مع Physical قبل ASSIA."
   },
   "no_ip_check": {
     "question": "باستخدام أداة العمل المعتمدة ومن غير طلب كلمة مرور العميل، هل راجعت حالة MAC وإعدادات CPE وبيانات الاتصال؟",
@@ -2504,7 +2504,7 @@
     "options": [
       {
         "label": "الإنترنت يعمل، لكن بطيء أو التصفح/مواقع معينة فيها مشكلة (Logical)",
-        "next_step": "logical_start"
+        "next_step": "logical_verify_account"
       },
       {
         "label": "الإنترنت فاصل تمامًا أو لمبة DSL/ADSL مطفأة/بتفصل (Physical)",
@@ -2515,5 +2515,726 @@
         "next_step": "dsl_status_unknown"
       }
     ]
+  },
+  "logical_instability_start": {
+    "question": "Logical Instability: هل الإنترنت بيفصل ويرجع مع ثبات لمبة DSL/ADSL وقت الفصل؟",
+    "options": [
+      {
+        "label": "أيوه، اللمبة ثابتة وقت الفصل",
+        "next_step": "logical_instability_congestion"
+      },
+      {
+        "label": "لا، اللمبة بتطفي أو بترمش",
+        "next_step": "physical_from_logical_terminal"
+      },
+      {
+        "label": "مش عارف؛ اسأل العميل عن اللمبة وقت المشكلة",
+        "next_step": "dsl_status_unknown"
+      }
+    ],
+    "customer_prompt": "ممكن تلاحظ لمبة DSL/ADSL وقت ما الإنترنت يفصل؟ بتفضل ثابتة ولا بتطفي/ترمش؟",
+    "action": "تأكد أن فحوصات TT المفتوحة والعطل العام والحساب والباقة تمت. اطلب من العميل يكون قريبًا من الراوتر إن أمكن؛ جهاز واحد أو Ethernet يساعدان لكنهما ليسا شرطًا. ثبات DSL يوجه إلى Logical، وانطفاؤها/وميضها يوجه إلى Physical.",
+    "source_reference": "day 11.pdf ص 1-4؛ day 13.pdf ص 10-14؛ SLA.pdf ص 11 و13. تعارض حد Multiple Login عند 3 دقائق بين العنوان والشرح؛ تأكد من Wiki/TTS الحالي. مهلة تصعيد NOC في التدريب ساعتان، ولا تخلطها بمهلة العميل."
+  },
+  "logical_instability_congestion": {
+    "question": "افحص Congested status من CST360 > Port Details. ما الحالة؟",
+    "options": [
+      {
+        "label": "Congested",
+        "next_step": "logical_instability_congested_terminal"
+      },
+      {
+        "label": "Within Ratio",
+        "next_step": "logical_instability_ratio_terminal"
+      },
+      {
+        "label": "Not Congested",
+        "next_step": "logical_instability_assia"
+      },
+      {
+        "label": "مش ظاهر أو النتيجة غير واضحة",
+        "next_step": "logical_instability_unclear_terminal"
+      }
+    ],
+    "action": "ده فحص داخلي؛ لا تسأل العميل عن Congested status. إذا ظهر Congested أو Within Ratio استخدم النص المعتمد ولا تكمل خطوات العطل الفردي إلا بتوجيه من النظام.",
+    "source_reference": "day 13.pdf ص 11 و13. استخدم نص Utilization الحالي؛ لا تعد بموعد غير ظاهر بالنظام."
+  },
+  "logical_instability_congested_terminal": {
+    "question": "الشبكة ظاهرة Congested؛ أوقف التشخيص الفردي.",
+    "options": [],
+    "action": "سجّل الحالة حسب الإجراء الحالي، ولا تفتح TT فردية مكررة لعطل جماعي. استخدم النص المعتمد ولا تذكر موعد إصلاح إلا إذا ظهر رسميًا.",
+    "customer_script": "حالة الشبكة عندنا ظاهرة عليها ضغط. هتابع التحديث المعتمد، ولو استمرت المشكلة بعد التحديث هكمل مع حضرتك الفحص.",
+    "sla": "حسب تحديث الحالة؛ لا يوجد موعد إصلاح مؤكد من ملف التدريب وحده.",
+    "source_reference": "day 13.pdf ص 11-13. ملف التدريب يذكر أحيانًا متابعة بعد أسبوعين؛ لا تستخدم مدة ثابتة إلا إذا ظهرت في تحديث NOC الحالي."
+  },
+  "logical_instability_ratio_terminal": {
+    "question": "الحالة ظاهرة Within Ratio؛ لا تصعّد كعطل منطقي قبل التحقق.",
+    "options": [],
+    "action": "تحقق من تحديث/Utilization الحالي واستخدم النص المعتمد. لا تسجلها كعطل فني ولا تعد بموعد غير مؤكد.",
+    "customer_script": "القراءة الحالية للخط ضمن النطاق الموضح بالنظام. لو ظهر تحديث جديد أو استمرت المشكلة بصورة مختلفة هراجعها مع حضرتك.",
+    "sla": "حسب التحديث الحالي؛ لا يوجد SLA مستقل مؤكد هنا.",
+    "source_reference": "day 13.pdf ص 12-13؛ استخدم بيانات اليوم من CST360/MATRIX."
+  },
+  "logical_instability_assia": {
+    "question": "افحص ASSIA: هل الخط Supported وهل Collection Date/Fix Mode صالحان؟",
+    "options": [
+      {
+        "label": "Supported والبيانات حديثة؛ افتح Clear View",
+        "next_step": "logical_instability_assia_result"
+      },
+      {
+        "label": "Supported لكن البيانات قديمة؛ شغّل Clear View ضمن آخر 24 ساعة",
+        "next_step": "logical_instability_assia_result"
+      },
+      {
+        "label": "Not Supported by ASSIA",
+        "next_step": "logical_instability_not_supported"
+      },
+      {
+        "label": "لا أستطيع تأكيد النتيجة",
+        "next_step": "logical_instability_unclear_terminal"
+      }
+    ],
+    "customer_prompt": "هراجع حالة الخط من أداة الفحص عندي.",
+    "action": "تأكد من تطابق Line ID مع رقم الخدمة. إذا كانت البيانات قديمة شغّل التحليل المسموح وتأكد Last Fix within 24 hours قبل الاعتماد على النتيجة.",
+    "source_reference": "day 13.pdf ص 10؛ day 11.pdf ص 1-4. No DSL Physical وحدها لا تثبت سببًا منطقيًا."
+  },
+  "logical_instability_assia_result": {
+    "question": "ما نتيجة Clear View الحالية؟",
+    "options": [
+      {
+        "label": "No DSL Physical-Layer issue is detected",
+        "next_step": "logical_instability_logs"
+      },
+      {
+        "label": "Technician Dispatch أو Physical-Layer Fault",
+        "next_step": "physical_from_logical_terminal"
+      },
+      {
+        "label": "Advice/Fault مختلف",
+        "next_step": "logical_instability_fault_review"
+      }
+    ],
+    "action": "طابق Advice/Fault مع وقت المشكلة. إذا ظهر Physical Fault أو Technician Dispatch أوقف Logical وانتقل إلى Physical/BLQ حسب نوع الحالة.",
+    "source_reference": "day 13.pdf ص 10-11؛ day 9.pdf ص 3-7."
+  },
+  "logical_instability_not_supported": {
+    "question": "ASSIA لا يدعم الخط. كيف تظهر لمبة ADSL وقت الفصل؟",
+    "options": [
+      {
+        "label": "ثابتة وقت الفصل",
+        "next_step": "logical_instability_logs"
+      },
+      {
+        "label": "تطفي أو ترمش",
+        "next_step": "physical_from_logical_terminal"
+      },
+      {
+        "label": "غير معروف",
+        "next_step": "dsl_status_unknown"
+      }
+    ],
+    "customer_prompt": "وقت ما الإنترنت يفصل، لمبة ADSL ثابتة ولا بتطفي/ترمش؟",
+    "action": "Not Supported لا يثبت سببًا. اعتمد على حالة اللمبة وقت المشكلة واستخدم أداة الفحص البديلة المعتمدة.",
+    "source_reference": "day 13.pdf ص 10؛ day 11.pdf ص 1."
+  },
+  "logical_instability_logs": {
+    "question": "راجع NST Logs لآخر 24 ساعة، واستبعد Restart من العميل/الكهرباء/Port. ما النتيجة؟",
+    "options": [
+      {
+        "label": "سجلان أو أكثر غير مفسرين؛ Multiple Login محتمل",
+        "next_step": "logical_instability_interval"
+      },
+      {
+        "label": "سجل واحد أو Logs مفسرة بسبب Restart؛ No Multiple Login",
+        "next_step": "logical_instability_single_login"
+      },
+      {
+        "label": "سبب السجلات أو توقيتها غير واضح",
+        "next_step": "logical_instability_unclear_terminal"
+      }
+    ],
+    "customer_prompt": "هل عملت Restart للراوتر أو فصلت الكهرباء وقت المشكلة؟",
+    "action": "استخدم NST في CST360 لآخر 24 ساعة. استبعد Restart CPE/Power/Port. قارن التوقيت بعد سؤال العميل؛ لا تصنف من عدد السجلات فقط.",
+    "source_reference": "day 13.pdf ص 11؛ day 11.pdf ص 3-4."
+  },
+  "logical_instability_interval": {
+    "question": "سجّل الفارق بين الـLogs، لكن لا تصنفه آليًا: نص day13 متعارض على حد 3 دقائق. أكمل الإجراء المشترك.",
+    "options": [
+      {
+        "label": "أكبر من 3 دقائق؛ سجّل الفارق",
+        "next_step": "logical_instability_multiple_common"
+      },
+      {
+        "label": "3 دقائق أو أقل؛ سجّل الفارق",
+        "next_step": "logical_instability_multiple_common"
+      },
+      {
+        "label": "التوقيت غير واضح",
+        "next_step": "logical_instability_unclear_terminal"
+      }
+    ],
+    "action": "لا تختَر اسم نوع Multiple Login بناءً على عنوان/شرح متعارض. طبّق خطوات Reset & Reconfigure المشتركة، ووثّق الطوابع الزمنية ثم راجع Wiki الحالي للتصنيف.",
+    "source_reference": "day 13.pdf ص 11؛ يوجد تعارض OCR/النص حول الحد، تحقّق من Wiki/TTS الحالي."
+  },
+  "logical_instability_multiple_over3": {
+    "question": "Multiple Login بفارق أكبر من 3 دقائق: بعد Reset & Reconfigure هل استقر الاتصال؟",
+    "options": [
+      {
+        "label": "نعم، استقر",
+        "next_step": "resolved_terminal"
+      },
+      {
+        "label": "لا، تكررت المشكلة؛ اختبر CPE آخر",
+        "next_step": "logical_instability_device_check"
+      },
+      {
+        "label": "تعذر الإعداد",
+        "next_step": "logical_instability_unclear_terminal"
+      }
+    ],
+    "customer_prompt": "هنعيد إعداد الراوتر بالطريقة المعتمدة ثم نجرب الخدمة سوا.",
+    "action": "بعد تكرار المشكلة اختبر CPE آخر إن توفر؛ الزيارة الفنية حسب التوفر/الأهلية الحالية فقط. إذا استمر العطل صعّد NOC.",
+    "source_reference": "day 13.pdf ص 11؛ تحقق من قاعدة الحد الزمني الحالية."
+  },
+  "logical_instability_multiple_under3": {
+    "question": "Multiple Login بفارق 3 دقائق أو أقل: بعد Reset & Reconfigure هل استقر الاتصال؟",
+    "options": [
+      {
+        "label": "نعم، استقر",
+        "next_step": "resolved_terminal"
+      },
+      {
+        "label": "لا، ما زال يفصل؛ صعّد Logical Instability",
+        "next_step": "logical_instability_escalation"
+      },
+      {
+        "label": "تعذر تنفيذ الإعداد",
+        "next_step": "logical_instability_unclear_terminal"
+      }
+    ],
+    "customer_prompt": "هنعيد إعداد الراوتر بالطريقة المعتمدة وبعدها نختبر الاتصال أثناء المكالمة.",
+    "action": "إذا استمر الفصل بعد الاختبار، حدّث/أنشئ شكوى NOC الصحيحة مع توثيق النتائج.",
+    "source_reference": "day 13.pdf ص 11؛ SLA.pdf ص 13 يذكر ساعتين، تحقق من TTS الحالي."
+  },
+  "logical_instability_escalation": {
+    "question": "استمرار Logical Instability بعد الفحوصات؛ جهّز التصعيد.",
+    "options": [],
+    "action": "حدّث TT القائمة أو أنشئ واحدة فقط إذا لم توجد. اختر مسار Broadband > Technical > ADSL/VDSL > Care > Logical Instability حسب النظام. أرفق NST ونتيجة ASSIA وIP وبيانات Dispatch Score إذا طلبها النموذج، ووسيلة التواصل. قبل الإغلاق تأكد من تسجيل رقم TT/IR الفعلي والمهلة الظاهرة؛ لا تخترع رقمًا. راجع توفر العميل إذا المتابعة ليلًا 10م–8ص.",
+    "customer_script": "تم تسجيل المتابعة برقم {رقم التذكرة الظاهر بالنظام}. المهلة المسجلة عندي {المهلة الظاهرة بالنظام}. هل ستكون متاحًا لو احتاج الفريق التواصل معك؟",
+    "sla": "نفّذ متابعة الموظف خلال ساعتين حسب SLA.pdf؛ مهلة العميل هي المهلة الرسمية الظاهرة في TTS/التذكرة فقط.",
+    "source_reference": "day 13.pdf ص 12-14؛ SLA.pdf ص 13 يذكر ساعتين لـNOC، لكن يجب تأكيدها من TTS الحالي. لا تعد بـ24 ساعة للعميل إذا كان المطلوب منك متابعة خلال ساعتين فقط."
+  },
+  "logical_instability_device_check": {
+    "question": "بعد تجربة CPE آخر، هل استمر فصل الاتصال؟",
+    "options": [
+      {
+        "label": "استقر الاتصال",
+        "next_step": "resolved_terminal"
+      },
+      {
+        "label": "ما زال يفصل؛ صعّد مع نتائج التجربة",
+        "next_step": "logical_instability_escalation"
+      },
+      {
+        "label": "لا يتوفر CPE آخر",
+        "next_step": "logical_instability_escalation"
+      }
+    ],
+    "customer_prompt": "لو متاح، نجرب راوترًا آخر للتأكد هل الفصل مرتبط بالراوتر؟",
+    "action": "سجل نوع CPE ووقت الاختبار. لا تجعل عدم توفر جهاز بديل يمنع التصعيد إذا بقية الشروط مكتملة.",
+    "source_reference": "day 13.pdf ص 10-14؛ day 11.pdf ص 1-4. طابق التصنيف والمهلة مع NST/Wiki/TTS الحالي."
+  },
+  "logical_instability_single_login": {
+    "question": "لا توجد Multiple Login غير مفسرة. هل الباقة مستهلكة؟",
+    "options": [
+      {
+        "label": "نعم؛ اتبع نتيجة فحص الباقة",
+        "next_step": "quota_terminal"
+      },
+      {
+        "label": "لا؛ الباقة بها سعة",
+        "next_step": "logical_instability_wifi_or_drop"
+      },
+      {
+        "label": "غير متأكد من الاستهلاك",
+        "next_step": "quota_verify_terminal"
+      }
+    ],
+    "action": "راجع الاستهلاك الحالي في CST360/BSS. لا تعتبر نفاد الباقة عطل Logical، ولا تعتمد على أرقام استهلاك قديمة.",
+    "source_reference": "day 13.pdf ص 12-14."
+  },
+  "logical_instability_fault_review": {
+    "question": "ظهرت نتيجة ASSIA مختلفة؛ راجع نوع العطل قبل متابعة Logical.",
+    "options": [],
+    "action": "طابق اسم Advice/Fault مع جدول الإجراء الحالي ووقت ظهور المشكلة. Physical Fault أو Technician Dispatch ينتقل لمسار Physical/BLQ. Congestion ينتقل لمسار Outage/Utilization. إذا النتيجة غير مدرجة أو غير واضحة، لا تختَر أقرب تشخيص؛ استشر المصدر الحالي/المشرف وسجّل نتيجة ASSIA.",
+    "customer_script": "ظهر عندي مؤشر يحتاج مراجعة فنية قبل ما أحدد الخطوة المناسبة. هراجع النتيجة المسجلة وأبلغك بالمتابعة الصحيحة.",
+    "source_reference": "day 13.pdf ص 10-11."
+  },
+  "slowness_start": {
+    "question": "بطء الإنترنت: هل البطء على كل الاستخدامات أم لعبة/موقع/جهاز محدد؟",
+    "options": [
+      {
+        "label": "كل المواقع/الاستخدامات بطيئة",
+        "next_step": "slowness_scope"
+      },
+      {
+        "label": "لعبة أونلاين أو Ping مرتفع",
+        "next_step": "gaming_start"
+      },
+      {
+        "label": "موقع أو خدمة بث واحدة",
+        "next_step": "slowness_site_specific"
+      },
+      {
+        "label": "جهاز أو Wi-Fi في غرفة معينة",
+        "next_step": "slowness_wifi"
+      }
+    ],
+    "customer_prompt": "البطء حاصل على كل الأجهزة والمواقع، ولا في لعبة أو موقع أو جهاز معين؟",
+    "action": "قبل التشخيص الفني: تحقق من TT المفتوحة، العطل العام، حالة الحساب، واستهلاك الباقة. لا تصف الحالة BLQ قبل استبعاد نفاد الباقة والعطل العام.",
+    "source_reference": "day 9.pdf ص 1-2 و16-21؛ SLA.pdf ص 13. القيم والمهل تتأكد من CST360/TTS الحالي."
+  },
+  "slowness_scope": {
+    "question": "اختبر بطريقة النظام الحالية على جهاز واحد قرب الراوتر؛ ما النتيجة مقارنة بسرعة الخط المسجلة؟",
+    "options": [
+      {
+        "label": "ضمن المتوقع/فترة التحسين",
+        "next_step": "speed_within_range"
+      },
+      {
+        "label": "أقل من المسجل؛ ASSIA يظهر Physical/Dispatch",
+        "next_step": "blq_assia"
+      },
+      {
+        "label": "أقل من المسجل؛ لا Physical ويظهر Need Optimization",
+        "next_step": "blq_optimization"
+      },
+      {
+        "label": "أقل من المسجل؛ لا Physical أو نتيجة غير حاسمة",
+        "next_step": "blq_line_quality"
+      },
+      {
+        "label": "خطأ عام/ازدحام ظاهر",
+        "next_step": "outage_terminal"
+      },
+      {
+        "label": "لا يمكن إجراء اختبار موثوق",
+        "next_step": "slowness_inconclusive"
+      }
+    ],
+    "customer_prompt": "هنقيس السرعة بالطريقة المعتمدة على جهاز قريب من الراوتر. هل النتيجة أقل من السرعة المسجلة عندي؟",
+    "action": "قارن القياس بالـProfile/السرعة المتعاقد عليها في النظام الحالي، وبحالة الباقة وفترة التحسين. Ethernet وسيلة مقارنة إن توفرت وليس شرطًا لإتمام كل مكالمة. لا تستخدم عتبات PDF القديمة كقيم حية.",
+    "source_reference": "day 9.pdf ص 1-3 و16-21؛ day 13.pdf ص 16-19."
+  },
+  "slowness_site_specific": {
+    "question": "البطء محصور في موقع/خدمة واحدة.",
+    "options": [],
+    "action": "قارن مواقع أخرى وجهازًا آخر، وتحقق من سلامة الخط والـOutage. إذا بقية التصفح طبيعي والمشكلة بخدمة طرف ثالث فقط، لا تسجل عطل خط أو تتهم الحجب؛ وجّه العميل لمزود الخدمة المعني. إذا ظهرت مؤشرات خط، ارجع لمسار Slowness/BLQ.",
+    "customer_script": "المشكلة تبدو مرتبطة بالموقع/الخدمة المحددة، وسأقارنها بباقي التصفح وأراجع حالة الخط قبل تحديد الجهة المسؤولة.",
+    "source_reference": "day 9.pdf ص 18-21؛ لا يوجد SLA من WE لخدمة طرف ثالث دون عطل خط مؤكد."
+  },
+  "slowness_wifi": {
+    "question": "البطء محصور في جهاز أو تغطية Wi-Fi.",
+    "options": [],
+    "action": "اختبر قرب الراوتر وعلى جهاز آخر، وافصل ضعف التغطية عن سرعة الخط. راجع نطاق 2.4/5GHz وتوافق الجهاز فقط حسب باقة العميل والـCPE. إذا القياس قرب الراوتر ما زال أقل من المسجل ارجع لمسار Slowness/BLQ.",
+    "customer_script": "خلينا نجرب قرب الراوتر وعلى جهاز آخر عشان نعرف هل السبب تغطية الواي فاي ولا سرعة الخط نفسها.",
+    "source_reference": "day 9.pdf ص 16-21؛ ترشيح الجهاز/الـBand يتوقف على مواصفات العميل الحالية."
+  },
+  "slowness_inconclusive": {
+    "question": "لا يتوفر قياس موثوق للسرعة.",
+    "options": [],
+    "action": "لا تصنّف BLQ ولا تعد بمهلة. وثّق سبب تعذر القياس، تحقق من أدوات النظام، ثم أعد الاختبار أو استخدم مسار الدعم المعتمد. إذا أنشأت TT أبلغ العميل بالرقم والمهلة الظاهرين فقط.",
+    "customer_script": "مش قادر أعتمد على قياس واضح دلوقتي؛ هسجل سبب التعذر وأراجع الخطوة المناسبة قبل ما أحدد لك نتيجة.",
+    "source_reference": "day 9.pdf ص 1-3."
+  },
+  "blq_assia": {
+    "question": "ASSIA/Clear View: هل Line ID مطابق وCollection Date حديث وLast Fix خلال 24 ساعة؟",
+    "options": [
+      {
+        "label": "بيانات مطابقة وحديثة؛ Physical Fault أو Technician Dispatch",
+        "next_step": "physical_from_logical_terminal"
+      },
+      {
+        "label": "بيانات مطابقة وحديثة؛ No Physical Fault",
+        "next_step": "blq_line_quality"
+      },
+      {
+        "label": "Last Fix أقدم من 24 ساعة أو بيانات غير مطابقة",
+        "next_step": "blq_refresh"
+      },
+      {
+        "label": "ASSIA غير مدعوم/غير متاح",
+        "next_step": "blq_alternate_check"
+      }
+    ],
+    "customer_prompt": "هراجع جودة الخط من أداة الفحص عندي.",
+    "action": "تأكد من Line ID قبل قراءة النتائج. Physical Fault/Dispatch يحوّل إلى Physical. للـBLQ يجب أن تكون بيانات Clear View صالحة؛ شغّل الإجراء المعتمد للتحديث بعد Main Wire إن كان مسموحًا.",
+    "source_reference": "day 9.pdf ص 3-7؛ SLA.pdf ص 11 و13."
+  },
+  "blq_refresh": {
+    "question": "صحح مصدر القراءة، ثم شغّل Clear View المعتمد. هل Last Fix أصبح خلال آخر 24 ساعة؟",
+    "options": [
+      {
+        "label": "نعم؛ ظهرت Physical Fault/Dispatch",
+        "next_step": "physical_from_logical_terminal"
+      },
+      {
+        "label": "نعم؛ لا يوجد Physical Fault",
+        "next_step": "blq_line_quality"
+      },
+      {
+        "label": "تعذر تحديث القراءة أو Line ID غير مطابق",
+        "next_step": "blq_alternate_check"
+      }
+    ],
+    "action": "تأكد من أن العميل على Main Wire وفق الإرشاد، وأزل Splitter فقط إذا الإجراء آمن ومسموح. لا تطلب فتح أو لمس أسلاك خطرة.",
+    "source_reference": "day 9.pdf ص 3-6؛ شرط حداثة Last Fix ليس SLA للعميل."
+  },
+  "blq_alternate_check": {
+    "question": "ASSIA غير متاح؛ ما أقرب نتيجة بديلة معتمدة في النظام؟",
+    "options": [
+      {
+        "label": "يوجد مؤشر Physical/Dispatch",
+        "next_step": "physical_from_logical_terminal"
+      },
+      {
+        "label": "لا Physical؛ القياس أقل من Profile",
+        "next_step": "blq_line_quality"
+      },
+      {
+        "label": "لا يوجد قياس/نتيجة صالحة",
+        "next_step": "slowness_inconclusive"
+      }
+    ],
+    "action": "لا تستنتج BLQ من غياب ASSIA. استخدم Matrix/CST360 الحالي، ووثّق عدم توفر ASSIA.",
+    "source_reference": "day 9.pdf ص 3-7."
+  },
+  "blq_line_quality": {
+    "question": "لا يوجد Physical Fault؛ قارن Operational/Attainable/Profile/Contracted speed في أداة اليوم. ما النتيجة؟",
+    "options": [
+      {
+        "label": "القراءة ضمن مصفوفة/النطاق الحالي",
+        "next_step": "speed_within_range"
+      },
+      {
+        "label": "فرق/جودة خط غير طبيعية؛ مؤهل لشكوى BLQ",
+        "next_step": "blq_escalation"
+      },
+      {
+        "label": "لا توجد نغمة/الصوت متأثر",
+        "next_step": "voice_down_terminal"
+      },
+      {
+        "label": "النتيجة لا تطابق مصفوفة حالية",
+        "next_step": "slowness_inconclusive"
+      }
+    ],
+    "action": "استخدم عتبات ADSL/VDSL حسب Matrix/CST360 الحالي فقط؛ أرقام day 9 تاريخية. تأكد من Voice Verification إذا كان مطلوبًا لنوع الشكوى. عدم وجود Physical لا يعني تلقائيًا أن السرعة سليمة.",
+    "source_reference": "day 9.pdf ص 5-10؛ SLA.pdf ص 11 و13."
+  },
+  "blq_optimization": {
+    "question": "Need Optimization ظاهر مع عدم وجود Physical Fault.",
+    "options": [],
+    "action": "سجّل نتيجة ASSIA/Matrix والـProfile وراجع مسار Optimization الحالي. لا تصعّد BLQ قبل إتمام التحسين أو تحقق أهلية التصعيد. SLA.pdf يذكر ساعة لمسار Optimization؛ أكّدها في TTS.",
+    "customer_script": "الخط يحتاج خطوة تحسين قبل تحديد الشكوى المناسبة. هراجع الإجراء والمهلة المسجلين عندي وأبلغك بالمتابعة.",
+    "sla": "المهلة الظاهرة في TTS فقط؛ التدريب يذكر ساعة لمسار Optimization.",
+    "source_reference": "SLA.pdf ص 13؛ يذكر ساعة لـNeed Optimization، مع وجوب تأكيدها من TTS الحالي."
+  },
+  "blq_escalation": {
+    "question": "جودة الخط خارج النطاق الحالي؛ جهّز شكوى BLQ.",
+    "options": [],
+    "action": "تأكد من الباقة والقياس وASSIA/Last Fix وLine ID، وأكمل Voice Verification إذا الإجراء يطلبها. سجّل الخطوات ونتائج Clear View/Matrix، ثم حدّث أو أنشئ شكوى BLQ المؤهلة فقط. أبلغ العميل برقمها والـSLA الظاهرين. SLA.pdf يذكر 24 ساعة؛ تحقق من TTS.",
+    "customer_script": "القياس يوضح مشكلة في جودة الخط. هسجل الشكوى برقم {رقم التذكرة الظاهر} والمهلة الظاهرة {SLA النظام}.",
+    "sla": "SLA.pdf: 24 ساعة؛ أبلغ بالمهلة الرسمية الظاهرة في TTS/التذكرة فقط.",
+    "source_reference": "day 9.pdf ص 5-10؛ SLA.pdf ص 11 و13 يذكر 24 ساعة؛ أكّد المهلة من TTS."
+  },
+  "gaming_start": {
+    "question": "مشكلة Gaming: هل هي Ping/تقطيع أم اللعبة لا تعمل/توافق؟",
+    "options": [
+      {
+        "label": "Ping مرتفع أو تقطيع أثناء اللعب",
+        "next_step": "gaming_assia"
+      },
+      {
+        "label": "اللعبة لا تعمل أو مشكلة توافق/إعدادات",
+        "next_step": "gaming_compatibility"
+      },
+      {
+        "label": "بث أو IPTV/SIP-TV",
+        "next_step": "slowness_site_specific"
+      }
+    ],
+    "customer_prompt": "المشكلة Ping عالي أثناء اللعب، ولا اللعبة نفسها مش بتفتح/فيها توافق؟",
+    "action": "تأكد من TT/Outage والحساب/الباقة أولًا. افحص ASSIA/Clear View؛ عالج Physical/BLQ قبل Gaming. سجّل اسم اللعبة والجهاز والتقنية. Streaming/IPTV لا يصنف Gaming/IOT حسب guide.",
+    "source_reference": "day 12.pdf ص 7-11؛ day 10.pdf ص 14-17."
+  },
+  "gaming_assia": {
+    "question": "افحص ASSIA/Clear View أولًا. هل يوجد Physical Fault أو مشكلة خط؟",
+    "options": [
+      {
+        "label": "Physical Fault/Dispatch أو BLQ",
+        "next_step": "physical_from_logical_terminal"
+      },
+      {
+        "label": "No DSL Physical-Layer issue؛ لا عطل خط ظاهر",
+        "next_step": "gaming_high_ping"
+      },
+      {
+        "label": "ASSIA غير مدعوم/غير حاسم",
+        "next_step": "gaming_review"
+      }
+    ],
+    "action": "إذا ظهر Physical، لا تتابع حلول Ping قبل إتمام Physical/BLQ. No DSL Physical لا يضمن وحده أن المسار خالٍ من كل أسباب الشبكة.",
+    "source_reference": "day 12.pdf ص 7-9؛ day 11.pdf ص 1-4."
+  },
+  "gaming_high_ping": {
+    "question": "نفذ الخطوات المسموح بها بالترتيب واختبر Ping بعد كل خطوة. ما النتيجة؟",
+    "options": [
+      {
+        "label": "تحسن بعد ضبط MTU المعتمد إلى 1420",
+        "next_step": "resolved_terminal"
+      },
+      {
+        "label": "لم يتحسن؛ جرّب Google DNS ثم أعد الاختبار",
+        "next_step": "gaming_google_dns"
+      },
+      {
+        "label": "ما زال مرتفعًا؛ جرّب Cloudflare DNS ثم أعد الاختبار",
+        "next_step": "gaming_cloudflare"
+      },
+      {
+        "label": "تحقق CST360 يظهر Congestion/Within Ratio",
+        "next_step": "logical_instability_congested_terminal"
+      },
+      {
+        "label": "غير واضح أو لا أملك صلاحية الإعداد",
+        "next_step": "gaming_review"
+      }
+    ],
+    "action": "اتبع إجراء اليوم لـMTU 1420 وDNS فقط، وغيّر خطوة واحدة كل مرة. لا تطلب بيانات دخول الراوتر ولا تنفذ إعدادًا غير معتمد.",
+    "source_reference": "day 12.pdf ص 8-10؛ MTU/DNS يتأكدان من الإجراء الحالي قبل النصح."
+  },
+  "gaming_google_dns": {
+    "question": "بعد Google DNS وإعادة الاختبار، هل تحسن Ping؟",
+    "options": [
+      {
+        "label": "نعم",
+        "next_step": "resolved_terminal"
+      },
+      {
+        "label": "لا؛ انتقل للخطوة التالية المعتمدة",
+        "next_step": "gaming_cloudflare"
+      }
+    ],
+    "action": "استخدم القيم التي تحددها أداة/إجراء الشركة الحالي ولا تحفظها كإعداد دائم إذا كانت غير معتمدة.",
+    "source_reference": "day 12.pdf ص 9."
+  },
+  "gaming_cloudflare": {
+    "question": "بعد Cloudflare DNS وإعادة الاختبار، هل تحسن Ping؟",
+    "options": [
+      {
+        "label": "نعم",
+        "next_step": "resolved_terminal"
+      },
+      {
+        "label": "لا؛ افحص CST360 Congestion/Within Ratio",
+        "next_step": "gaming_congestion"
+      }
+    ],
+    "action": "وثّق القيم قبل/بعد ونوع الجهاز واللعبة.",
+    "source_reference": "day 12.pdf ص 9-10."
+  },
+  "gaming_congestion": {
+    "question": "هل نتيجة CST360 هي Congested/Within Ratio أم Not Congested؟",
+    "options": [
+      {
+        "label": "Congested/Within Ratio",
+        "next_step": "logical_instability_congested_terminal"
+      },
+      {
+        "label": "Not Congested؛ المشكلة مستمرة",
+        "next_step": "gaming_ticket"
+      },
+      {
+        "label": "غير متاح/غير واضح",
+        "next_step": "gaming_review"
+      }
+    ],
+    "action": "لو ازدحام استخدم نص NOC/Utilization الحالي ولا تنشئ Gaming ticket مكررًا دون أهلية.",
+    "source_reference": "day 12.pdf ص 9-10؛ day 13.pdf ص 11-13."
+  },
+  "gaming_ticket": {
+    "question": "حلول Gaming لم تحل المشكلة؛ ابحث عن حالة سابقة ثم سجل المؤهلة.",
+    "options": [],
+    "action": "ابحث عن IReport/Case مفتوحة أو In Progress أولًا؛ حدّثها ولا تكررها. سجل رقم الخدمة/الأرضي، العميل، اللعبة، High Ping أو Compatibility، Basic Troubleshooting، الجهاز، التقنية، الحالة ووسيلة الاتصال المطلوبة. بعد الإنشاء أبلغ العميل بالرقم الفعلي. مهلة 15 دقيقة في التدريب فقط؛ لا تعد بها إلا إذا ظهرت في النظام الحالي.",
+    "customer_script": "سجلت المتابعة برقم {رقم الحالة الظاهر}. المهلة المتاحة عندي {المهلة الظاهرة بالنظام}.",
+    "sla": "المهلة حسب IReport الحالي؛ لا تعتمد 15 دقيقة من ملف التدريب وحده.",
+    "source_reference": "day 12.pdf ص 9-11. مهلة 15 دقيقة ومهلة إعادة الفتح/48 ساعة تحتاج تأكيدًا من IReport الحالي."
+  },
+  "gaming_compatibility": {
+    "question": "مشكلة توافق/إعدادات اللعبة وليست Ping.",
+    "options": [],
+    "action": "حدد اللعبة والجهاز والمنصة ورسالة الخطأ. جرّب شبكة/جهازًا آخر عند الإمكان، وافحص هل ألعاب/خدمات أخرى تعمل. راجع التوافق وإعدادات اللعبة من دليلها المعتمد. لا تنفذ فتح منافذ/تغيير أمان عشوائيًا. إن استمرت مشكلة خاصة بلعبة واحدة، اتبع تصنيف Compatibility في IReport وابحث عن حالة سابقة.",
+    "customer_script": "هحدد هل المشكلة من اللعبة أو الجهاز ولا من الاتصال، وهنراجع رسالة الخطأ والخطوات المسموح بها.",
+    "source_reference": "day 12.pdf ص 9-11. إعدادات اللعب تختلف حسب اللعبة والمنصة؛ لا توجد قيمة عامة واحدة."
+  },
+  "gaming_review": {
+    "question": "ASSIA/القياس غير حاسم؛ لا تغيّر إعدادات عشوائيًا.",
+    "options": [],
+    "action": "أعد فحص Line ID ووقت Clear View وأدوات اليوم. إذا بقيت النتيجة غير حاسمة، استشر الإجراء الحالي/المشرف وسجل نتيجة الفحص بدل إسناد السبب إلى Gaming أو العميل.",
+    "customer_script": "نتيجة الفحص غير كافية لتحديد السبب، هراجعها قبل ما أوجهك لإجراء ممكن ما يناسبش الحالة.",
+    "source_reference": "day 12.pdf ص 7-10."
+  },
+  "logical_other_symptom": {
+    "question": "اختر العَرَض الآخر",
+    "options": [
+      {
+        "label": "لا يوجد WAN IP",
+        "next_step": "no_ip_check"
+      },
+      {
+        "label": "مواقع لا تفتح",
+        "next_step": "browsing_check"
+      },
+      {
+        "label": "قراءات متعارضة أو خطأ من أدوات الفحص",
+        "next_step": "logical_variance_unclear"
+      }
+    ],
+    "customer_prompt": "هراجع العرض الظاهر عندي ونمشي في فحصه."
+  },
+  "logical_instability_unclear_terminal": {
+    "question": "نتيجة غير واضحة؛ أوقف التصنيف بدل التخمين.",
+    "options": [],
+    "action": "راجع Line ID والطابع الزمني ونتيجة ASSIA/NST في المصدر الحالي. إذا بقيت النتيجة غير واضحة، استشر المسار الحالي أو المشرف وسجّل ما تحقق فقط. لا تنشئ شكوى على فئة غير مؤكدة.",
+    "customer_script": "محتاج أتأكد من قراءة الخط قبل ما أحدد نوع المشكلة أو أديك مهلة. هراجعها وأوضح لك الخطوة التالية.",
+    "source_reference": "day 11.pdf ص 1-4؛ day 13.pdf ص 10-14. لا يوجد استنتاج آمن من بيانات ناقصة."
+  },
+  "logical_instability_wifi_or_drop": {
+    "question": "بعد استبعاد نفاد الباقة، هل الفصل بسبب انتقال الجهاز بين شبكتي Wi-Fi أم أن الخدمة نفسها تفصل؟",
+    "options": [
+      {
+        "label": "الجهاز يتأخر عند الانتقال بين 2.4 و5GHz",
+        "next_step": "logical_instability_band_switch"
+      },
+      {
+        "label": "الخدمة نفسها تفصل",
+        "next_step": "logical_instability_reset"
+      },
+      {
+        "label": "غير واضح؛ نحتاج اختبارًا آخر",
+        "next_step": "logical_instability_device_check"
+      }
+    ],
+    "customer_prompt": "هل الواي فاي بس اللي بيقطع أو بيتنقل بين شبكتين، ولا الإنترنت كله بيفصل؟",
+    "action": "اسأل عن الأعراض ولا تفترض توفر Dual Band. جرّب جهازًا واحدًا قرب الراوتر إن أمكن، دون اعتباره شرطًا.",
+    "source_reference": "day 13.pdf ص 12-14."
+  },
+  "logical_instability_band_switch": {
+    "question": "المشكلة مرتبطة بانتقال Wi-Fi بين النطاقات.",
+    "options": [],
+    "action": "تحقق أن الجهاز والراوتر والباقة يدعمون 2.4/5GHz. إذا أكد HDM/الاختبار تبديل النطاقات، اتبع الإجراء الحالي لضبط النطاقات؛ لا تطلب تعطيل 5GHz إلا إذا كان ذلك الإجراء معتمدًا لهذا الـCPE. أعد الاختبار.",
+    "customer_script": "المؤشرات بتقول إن التأخير مرتبط بتبديل الواي فاي. هراجع إعداد الراوتر المناسب لنوع جهازك ونجرب الاتصال تاني.",
+    "source_reference": "day 13.pdf ص 13-14. ورد تعطيل 5GHz في التدريب؛ تحقّق من الإجراء الحالي وتوافق الـCPE قبل تطبيقه."
+  },
+  "logical_instability_reset": {
+    "question": "بعد Reset & Reconfigure المعتمد، هل استقر الاتصال؟",
+    "options": [
+      {
+        "label": "نعم، استقر",
+        "next_step": "resolved_terminal"
+      },
+      {
+        "label": "لا، ما زال يفصل؛ اختبر CPE آخر إن توفر",
+        "next_step": "logical_instability_device_check"
+      },
+      {
+        "label": "تعذر تنفيذ الإعداد",
+        "next_step": "logical_instability_unclear_terminal"
+      }
+    ],
+    "customer_prompt": "هوجّهك لإعادة إعداد الراوتر بالطريقة المعتمدة، وبعدها نختبر هل الاتصال مستقر.",
+    "action": "أعد الإعداد حسب الإجراء الحالي. لو استمر العطل، جرّب جهازًا/نظام تشغيل أو CPE آخر إن توفر؛ ثم وثق النتيجة.",
+    "source_reference": "day 13.pdf ص 12-14."
+  },
+  "logical_verify_account": {
+    "question": "في BSS، هل حساب الإنترنت Active؟",
+    "options": [
+      {
+        "label": "Active",
+        "next_step": "logical_check_speed_variance"
+      },
+      {
+        "label": "Suspended أو حالته غير طبيعية",
+        "next_step": "logical_suspended_account"
+      },
+      {
+        "label": "الحالة غير واضحة",
+        "next_step": "billing_verify_terminal"
+      }
+    ],
+    "action": "تحقق من الحساب نفسه على BSS قبل خطوات Logical. لو Suspended افحص الفاتورة وسبب الإيقاف من النظام؛ لا تنفذ Remove Suspension/Restart Port إلا إذا كانت الأداة والإجراء الحاليان يسمحان بذلك.",
+    "source_reference": "day 11.pdf ص 2-3؛ day 13.pdf ص 12. استخدم حالة BSS الحالية."
+  },
+  "logical_check_speed_variance": {
+    "question": "هل توجد Speed Variance بين قراءة النظام والـProfile/السرعة المتعاقد عليها؟",
+    "options": [
+      {
+        "label": "نعم؛ Speed Variance مؤكدة",
+        "next_step": "speed_variance_terminal"
+      },
+      {
+        "label": "لا؛ أكمل تصنيف العَرَض المنطقي",
+        "next_step": "logical_start"
+      },
+      {
+        "label": "غير واضحة أو الباقة مستهلكة",
+        "next_step": "logical_variance_unclear"
+      }
+    ],
+    "action": "تعامل مع Speed Variance قبل بقية Logical حسب دليل verification. استبعد نفاد الباقة؛ لا تصنف انخفاض السرعة بسبب انتهاء السعة كـSpeed Variance.",
+    "source_reference": "day 11.pdf ص 2-3."
+  },
+  "logical_suspended_account": {
+    "question": "حالة الحساب Suspended؛ أوقف تشخيص Logical مؤقتًا.",
+    "options": [],
+    "action": "راجع سبب الإيقاف والفاتورة في BSS. إذا توجد مستحقات اتبع مسار الفوترة. إذا لا توجد مستحقات، لا ترفع الإيقاف إلا عبر الإجراء المخول؛ ثم أعد اختبار الخدمة. إذا ظلت المشكلة بعد عودة الحساب Active، ارجع لتصنيف Logical.",
+    "customer_script": "الحساب ظاهر عندي بحالة إيقاف، هراجع السبب والفاتورة الأول قبل ما أتابع فحص الاتصال.",
+    "source_reference": "day 11.pdf ص 2؛ بيانات الإيقاف وإجراء إزالته يتأكدان من BSS الحالي."
+  },
+  "logical_variance_unclear": {
+    "question": "لا يمكن تأكيد Speed Variance أو حالة الباقة.",
+    "options": [],
+    "action": "تحقق من Active status والباقة وقراءات Profile/Speed من CST360/BSS الحالي قبل متابعة أي مسار. لا تصعّد Speed Variance من قراءة قديمة أو بعد نفاد الباقة.",
+    "customer_script": "محتاج أراجع قراءة السرعة وحالة الباقة في النظام قبل ما أحدد نوع المشكلة.",
+    "source_reference": "day 11.pdf ص 2-3."
+  },
+  "physical_from_logical_terminal": {
+    "question": "المؤشرات تشير إلى Physical؛ أوقف مسار Logical.",
+    "options": [],
+    "action": "لا تكمل إجراءات Logical. ارجع للقائمة الرئيسية وابدأ مسار Physical؛ نفّذ Voice Verification قبل أي تصعيد Physical إذا كان الإجراء يطلبه. تأكد من عدم وجود Outage/Major Fault، وافحص التوصيلات بأمان.",
+    "customer_script": "القراءة تشير لمشكلة فيزيائية في الخط، هراجعها مع حضرتك من مسار الفحص الخاص بالتوصيلات.",
+    "source_reference": "day 9.pdf ص 3-9؛ day 11.pdf ص 1؛ day 13.pdf ص 10. ارجع لمسار Physical من البداية لتجنب خلط إجراءات Logical وPhysical."
+  },
+  "logical_instability_multiple_common": {
+    "question": "نفّذ Reset & Reconfigure المعتمد ثم اختبر الخدمة. ما النتيجة؟",
+    "options": [
+      {
+        "label": "استقر الاتصال",
+        "next_step": "resolved_terminal"
+      },
+      {
+        "label": "استمر الفصل؛ اختبر CPE آخر إن توفر",
+        "next_step": "logical_instability_device_check"
+      },
+      {
+        "label": "تعذر الإعداد أو لا يتوفر اختبار آخر",
+        "next_step": "logical_instability_escalation"
+      }
+    ],
+    "customer_prompt": "هنعيد إعداد الراوتر بالطريقة المعتمدة، وبعدها نختبر الاتصال.",
+    "action": "إذا استمرت المشكلة بعد الاختبار، جرّب CPE/جهازًا آخر إن توفر، ثم صعّد عند استيفاء الأهلية. سجّل النتائج والتوقيت بدل افتراض نوع الـLogin.",
+    "source_reference": "day 13.pdf ص 11-12؛ تصنيف الحد الزمني يحتاج تحققًا."
   }
 }

@@ -192,6 +192,7 @@ const COPY = {
         quickSla: 'مواعيد الـSLA', quickCodes: 'أكواد الإغلاق', quickPackages: 'الباقات', quickToolSearch: 'ابحث بالاسم أو الحالة أو الرقم أو المدة…',
         quickChangePackage: 'تغيير باقة',
         quickAccess: 'الوصول السريع', closeDrawer: 'إغلاق',
+        quickProblem: 'تشخيص مشكلة', quickInquiry: 'استفسار خدمة', quickRequest: 'طلب أو متابعة تركيب', quickBilling: 'فاتورة أو سداد', quickComplaint: 'شكوى أو تصعيد',
         openReference: 'مرجع الدعم', returnGuided: 'العودة لمساعد المكالمة',
         slaSearchPlaceholder: 'الحالة أو رقم الساعات/الأيام…', packageSearchPlaceholder: 'اسم الباقة أو السرعة أو السعة…', packagesNote: 'البحث يشمل السعة والسرعة والاسم والأسعار الموجودة في الجداول. عدد الأشخاص ليس تصنيفًا رسميًا في البيانات؛ استخدم الاستهلاك وعدد الأجهزة ولا تفترض سعة مناسبة من عدد الأفراد وحده.',
         noQuickMatches: 'لا توجد نتيجة مطابقة.', sourceCaution: 'مرجع تدريبي؛ طابق المهلة مع التذكرة الحالية قبل إبلاغ العميل.', packageAddons: 'إضافات',
@@ -221,6 +222,7 @@ const COPY = {
         quickSla: 'SLA lookup', quickCodes: 'Close codes', quickPackages: 'Packages', quickToolSearch: 'Search by name, case, code, or timeframe…',
         quickChangePackage: 'Change package',
         quickAccess: 'Quick access', closeDrawer: 'Close',
+        quickProblem: 'Troubleshoot a problem', quickInquiry: 'Service inquiry', quickRequest: 'Installation request or follow-up', quickBilling: 'Bill or payment', quickComplaint: 'Complaint or escalation',
         openReference: 'Support reference', returnGuided: 'Return to call guide',
         slaSearchPlaceholder: 'Case or hours/days…', packageSearchPlaceholder: 'Package name, speed, or quota…', packagesNote: 'Search covers the names, speeds, quotas, and prices in the available tables. Number of people is not an official package field; use actual usage and device count, and do not infer a quota from household size alone.',
         noQuickMatches: 'No matching entries.', sourceCaution: 'Training reference; verify the current ticket SLA before telling the customer.', packageAddons: 'Add-ons',
@@ -444,6 +446,17 @@ const App = {
 
         function openQuickTool(key) {
             quickDrawerOpen.value = false;
+            const directSteps = {
+                problem: 'preflight_start',
+                inquiry: 'inquiry_start',
+                request: 'request_start',
+                billing: 'billing_inquiry_start',
+                complaint: 'complaint_start',
+            };
+            if (directSteps[key]) {
+                jumpToStep(directSteps[key]);
+                return;
+            }
             if (key === 'change') {
                 jumpToStep('package_change_quick');
                 return;
@@ -974,7 +987,7 @@ const App = {
             ]),
             quickDrawerOpen.value ? h('div', { class: 'fixed inset-0 z-50 flex items-end justify-center', role: 'presentation' }, [
                 h('button', { class: 'absolute inset-0 bg-slate-950/40 backdrop-blur-[2px]', type: 'button', 'aria-label': t('closeDrawer'), onClick: () => { quickDrawerOpen.value = false; } }),
-                h('section', { class: 'quick-drawer relative z-10 w-full max-w-3xl rounded-t-3xl border border-slate-200 bg-white p-4 pb-6 shadow-2xl sm:mb-4 sm:rounded-3xl sm:p-5', role: 'dialog', 'aria-modal': 'true', 'aria-label': t('quickAccess') }, [
+                h('section', { class: 'quick-drawer relative z-10 max-h-[85vh] w-full max-w-3xl overflow-y-auto rounded-t-3xl border border-slate-200 bg-white p-4 pb-6 shadow-2xl sm:mb-4 sm:rounded-3xl sm:p-5', role: 'dialog', 'aria-modal': 'true', 'aria-label': t('quickAccess') }, [
                     h('div', { class: 'mx-auto mb-3 h-1 w-10 rounded-full bg-slate-300 sm:hidden' }),
                     h('div', { class: 'mb-4 flex items-center justify-between gap-3' }, [
                         h('h2', { class: 'm-0 text-lg font-bold text-slate-900' }, t('quickAccess')),
@@ -982,7 +995,7 @@ const App = {
                     ]),
                     h('p', { class: 'mb-4 text-sm leading-6 text-slate-600' }, language.value === 'ar' ? 'اختار الأداة مباشرة من أي خطوة في المكالمة.' : 'Open a support tool directly from any call step.'),
                     h('div', { class: 'grid grid-cols-2 gap-2 sm:grid-cols-4' }, [
-                        ...[['sla', t('quickSla'), 'clock'], ['codes', t('quickCodes'), 'ticket'], ['packages', t('quickPackages'), 'search'], ['change', t('quickChangePackage'), 'ticket'], ['reference', t('openReference'), 'search']].map(([key, label, iconName]) => h('button', {
+                        ...[['sla', t('quickSla'), 'clock'], ['codes', t('quickCodes'), 'ticket'], ['packages', t('quickPackages'), 'search'], ['change', t('quickChangePackage'), 'ticket'], ['reference', t('openReference'), 'search'], ['problem', t('quickProblem'), 'alert'], ['inquiry', t('quickInquiry'), 'chat'], ['request', t('quickRequest'), 'ticket'], ['billing', t('quickBilling'), 'search'], ['complaint', t('quickComplaint'), 'chat']].map(([key, label, iconName]) => h('button', {
                             class: 'app-control inline-flex min-h-20 flex-col items-center justify-center gap-2 rounded-2xl border px-3 py-3 text-center text-sm font-bold transition hover:border-blue-300 hover:bg-blue-50 active:scale-[0.98]',
                             type: 'button', onClick: () => openQuickTool(key),
                         }, [icon(iconName, 'size-5 text-blue-700'), label])),

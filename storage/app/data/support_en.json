@@ -1,8 +1,6 @@
 {
   "start": "start_menu",
   "operations_guide": {
-    "search": "Use the service number to open a line profile or follow a service order. Use Account Number or NAS Port ID when the tool asks for an IP or NST/NOC log lookup. Follow the field requested by the tool and confirm the result belongs to the same customer and service. Do not enter customer numbers on this website.",
-    "record": "Before troubleshooting: search TTS History by service number for a TT for the same fault, then check Outage/Customer360, billing/suspension status, and package usage. Record any existing ticket reference and update that TT instead of duplicating it. For a technical escalation, update/create the correct TT and update/create IR when the case path requires it. SR is for a service request or a Major Fault path when instructed; it does not replace a fault TT. Attach a Major Fault message screenshot to its SR when that process requires it. Create DLAY only after SLA breach or when required; check for an automatic ticket, renew SLA, and record delay as instructed. After creating/updating a ticket, tell the customer its reference and the SLA shown in the system.",
     "codes_note": "These FCC codes come from a dated training PDF. Use a code only when it matches the actual cause and the current TTS choices; never select by number alone.",
     "closure_codes": [
       {
@@ -149,34 +147,7 @@
         "code": "24",
         "reason": "Line out of service"
       }
-    ],
-    "outage_fields": {
-      "title": "How to read an Outage record in the system",
-      "note": "Open the outage record in the approved tool and search by service number or area as the screen allows. Treat it as a match only when status, service, and area align; do not rely on an ID alone or create outage data manually.",
-      "rows": [
-        {
-          "field": "الحالة (Status)",
-          "meaning": "Active / monitoring / resolved, as shown in the system"
-        },
-        {
-          "field": "النطاق والخدمات المتأثرة",
-          "meaning": "Area/exchange or scope and affected service; match these to the customer line"
-        },
-        {
-          "field": "وقت البداية وآخر تحديث",
-          "meaning": "Check the start time and latest update before advising the customer"
-        },
-        {
-          "field": "موعد الإصلاح أو التحديث المتوقع",
-          "meaning": "Quote only the official ETA shown; if absent, do not guess an SLA"
-        },
-        {
-          "field": "رقم المرجع والإجراء المطلوب",
-          "meaning": "Record the required reference internally and follow system instructions for SR/TT or screenshots"
-        }
-      ],
-      "terms": "outage major fault general fault affected area"
-    }
+    ]
   },
   "aggregator_payment_terminal": {
     "question": "Electronic Fawry/aggregator payment has not appeared.",

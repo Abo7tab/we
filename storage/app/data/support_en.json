@@ -502,7 +502,7 @@
     ]
   },
   "quota_precheck": {
-    "question": "Have you checked the package validity and usage, and is allowance still available?",
+    "question": "Check package usage and validity in the support systems.",
     "options": [
       {
         "label": "The package expired or allowance is exhausted",
@@ -516,7 +516,10 @@
         "label": "Usage could not be verified",
         "next_step": "quota_verify_terminal"
       }
-    ]
+    ],
+    "check_guidance": "In CST360, open the service and go to Offer Management > Top Applications & Consumption details; review the base package, usage/remaining allowance, and validity or renewal date. For a CST360 Redirect indication, check NST > Session Logs; for TDM, open Matrix > Get Online Service and check the Redirect status. Confirm the package and balance in BSS before classifying.",
+    "action": "If system data shows the package expired or no allowance remains, choose “The package expired or allowance is exhausted.” If it is active with allowance, choose “The package is active with allowance.” If CST360/Matrix/BSS does not show a confirmed result, choose “Usage could not be verified”; do not guess.",
+    "source_reference": "day 12.pdf p. 20 (Offer Management > Top Applications & Consumption details); day 11.pdf p. 4 (CST360/NST Session Logs or Matrix > Get Online Service for TDM); day 13.pdf (Check Quota and Exceed Quota flow)."
   },
   "technical_type": {
     "question": "Choose the issue type confirmed after the pre-checks.",

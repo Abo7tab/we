@@ -502,7 +502,7 @@
     ]
   },
   "quota_precheck": {
-    "question": "هل تأكدت من استهلاك الباقة وصلاحيتها، وهل ما زالت بها سعة متاحة؟",
+    "question": "افحص استهلاك الباقة وصلاحيتها في النظام.",
     "options": [
       {
         "label": "الباقة انتهت أو السعة استُهلكت",
@@ -516,7 +516,10 @@
         "label": "تعذر التحقق من الاستهلاك",
         "next_step": "quota_verify_terminal"
       }
-    ]
+    ],
+    "check_guidance": "لا تسأل العميل عن الاستهلاك؛ افحصه بنفسك. على CST360 افتح رقم الخدمة ثم Offer Management > Top Applications & Consumption details، وراجع الباقة الأساسية والاستهلاك/السعة المتبقية وصلاحية الباقة أو موعد التجديد. لمؤشر Redirect على CST360 راجع NST > Session Logs؛ ولخطوط TDM افتح Matrix > Get Online Service وافحص حالة Redirect. أكّد حالة الباقة والرصيد من بيانات الحساب في BSS قبل التصنيف.",
+    "action": "إذا أظهرت بيانات النظام أن الباقة انتهت أو لا توجد سعة متبقية، اختر «الباقة انتهت أو السعة استُهلكت». إذا كانت الباقة سارية وبها سعة، اختر «الباقة سارية وبها سعة». إذا لم تظهر بيانات مؤكدة في CST360/Matrix/BSS، اختر «تعذر التحقق» ولا تخمّن.",
+    "source_reference": "day 12.pdf ص 20 (Offer Management > Top Applications & Consumption details)؛ day 11.pdf ص 4 (CST360/NST Session Logs أو Matrix > Get Online Service لخط TDM)؛ day 13.pdf (Check Quota ومسار Exceed Quota)."
   },
   "technical_type": {
     "question": "اختر نوع المشكلة التي أكدها العميل بعد فحوصات ما قبل التشخيص.",

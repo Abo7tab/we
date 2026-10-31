@@ -776,43 +776,92 @@ const App = {
         }
 
         function renderDecisionMap() {
+            const focusId = treeMapFocusId.value;
             const focus = treeMapFocusStep.value;
             if (!focus) return h('p', { class: 'text-red-700', role: 'alert' }, t('missing'));
-            const terminal = focus.options?.length === 0;
-            const branches = treeMapBranches.value;
-            const count = branches.length;
-            const connectors = count ? h('svg', { class: 'decision-connectors', viewBox: '0 0 1000 128', preserveAspectRatio: 'none', 'aria-hidden': 'true' }, branches.map((branch, index) => {
-                const column = language.value === 'ar' ? count - index - 0.5 : index + 0.5;
-                const x = count === 1 ? 500 : (column / count) * 1000;
-                return h('g', { key: treeMapFocusId.value + '-' + index }, [
-                    h('path', { class: 'decision-connector-path', d: 'M500 0 C500 58 ' + x + ' 54 ' + x + ' 122' }),
-                    h('circle', { class: 'decision-connector-dot', cx: String(x), cy: '122', r: '7' }),
+
+            function chooseAtLevel(levelIndex, stepId, optionIndex) {
+                const option = tree.value?.[stepId]?.options?.[optionIndex];
+                if (!option || !tree.value?.[option.next_step]) return;
+                treeMapPath.value = [
+                    ...treeMapPath.value.slice(0, levelIndex),
+                    { stepId, optionIndex, nextStep: option.next_step },
+                ];
+                nextTick(() => document.querySelector('.decision-level.is-current')?.scrollIntoView({ behavior: 'smooth', block: 'center' }));
+            }
+
+            const levels = [
+                ...treeMapPath.value.map((entry, index) => ({
+                    id: entry.stepId,
+                    step: tree.value?.[entry.stepId],
+                    selectedIndex: entry.optionIndex,
+                    index,
+                    current: false,
+                })),
+                { id: focusId, step: focus, selectedIndex: null, index: treeMapPath.value.length, current: true },
+            ];
+
+            const renderedLevels = levels.filter((level) => level.step).map((level) => {
+                const options = level.step.options || [];
+                const count = options.length;
+                const connector = count ? h('svg', { class: 'decision-level-connectors', viewBox: '0 0 1000 100', preserveAspectRatio: 'none', 'aria-hidden': 'true' }, options.map((option, optionIndex) => {
+                    const column = language.value === 'ar' ? count - optionIndex - 0.5 : optionIndex + 0.5;
+                    const x = count === 1 ? 500 : (column / count) * 1000;
+                    return h('g', { key: level.id + '-wire-' + optionIndex }, [
+                        h('path', { class: 'decision-level-wire' + (level.selectedIndex === optionIndex ? ' is-selected' : ''), d: 'M500 0 C500 45 ' + x + ' 45 ' + x + ' 94' }),
+                        h('circle', { class: 'decision-level-dot' + (level.selectedIndex === optionIndex ? ' is-selected' : ''), cx: String(x), cy: '94', r: '6' }),
+                    ]);
+                })) : null;
+                const optionCards = options.map((option, optionIndex) => {
+                    const next = tree.value?.[option.next_step];
+                    const selected = level.selectedIndex === optionIndex;
+                    const isEnd = next?.options?.length === 0;
+                    return h('button', {
+                        class: 'decision-choice-node' + (selected ? ' is-selected' : '') + (isEnd ? ' is-ending' : ''),
+                        type: 'button',
+                        key: level.id + '-choice-' + optionIndex,
+                        onClick: () => chooseAtLevel(level.index, level.id, optionIndex),
+                        'aria-pressed': selected,
+                    }, [
+                        h('span', { class: 'decision-node-kicker' }, selected ? (language.value === 'ar' ? 'المسار المختار' : 'Chosen route') : (isEnd ? t('mapTerminal') : t('mapBranch') + ' ' + String(optionIndex + 1).padStart(2, '0'))),
+                        h('span', { class: 'decision-node-title' }, option.label || t('choose')),
+                        h('span', { class: 'decision-node-next' }, next?.question || t('incomplete')),
+                        isEnd && next?.action ? h('span', { class: 'decision-node-outcome' }, t('action') + ' ' + next.action) : null,
+                        isEnd && next?.sla ? h('span', { class: 'decision-node-sla' }, t('sla') + ' ' + next.sla) : null,
+                        h('span', { class: 'decision-node-enter' }, [selected ? (language.value === 'ar' ? 'المسار الحالي' : 'Current route') : (language.value === 'ar' ? 'اعرض هذا الفرع' : 'Follow this branch'), icon('arrow', 'size-4')]),
+                    ]);
+                });
+                const terminal = count === 0;
+                return h('section', { class: 'decision-level' + (level.current ? ' is-current' : ' is-past') + (terminal ? ' is-terminal' : ''), key: level.id + '-' + level.index }, [
+                    h('div', { class: 'decision-level-heading' }, [
+                        h('span', { class: 'decision-level-index' }, level.current ? icon(terminal ? 'alert' : 'question', 'size-5') : String(level.index + 1).padStart(2, '0')),
+                        h('div', { class: 'decision-level-question-wrap' }, [
+                            h('span', { class: 'decision-level-kicker' }, level.current ? (terminal ? t('mapTerminal') : count + ' ' + t('mapOptionsCount')) : (language.value === 'ar' ? 'السؤال السابق' : 'Previous decision')),
+                            h('h3', { class: 'decision-level-question' }, level.step.question),
+                            !terminal && level.step.check_guidance ? h('p', { class: 'decision-level-guidance' }, level.step.check_guidance) : null,
+                            !terminal && level.step.action ? h('p', { class: 'decision-level-guidance is-action' }, level.step.action) : null,
+                            !terminal && level.step.customer_prompt ? h('p', { class: 'decision-level-guidance is-customer' }, level.step.customer_prompt) : null,
+                        ]),
+                    ]),
+                    terminal ? h('div', { class: 'decision-ending-panel' }, [
+                        level.step.finding ? h('div', { class: 'decision-ending-finding' }, [h('b', t('mapFound')), h('p', level.step.finding)]) : null,
+                        level.step.action ? h('div', { class: 'decision-ending-action' }, [h('b', t('action')), h('p', level.step.action)]) : null,
+                        level.step.sla ? h('div', { class: 'decision-ending-sla' }, [icon('clock', 'size-5'), h('span', [h('b', t('sla')), h('strong', level.step.sla)])]) : null,
+                        level.step.customer_script ? h('div', { class: 'decision-ending-script' }, [h('b', t('customerScript')), h('p', level.step.customer_script)]) : null,
+                        level.step.source_reference ? h('details', { class: 'decision-ending-source' }, [h('summary', t('sourceReference')), h('p', level.step.source_reference)]) : null,
+                    ]) : h('div', { class: 'decision-level-branches' }, [
+                        connector,
+                        h('div', { class: 'decision-branch-grid', style: { gridTemplateColumns: 'repeat(' + Math.min(count, 4) + ', minmax(0, 1fr))' } }, optionCards),
+                    ]),
                 ]);
-            })) : null;
-            const branchNodes = branches.map(({ option, index, step, terminal: branchTerminal }) => h('article', { class: 'decision-node-wrap', key: treeMapFocusId.value + '-' + index }, [
-                h('button', { class: 'decision-choice-node' + (branchTerminal ? ' is-ending' : ''), type: 'button', onClick: () => exploreTreeBranch(index), 'aria-label': option.label + '. ' + (step?.question || '') }, [
-                    h('span', { class: 'decision-node-kicker' }, branchTerminal ? t('mapTerminal') : t('mapBranch') + ' ' + String(index + 1).padStart(2, '0')),
-                    h('span', { class: 'decision-node-title' }, option.label || t('choose')),
-                    h('span', { class: 'decision-node-next' }, step?.question || t('incomplete')),
-                    branchTerminal && step?.action ? h('span', { class: 'decision-node-outcome' }, t('action') + ' ' + step.action) : null,
-                    branchTerminal && step?.sla ? h('span', { class: 'decision-node-sla' }, t('sla') + ' ' + step.sla) : null,
-                    h('span', { class: 'decision-node-enter' }, [t('mapBranch'), icon('arrow', 'size-4')]),
-                ]),
-            ]));
-            const pathNodes = treeMapTrail.value.map((entry, index) => h('div', { class: 'decision-path-segment', key: entry.stepId + '-' + index }, [
-                h('button', { class: 'decision-path-node', type: 'button', onClick: () => { treeMapPath.value = treeMapPath.value.slice(0, index); }, title: entry.step?.question || '' }, [
-                    h('span', { class: 'decision-path-index' }, String(index + 1)),
-                    h('span', { class: 'decision-path-label' }, entry.option?.label || entry.step?.question || entry.stepId),
-                ]),
-                h('span', { class: 'decision-path-link', 'aria-hidden': 'true' }, '⌄'),
-            ]));
+            });
 
             return h('section', { class: 'decision-map', 'aria-label': t('mapTitle') }, [
                 h('div', { class: 'decision-map-head' }, [
                     h('div', [
                         h('p', { class: 'decision-eyebrow' }, t('treeMode')),
                         h('h2', { class: 'decision-map-title' }, t('mapTitle')),
-                        h('p', { class: 'decision-map-caption' }, t('mapIntro')),
+                        h('p', { class: 'decision-map-caption' }, language.value === 'ar' ? 'المسار السابق يظل ظاهرًا. اختار أي فرع لتبديل اتجاهه، أو كمل من آخر سؤال.' : 'Earlier decisions stay visible. Choose any branch to change direction, or continue from the latest question.'),
                     ]),
                     h('div', { class: 'decision-map-tools' }, [
                         h('button', { class: 'decision-tool-button', type: 'button', onClick: backTreeBranch, disabled: !treeMapPath.value.length }, [icon('back', 'size-4'), t('mapBackBranch')]),
@@ -825,39 +874,12 @@ const App = {
                     treeMapSearch.value ? h('button', { class: 'decision-search-clear', type: 'button', onClick: () => { treeMapSearch.value = ''; }, 'aria-label': t('closeDrawer') }, '×') : null,
                 ]),
                 treeMapSearch.value.trim() ? h('div', { class: 'decision-search-results', 'aria-live': 'polite' }, treeMapSearchResults.value.length ? treeMapSearchResults.value.map(({ id, step }) => h('button', { class: 'decision-search-result', key: id, type: 'button', onClick: () => openMapSearchResult(id) }, [h('span', [h('strong', step.question || id), h('small', step.action || step.finding || '')]), icon('arrow', 'size-4')])) : h('p', { class: 'decision-empty' }, t('mapSearchEmpty'))) : null,
-                treeMapTrail.value.length ? h('nav', { class: 'decision-path-map', 'aria-label': t('mapTrail') }, [
-                    h('span', { class: 'decision-path-start' }, t('mapRoot')),
-                    ...pathNodes,
-                    h('span', { class: 'decision-path-current' }, t('mapNext')),
-                ]) : null,
-                h(Transition, { name: 'map-node', mode: 'out-in' }, { default: () => h('div', { class: 'decision-scene', key: treeMapFocusId.value }, [
-                    h('div', { class: 'decision-canvas' }, [
-                        h('div', { class: 'decision-current-node' + (terminal ? ' is-ending' : '') }, [
-                            h('span', { class: 'decision-orbit decision-orbit-one' }),
-                            h('span', { class: 'decision-orbit decision-orbit-two' }),
-                            h('span', { class: 'decision-current-icon' }, [icon(terminal ? 'alert' : 'question', 'size-6')]),
-                            h('span', { class: 'decision-current-kicker' }, terminal ? t('mapTerminal') : count + ' ' + t('mapOptionsCount')),
-                            h('h3', { class: 'current-question decision-current-title' }, focus.question),
-                            !terminal && focus.customer_prompt ? h('p', { class: 'decision-current-hint' }, [h('b', t('askCustomer')), focus.customer_prompt]) : null,
-                            !terminal && focus.check_guidance ? h('p', { class: 'decision-current-hint' }, [h('b', t('checkGuidance')), focus.check_guidance]) : null,
-                            !terminal && focus.action ? h('p', { class: 'decision-current-hint is-agent-action' }, [h('b', t('whatToDo')), focus.action]) : null,
-                        ]),
-                        terminal ? h('div', { class: 'decision-ending-panel' }, [
-                            focus.finding ? h('div', { class: 'decision-ending-finding' }, [h('b', t('mapFound')), h('p', focus.finding)]) : null,
-                            focus.action ? h('div', { class: 'decision-ending-action' }, [h('b', t('action')), h('p', focus.action)]) : null,
-                            focus.sla ? h('div', { class: 'decision-ending-sla' }, [icon('clock', 'size-5'), h('span', [h('b', t('sla')), h('strong', focus.sla)])]) : null,
-                            focus.customer_script ? h('div', { class: 'decision-ending-script' }, [h('b', t('customerScript')), h('p', focus.customer_script)]) : null,
-                            focus.source_reference ? h('details', { class: 'decision-ending-source' }, [h('summary', t('sourceReference')), h('p', focus.source_reference)]) : null,
-                        ]) : h('div', { class: 'decision-branch-stage' }, [
-                            connectors,
-                            h(TransitionGroup, { name: 'tree-branch', tag: 'div', class: 'decision-branch-grid', style: { gridTemplateColumns: 'repeat(' + Math.min(count, 4) + ', minmax(0, 1fr))' } }, { default: () => branchNodes }),
-                        ]),
-                    ]),
-                    h('div', { class: 'decision-map-footer' }, [
-                        h('span', { class: 'decision-progress' }, treeMapPath.value.length ? treeMapPath.value.length + ' ' + t('mapVisits') : t('mapRoot')),
-                        h('button', { class: 'decision-open-guide', type: 'button', onClick: openMapFocusInGuide }, [icon('chat', 'size-4'), t('mapOpenCurrent')]),
-                    ]),
-                ]) }),
+                treeMapPath.value.length ? h('div', { class: 'decision-map-status' }, [h('span', { class: 'status-pulse' }), treeMapPath.value.length + ' ' + t('mapVisits'), h('span', language.value === 'ar' ? 'كل القرارات السابقة ظاهرة' : 'Earlier decisions remain visible')]) : null,
+                h(TransitionGroup, { name: 'tree-branch', tag: 'div', class: 'decision-tree-board' }, { default: () => renderedLevels }),
+                h('div', { class: 'decision-map-footer' }, [
+                    h('span', { class: 'decision-progress' }, treeMapPath.value.length ? treeMapPath.value.length + ' ' + t('mapVisits') : t('mapRoot')),
+                    h('button', { class: 'decision-open-guide', type: 'button', onClick: openMapFocusInGuide }, [icon('chat', 'size-4'), t('mapOpenCurrent')]),
+                ]),
             ]);
         }
 

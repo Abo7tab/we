@@ -115,6 +115,162 @@ body {
     background: #fff;
 }
 
+.decision-map-status {
+    display: flex;
+    align-items: center;
+    gap: .55rem;
+    margin: 1.15rem 0 .4rem;
+    border: 1px solid #6e56a949;
+    border-radius: .8rem;
+    background: linear-gradient(90deg,#7549a524,#42c7b30b);
+    padding: .65rem .85rem;
+    color: #e0d5ef;
+    font-size: .68rem;
+    font-weight: 800;
+}
+
+.decision-map-status > span:last-child {
+    margin-inline-start: auto;
+    color: #aeb8cc;
+    font-weight: 600;
+}
+
+.decision-tree-board {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-top: 1rem;
+    padding-inline-start: 1.5rem;
+}
+
+.decision-tree-board::before {
+    position: absolute;
+    top: 1.75rem;
+    bottom: 2.2rem;
+    inset-inline-start: .5rem;
+    width: 1px;
+    background: linear-gradient(#ab82d6,#54d2c3 55%,#ab82d6);
+    box-shadow: 0 0 14px #9864c466;
+    content: '';
+}
+
+.decision-level {
+    position: relative;
+    min-width: 0;
+    padding: .75rem 0 2.25rem;
+    animation: tree-level-in .45s cubic-bezier(.2,.8,.2,1) both;
+}
+
+.decision-level::before {
+    position: absolute;
+    top: 2.1rem;
+    inset-inline-start: -1rem;
+    width: 1rem;
+    border-top: 1px solid #a37bc5;
+    content: '';
+}
+
+.decision-level::after {
+    position: absolute;
+    z-index: 3;
+    top: 1.84rem;
+    inset-inline-start: -.65rem;
+    width: .5rem;
+    height: .5rem;
+    border: 2px solid #dbc4f1;
+    border-radius: 50%;
+    background: #20213b;
+    box-shadow: 0 0 12px #a575cd8c;
+    content: '';
+}
+
+.decision-level-heading {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    max-width: 61rem;
+    align-items: flex-start;
+    gap: .85rem;
+    border: 1px solid #ffffff2a;
+    border-inline-start: 3px solid #9262ba;
+    border-radius: 1rem;
+    background: linear-gradient(110deg,#1b2639f5,#211a35f5);
+    padding: 1rem 1.1rem;
+    box-shadow: 0 14px 35px #07091642,inset 0 1px #ffffff10;
+}
+
+.decision-level.is-current .decision-level-heading {
+    border-color: #91ddd04d;
+    border-inline-start-color: #63d6bf;
+    background: linear-gradient(110deg,#183343fa,#231c3af8);
+    box-shadow: 0 18px 48px #07091666,0 0 28px #43c7b51c,inset 0 1px #ffffff18;
+}
+
+.decision-level.is-terminal .decision-level-heading {
+    border-inline-start-color: #65d5a1;
+    background: linear-gradient(110deg,#173a36,#1c263a);
+}
+
+.decision-level-index {
+    display: grid;
+    width: 2.4rem;
+    height: 2.4rem;
+    flex: 0 0 auto;
+    place-items: center;
+    border: 1px solid #ffffff2e;
+    border-radius: .8rem;
+    background: #ffffff0c;
+    color: #d2b9ef;
+    font-size: .7rem;
+    font-weight: 900;
+}
+
+.decision-level.is-current .decision-level-index { color: #9fe8dc; }
+.decision-level.is-terminal .decision-level-index { color: #a7f3d0; }
+.decision-level-question-wrap { min-width: 0; }
+.decision-level-kicker { display: block; margin-bottom: .25rem; color: #c6a9e2; font-size: .61rem; font-weight: 900; letter-spacing: .06em; text-transform: uppercase; }
+.decision-level-question { margin: 0; color: #f6f1ff; font-size: clamp(.9rem,1.8vw,1.16rem); font-weight: 850; line-height: 1.7; }
+.decision-level-guidance { margin: .55rem 0 0; color: #bec8d8; font-size: .73rem; line-height: 1.75; }
+.decision-level-guidance.is-action { color: #e4c295; }
+.decision-level-guidance.is-customer { color: #a4e4cb; }
+.decision-level-branches { position: relative; min-width: 0; }
+.decision-level-connectors { position: absolute; z-index: 0; top: 0; inset-inline: 0; width: 100%; height: 5.5rem; overflow: visible; }
+.decision-level-wire { fill: none; stroke: #9b7abc; stroke-dasharray: 6 7; stroke-width: 2; opacity: .74; animation: tree-path-flow 3s linear infinite; }
+.decision-level-wire.is-selected { stroke: #7ee2d1; stroke-width: 3; opacity: 1; filter: drop-shadow(0 0 4px #7ee2d180); }
+.decision-level-dot { fill: #161b2c; stroke: #bf9bdd; stroke-width: 2.5; }
+.decision-level-dot.is-selected { fill: #77dec9; stroke: #d6fff5; }
+.decision-level .decision-branch-grid { padding-top: 5rem; }
+.decision-level .decision-choice-node { position: relative; z-index: 1; min-height: 9rem; }
+.decision-level .decision-choice-node.is-selected {
+    border-color: #77dec9 !important;
+    border-top-color: #77dec9 !important;
+    background: linear-gradient(145deg,#164044f8,#1d2c43f8) !important;
+    box-shadow: 0 0 0 2px #77dec933,0 14px 34px #07142070,inset 0 1px #ffffff16 !important;
+}
+.decision-level .decision-choice-node.is-selected .decision-node-kicker,
+.decision-level .decision-choice-node.is-selected .decision-node-enter { color: #9debdc !important; }
+.decision-level .decision-choice-node.is-selected .decision-node-title { color: #f2fffc !important; }
+.decision-level .decision-ending-panel { position: relative; z-index: 1; margin-top: 1.25rem; }
+
+@keyframes tree-level-in { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+
+@media (max-width: 639px) {
+    .decision-tree-board { padding-inline-start: 1.05rem; }
+    .decision-tree-board::before { inset-inline-start: .32rem; }
+    .decision-level { padding-bottom: 1.5rem; }
+    .decision-level::before { inset-inline-start: -.75rem; width: .75rem; }
+    .decision-level::after { inset-inline-start: -.5rem; }
+    .decision-level-heading { gap: .6rem; border-radius: .8rem; padding: .8rem; }
+    .decision-level-index { width: 2rem; height: 2rem; border-radius: .65rem; }
+    .decision-level .decision-level-connectors { display: none; }
+    .decision-level .decision-branch-grid { grid-template-columns: 1fr !important; gap: .65rem; padding-top: 1.2rem; }
+    .decision-level-branches::before { position: absolute; top: 0; inset-inline-start: 1rem; bottom: .5rem; width: 1px; background: repeating-linear-gradient(to bottom,#ad88cf 0 5px,transparent 5px 10px); content: ''; }
+    .decision-level .decision-choice-node { min-height: 0; width: calc(100% - .9rem); margin-inline-start: .9rem; }
+    .decision-level .decision-choice-node::before { position: absolute; top: 1.3rem; inset-inline-start: -.9rem; width: .9rem; border-top: 1px solid #ad88cf; content: ''; }
+    .decision-map-status { flex-wrap: wrap; }
+}
+
 .decision-map-head {
     display: flex;
     align-items: flex-start;

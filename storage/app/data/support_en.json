@@ -2,26 +2,30 @@
   "start": "start_menu",
   "operations_guide": {
     "search": "Use the service number to open a line profile or follow a service order. Use Account Number or NAS Port ID when the tool asks for an IP or NST/NOC log lookup. Follow the field requested by the tool and confirm the result belongs to the same customer and service. Do not enter customer numbers on this website.",
-    "record": "Technical fault: update the existing TT with all checks. When escalation is required, create/update the IR record according to the case path. An SR (Service Request) is for a new service or a customer-requested change, not a replacement for a fault TT. Create DLAY only after the SLA is breached or when the case path requires it; first check that an automatic delay ticket does not already exist, then renew the SLA and record the delay in I-Report/Cases as instructed."
+    "record": "Technical fault: update the existing TT with all checks. When escalation is required, create/update the IR record according to the case path. An SR (Service Request) is for a new service or a customer-requested change, not a replacement for a fault TT. Create DLAY only after the SLA is breached or when the case path requires it; first check that an automatic delay ticket does not already exist, then renew the SLA and record the delay in I-Report/Cases as instructed.",
+    "codes_note": "These FCC codes come from a dated training PDF. Use a code only when it matches the actual cause and the current TTS choices; never select by number alone.",
+    "closure_codes": [
+      {"code":"2","reason":"Line stable / no problem found"},{"code":"86","reason":"Problem solved after changing customer CPE"},{"code":"87","reason":"Problem solved after changing splitter"},{"code":"8","reason":"Problem solved after fixing internal wiring"},{"code":"9","reason":"Problem solved after fixing external wire"},{"code":"12","reason":"Problem solved after changing external wire"},{"code":"10","reason":"Problem solved after changing internal wiring"},{"code":"13","reason":"Problem solved after fixing from box side"},{"code":"11","reason":"Problem solved after fixing from cabin side"},{"code":"14","reason":"Problem solved after fixing from exchange"},{"code":"18","reason":"Problem solved after voice resplit"},{"code":"35","reason":"Split after contract change"},{"code":"6","reason":"New installation"},{"code":"59","reason":"Problem solved after changing new port"},{"code":"83","reason":"Internal wiring and cannot be solved"},{"code":"20","reason":"Major fault"},{"code":"84","reason":"Internal wiring; customer refuses to change it"},{"code":"81","reason":"Internal problem - cable maintenance needed"},{"code":"82","reason":"External problem - cable maintenance needed"},{"code":"75","reason":"Splitter problem - customer has no spare"},{"code":"74","reason":"Customer CPE problem"},{"code":"65","reason":"CPE configuration required; match the current TTS label"},{"code":"38","reason":"Stalagmite problem (label as shown in table)"},{"code":"17","reason":"Customer unavailable - schedule in comment"},{"code":"28","reason":"Customer refused visit / refused entry"},{"code":"96","reason":"Customer did not answer"},{"code":"26","reason":"Engineering inspection"},{"code":"19","reason":"Internal network - close compound"},{"code":"29","reason":"Customer phone device problem"},{"code":"23","reason":"Customer voice-service invoice problem"},{"code":"4","reason":"Work order not finished"},{"code":"30","reason":"Unavailable as per customer request"},{"code":"7","reason":"Installation failed"},{"code":"27","reason":"Address modification"},{"code":"73","reason":"Installation refused by customer"},{"code":"24","reason":"Line out of service"}
+    ]
   },
   "start_menu": {
-    "question": "What type of issue or customer request is this?",
+    "question": "What is the reason for the call? Choose the request type; for faults, check TTS History before troubleshooting.",
     "options": [
-      { "label": "Physical issue: ADSL light, cable, or landline", "next_step": "physical_start" },
-      { "label": "Logical issue: no IP, browsing, or slowness", "next_step": "logical_start" },
+      { "label": "Internet outage/slow speed or DSL issue", "next_step": "physical_start" },
       { "label": "Landline or voice issue", "next_step": "voice_start" },
       { "label": "New installation or installation follow-up", "next_step": "request_start" },
       { "label": "Package, service, or general inquiry", "next_step": "inquiry_start" },
-      { "label": "Complaint or escalation", "next_step": "complaint_start" }
+      { "label": "Complaint or escalation", "next_step": "complaint_start" },
+      { "label": "Exception or close code shown in TTS History", "next_step": "exceptions_start" }
     ]
   },
   "physical_start": {
-    "question": "What is the DSL/ADSL light doing when the issue occurs?",
+    "question": "Ask the customer to check the router's DSL/ADSL light. What does it do during the issue?",
     "options": [
-      { "label": "Off or repeatedly disconnecting", "next_step": "power_check" },
-      { "label": "Stable, but the internet disconnects", "next_step": "instability_visit" },
-      { "label": "Only landline voice is affected", "next_step": "voice_start" },
-      { "label": "Stable; browsing or IP is the issue", "next_step": "logical_start" }
+      { "label": "Off", "next_step": "power_check" },
+      { "label": "Disconnecting or blinking", "next_step": "instability_visit" },
+      { "label": "Stable, but no IP, browsing, or speed is affected", "next_step": "logical_start" },
+      { "label": "Customer cannot identify the light", "next_step": "dsl_status_unknown" }
     ]
   },
   "power_check": {
@@ -30,6 +34,13 @@
       { "label": "No, it is off or unstable", "next_step": "power_terminal" },
       { "label": "Yes, it is steady", "next_step": "data_down_logs" }
     ]
+  },
+  "dsl_status_unknown": {
+    "question": "Ask the customer to read the DSL/ADSL light on the router, or check a router photo if available.",
+    "action": "Do not classify the issue as physical or logical until the light status is known. Use the router model guide if the light has a different name.",
+    "customer_script": "Could you check the router and tell me whether the DSL or ADSL light is off, steady, or blinking?",
+    "sla": "Continue troubleshooting after identifying the light status",
+    "options": []
   },
   "power_terminal": {
     "question": "The router may have a power supply issue.",
@@ -377,9 +388,240 @@
   },
   "resolved_terminal": {
     "question": "The customer confirmed that service returned after troubleshooting.",
-    "action": "Retest the service, record the step that solved the issue and the customer's confirmation, then close the ticket with the correct resolution code.",
+    "action": "Retest the service and record the resolution and customer confirmation. Open the close-code table below and match its description to the actual TTS reason before closing. If none match, do not guess; ask the responsible lead.",
     "customer_script": "Great. Is the service working normally now? I have recorded the step that fixed the issue. Thank you for confirming.",
     "sla": "Resolved during the call",
+    "options": []
+  },
+  "exceptions_start": {
+    "question": "Did TTS History show one of these special cases or close-code updates? Check open and closed history before troubleshooting.",
+    "options": [
+      {"label":"Close Code 74: CPE problem in the last 30 days","next_step":"exception_74"},
+      {"label":"Close Code 81 or 82: cable maintenance","next_step":"exception_8182"},
+      {"label":"Close Code 67: Data Ports problem","next_step":"exception_67"},
+      {"label":"Close Code 27: address modification","next_step":"exception_27"},
+      {"label":"Close Code 24: landline out of service","next_step":"exception_24"},
+      {"label":"Outside TEData: FCC in another department on the same line","next_step":"exception_outside"},
+      {"label":"Major Fault: voice returned but internet remains affected","next_step":"exception_major"},
+      {"label":"Close Code 28: customer refused a visit","next_step":"exception_28"},
+      {"label":"Physical Instability Contradiction: customer reports drops but ASSIA shows no physical layer","next_step":"exception_contradiction"}
+    ]
+  },
+  "exception_74": {
+    "question": "Is the customer in Cairo/Alexandria or another governorate?",
+    "options": [
+      {"label":"Cairo or Alexandria: router inspection at branch","next_step":"exception_74_cairo"},
+      {"label":"Another governorate: test an alternate router","next_step":"exception_74_other"}
+    ]
+  },
+  "exception_74_cairo": {
+    "question": "Was the router inspected at a branch and does the issue remain, with BLQ, Physical Instability, or Data Down in TTS history?",
+    "options": [
+      {"label":"Yes, inspection and history criteria are met","next_step":"exception_74_escalate"},
+      {"label":"No, inspection or another criterion is missing","next_step":"exception_74_branch"}
+    ]
+  },
+  "exception_74_other": {
+    "question": "Was another router tested and does the issue remain, with BLQ, Physical Instability, or Data Down in TTS history?",
+    "options": [
+      {"label":"Yes, test and history criteria are met","next_step":"exception_74_escalate"},
+      {"label":"No, test or another criterion is missing","next_step":"exception_74_test"}
+    ]
+  },
+  "exception_74_branch": {
+    "question": "The Code 74 CPE path for Cairo/Alexandria requires branch router inspection.",
+    "action": "Ask the customer to visit a branch for router inspection. The training guide does not replace this with an alternate-router test for Cairo/Alexandria. Return to this flow after documenting inspection.",
+    "customer_script": "We need the router inspected at a branch first. If the issue remains after inspection, we will continue with the appropriate escalation steps.",
+    "sla": "Do not escalate this path before branch inspection is documented",
+    "options": []
+  },
+  "exception_74_test": {
+    "question": "The Code 74 path in other governorates requires an alternate CPE test.",
+    "action": "Ask the customer to test another router through the approved process and document the result. Never ask for the router password. If the issue remains, check TTS history for BLQ, Physical Instability, or Data Down.",
+    "customer_script": "Let us test another suitable router and record the result; then I can choose the correct technical action.",
+    "sla": "Do not escalate this path before the test is documented",
+    "options": []
+  },
+  "exception_74_escalate": {
+    "question": "The issue remains after CPE inspection, and a qualifying TTS case is present.",
+    "action": "The training guide says to close the current TTS complaint and create a new TT with Technical Visit category; it lists a 24-hour SLA and phone contact. If delayed, create/update IR and renew one day as instructed. Verify current category and SLA in the live system before acting.",
+    "customer_script": "I have documented the router inspection and continuing issue. I will follow up with the specialist team by phone according to the SLA shown in the system.",
+    "sla": "24 hours in the case guide; confirm in the system",
+    "options": []
+  },
+  "exception_8182": {
+    "question": "Is Close Code 81/82 in TTS history, and have you checked that there is no Major Fault?",
+    "options": [
+      {"label":"Yes, code is present and no Major Fault exists","next_step":"exception_8182_action"},
+      {"label":"Major Fault exists or has not been checked","next_step":"exception_major_check"}
+    ]
+  },
+  "exception_8182_action": {
+    "question": "Close Code 81/82: internal or external cable maintenance.",
+    "action": "Run the normal physical checks and verify Major Fault first. The guide says to assume direct connection and skip asking for another main-wire test. Then re-escalate the existing ticket and record the actual TTS code/result.",
+    "customer_script": "I reviewed the fault history and checks, and will follow up on the existing case with the responsible team.",
+    "sla": "Check the current SLA in TTS",
+    "options": []
+  },
+  "exception_67": {
+    "question": "Is Close Code 67 shown on a previous ticket, and have you checked for a general outage?",
+    "options": [
+      {"label":"Yes, code exists and no outage is present","next_step":"exception_67_action"},
+      {"label":"Code is absent or outage has not been checked","next_step":"exception_major_check"}
+    ]
+  },
+  "exception_67_action": {
+    "question": "The guide associates Close Code 67 with a Data Ports problem.",
+    "action": "Check for a general outage, complete normal checks, and re-escalate the ticket to the responsible team. For Hayah Karima/repeated CPE, confirm the current path applies. Do not duplicate a ticket or use this code as proof the fault is fixed.",
+    "customer_script": "I will check the general network status and test results, then follow up on the ticket with the responsible team.",
+    "sla": "Use the current ticket SLA",
+    "options": []
+  },
+  "exception_27": {
+    "question": "Is there an FTTH Migration Order linked to the Address Modification / Close Code 27 update?",
+    "options": [
+      {"label":"Yes, an FTTH migration order exists","next_step":"exception_27_migration"},
+      {"label":"No order exists","next_step":"exception_27_branch"}
+    ]
+  },
+  "exception_27_migration": {
+    "question": "An FTTH Migration Order exists.",
+    "action": "Follow the current order stage and the approved FTTH Migration script in the Wiki. Search by service/order number, record the stage, and do not open a duplicate request.",
+    "customer_script": "I will check the stage of your fiber migration order and explain its current update and next step.",
+    "sla": "According to the current order stage and system SLA",
+    "options": []
+  },
+  "exception_27_branch": {
+    "question": "No FTTH Migration Order is linked to the address change.",
+    "action": "The training guide directs the customer to the branch accounts department with the documents required for address modification. Verify current document requirements and branch hours first; training hours may be outdated.",
+    "customer_script": "I do not see a linked fiber migration order. I will verify the current documents and branch instructions for you.",
+    "sla": "According to current address-change requirements",
+    "options": []
+  },
+  "exception_24": {
+    "question": "Does the landline have dial tone?",
+    "options": [
+      {"label":"Yes, dial tone works","next_step":"exception_24_on"},
+      {"label":"No dial tone","next_step":"exception_24_off"}
+    ]
+  },
+  "exception_24_on": {
+    "question": "The line is shown Out of Service, but dial tone works.",
+    "action": "Compare the system line status with the dial-tone test, then continue normal line/voice checks. Do not rely only on the Out of Service label when dial tone works.",
+    "customer_script": "I will compare the system line status with the dial-tone test and continue based on the result.",
+    "sla": "According to the actual line status in the system",
+    "options": []
+  },
+  "exception_24_off": {
+    "question": "The line is shown Out of Service and has no dial tone.",
+    "action": "Check invoices and service cancellation status. If there are outstanding invoices, explain approved payment steps. Otherwise follow Pending Fixing as shown in the system; the training file says 3 days and customer-initiated phone follow-up, but confirm the current SLA first.",
+    "customer_script": "I will check the invoice and line status first, then explain the action and timeframe shown in the system.",
+    "sla": "Check current Pending Fixing; training guide says 3 days",
+    "options": []
+  },
+  "exception_outside": {
+    "question": "Is another FCC on the same line assigned to a different department, such as landline service?",
+    "options": [
+      {"label":"Yes, an Outside TEData update is present","next_step":"exception_outside_action"},
+      {"label":"No or unclear","next_step":"exception_major_check"}
+    ]
+  },
+  "exception_outside_action": {
+    "question": "Outside TEData update: a ticket exists in another department on the same line.",
+    "action": "Do not withdraw or duplicate the ticket. Give the normal SLA shown on it. For a delay, check ADF: renew SLA if the complaint is open; if closed, troubleshoot again. Contact by phone only; create only one SR with category FBB Tech Problem > System issue > Outside TEData alongside the other steps.",
+    "customer_script": "I found a related case in another department on the same line. I will follow its ticket and SLA, then contact you by phone as specified.",
+    "sla": "According to the ticket and ADF; verify in system",
+    "options": []
+  },
+  "exception_major_check": {
+    "question": "Is a Major Fault confirmed by Outage/ADF or a maintenance-team update?",
+    "options": [
+      {"label":"Yes, Major Fault is confirmed","next_step":"exception_major_action"},
+      {"label":"No, it is not confirmed or is absent","next_step":"exception_no_major"}
+    ]
+  },
+  "exception_major": {
+    "question": "For a previous Data and Voice Down Major Fault, has dial tone returned while internet remains affected?",
+    "options": [
+      {"label":"Yes, voice is back and internet remains affected","next_step":"exception_major_data"},
+      {"label":"No, voice remains affected too","next_step":"exception_major_action"}
+    ]
+  },
+  "exception_major_action": {
+    "question": "A Major Fault is still active or affecting both voice and internet.",
+    "action": "Verify Outage Tool/CST360 and ADF or a maintenance-team update; do not classify a Major Fault from symptoms alone. Give the official timeframe shown and review history before creating another ticket.",
+    "customer_script": "A major/general fault update is recorded. I will follow the official timeframe and update you with confirmed information.",
+    "sla": "According to the recorded Major Fault/Outage",
+    "options": []
+  },
+  "exception_no_major": {
+    "question": "No Major Fault was confirmed.",
+    "action": "Continue the normal troubleshooting path and record where the check was made. Skip the direct-main-wire check only when Close Code 81/82 actually applies.",
+    "customer_script": "I could not confirm a Major Fault, so I will continue with the normal troubleshooting steps.",
+    "sla": "According to the technical path",
+    "options": []
+  },
+  "exception_major_data": {
+    "question": "Voice has returned, but internet remains affected after a Major Fault.",
+    "action": "Repeat the Data Down steps only after voice returns. Escalate the remaining internet issue through the current Data Down path; do not repeat voice checks that are resolved.",
+    "customer_script": "Since the landline is working again, I will focus on checking the internet and follow the next appropriate step.",
+    "sla": "According to the current Data Down path",
+    "options": []
+  },
+  "exception_28": {
+    "question": "Did the customer actually refuse technician access or the visit?",
+    "options": [
+      {"label":"Yes, the customer refused the visit/access","next_step":"exception_28_action"},
+      {"label":"No, the customer did not refuse or another failure occurred","next_step":"exception_no_major"}
+    ]
+  },
+  "exception_28_action": {
+    "question": "Close Code 28 means customer refused the visit/access.",
+    "action": "Record the refusal and visit attempt time/result. Use code 28 only when refusal was the actual reason, follow rescheduling steps, and do not mark the issue as fixed.",
+    "customer_script": "I have recorded that the visit could not be completed because access was refused. I will explain the approved way to arrange another appointment.",
+    "sla": "According to the system rescheduling process",
+    "options": []
+  },
+  "exception_contradiction": {
+    "question": "Does the customer report instability/DSL light drops while ASSIA Clear View shows No DSL Physical Layer?",
+    "options": [
+      {"label":"Yes, customer report conflicts with ASSIA","next_step":"exception_contradiction_hdm"},
+      {"label":"No, result and symptoms agree","next_step":"exception_no_major"}
+    ]
+  },
+  "exception_contradiction_hdm": {
+    "question": "Have you checked HDM DSL Physical Uptime and System Uptime, plus Clear View history and Fix Mode?",
+    "options": [
+      {"label":"Yes, HDM/ASSIA indicates stability despite the report","next_step":"exception_contradiction_cpe"},
+      {"label":"No, tool is unavailable or result shows Physical/Dispatch","next_step":"exception_contradiction_tools"}
+    ]
+  },
+  "exception_contradiction_cpe": {
+    "question": "Did the customer test another router for a full day from the main line, and does the issue remain?",
+    "options": [
+      {"label":"Yes, test completed and issue remains","next_step":"exception_contradiction_escalate"},
+      {"label":"No, test was not completed or no alternate router is available","next_step":"exception_contradiction_test"}
+    ]
+  },
+  "exception_contradiction_test": {
+    "question": "The full-day alternate-router test from the main line is incomplete.",
+    "action": "Ask the customer to test an alternate router for one full day from the main line. If unavailable, direct the customer to an approved technical support branch for router inspection. Record the result before returning to this path.",
+    "customer_script": "To identify the instability, we need to test another router from the main line for a full day. If one is unavailable, we can arrange an inspection through the approved branch process.",
+    "sla": "Complete validation before opening a contradiction complaint",
+    "options": []
+  },
+  "exception_contradiction_tools": {
+    "question": "ASSIA/HDM is inconclusive or indicates Physical Layer/Technician Dispatch.",
+    "action": "Review Clear View history, collection date, and Fix Mode, then check HDM, Line Details/Faults, and NST Logs as described in the guide. If the result is Technician Dispatch or Physical Layer, follow normal Physical Instability steps. Do not use the Contradiction path before validating tool results.",
+    "customer_script": "I will review the line measurements and test history first, then choose whether to continue the instability path or another check.",
+    "sla": "According to the tool result and current path",
+    "options": []
+  },
+  "exception_contradiction_escalate": {
+    "question": "The customer report still conflicts with validated tools after the documented test.",
+    "action": "Create a Physical Instability Contradiction complaint after Voice Verification. Select the system category that matches the actual result. Record HDM/ASSIA results and router test duration. Check Hayah Karima handling and current complaint requirements. The guide lists a 24-hour SLA; renew the SLA and create a Delay Ticket on IR/Case if delayed, following the current system process.",
+    "customer_script": "After reviewing the line results and router test, I have recorded the case for technical review. We will follow up according to the SLA shown in the system.",
+    "sla": "24 hours in the training guide; verify the current SLA",
     "options": []
   }
 }

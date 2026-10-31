@@ -99,11 +99,12 @@ const COPY = {
         voiceUnsupported: 'التعرف على الصوت غير مدعوم في هذا المتصفح. استخدم الأزرار للاختيار.', micDenied: 'اسمح للمتصفح باستخدام الميكروفون، ثم حاول مرة أخرى.',
         voiceUnavailable: 'خدمة التعرف على الصوت غير متاحة. استخدم الأزرار للاختيار.', noSpeech: 'لم أسمع صوتًا. اضغط الميكروفون وحاول مرة أخرى.',
         micError: 'تعذر الوصول إلى الميكروفون.', listen: 'استمع الآن… قل اختيارًا ظاهرًا على الشاشة.', matched: 'تم التعرف على الاختيار.',
-        ambiguous: 'لم يتضح الاختيار. قل نص الزر بوضوح أو اضغط عليه.', voiceError: 'تعذر التعرف على الصوت. يمكنك الاختيار بالضغط.',
+        ambiguous: 'لم يتطابق الكلام مع اختيار واحد. قل كلمة أقصر من الاختيار أو اضغطه؛ سأواصل الاستماع.', voiceError: 'تعذر التعرف على الصوت. اسمح للميكروفون أو استخدم الأزرار.',
         startMic: 'اختيار صوتي', stopMic: 'إيقاف الاستماع', stopAudio: 'إيقاف الصوت', readResult: 'قراءة النتيجة',
         autoRead: 'قراءة السؤال تلقائيًا', voice: 'الصوت', language: 'اللغة', dark: 'الوضع الداكن', light: 'الوضع الفاتح',
-        operations: 'رقم البحث والتسجيل في النظام', searchTitle: 'أبحث بأي رقم؟', recordTitle: 'أسجل إيه؟',
-        toolLabel: 'الأداة:', supportIssue: 'حدث خطأ أثناء التحميل.', retryMic: 'تعذر تشغيل الميكروفون. حاول مرة أخرى أو اضغط على الاختيار.',
+        voicePrivacy: 'قد يعالج المتصفح الصوت عبر خدمة خارجية وبحاجة إلى الإنترنت؛ هذا الموقع لا يحفظ تسجيل الميكروفون.',
+        operations: 'رقم البحث والتسجيل في النظام', searchTitle: 'أبحث بأي رقم؟', recordTitle: 'أسجل إيه؟', codesTitle: 'أكواد الإغلاق الظاهرة في دليل التدريب', codesSearch: 'ابحث برقم الكود أو الوصف', codeLabel: 'الكود', reasonLabel: 'الوصف',
+        toolLabel: 'الأداة:', supportIssue: 'حدث خطأ أثناء التحميل.', retryMic: 'تعذر تشغيل الميكروفون. راجع إذن الميكروفون أو استخدم الأزرار.', micEnded: 'انتهى الاستماع بعد عدة محاولات. اضغط الميكروفون للمحاولة مجددًا.',
     },
     en: {
         brand: 'Technical Support Assistant', title: 'Support Guide', fresh: 'New', loading: 'Loading decision tree…', retry: 'Try again',
@@ -115,11 +116,12 @@ const COPY = {
         voiceUnsupported: 'Speech recognition is not supported in this browser. Use the buttons instead.', micDenied: 'Allow microphone access in your browser, then try again.',
         voiceUnavailable: 'Speech recognition is unavailable. Use the buttons instead.', noSpeech: 'No speech was detected. Tap the microphone and try again.',
         micError: 'The microphone could not be accessed.', listen: 'Listening… say one of the visible options.', matched: 'Option recognized.',
-        ambiguous: 'The option was unclear. Say the button text clearly or tap it.', voiceError: 'Speech recognition failed. You can still tap an option.',
+        ambiguous: 'No single option matched. Say a shorter phrase from the button or tap it; listening will continue.', voiceError: 'Speech recognition failed. Allow microphone access or use the buttons.',
         startMic: 'Voice choice', stopMic: 'Stop listening', stopAudio: 'Stop audio', readResult: 'Read result',
         autoRead: 'Read each question automatically', voice: 'Voice', language: 'Language', dark: 'Dark mode', light: 'Light mode',
-        operations: 'Which ID and record should I use?', searchTitle: 'What should I search by?', recordTitle: 'What should I record?',
-        toolLabel: 'Tool:', supportIssue: 'An error occurred while loading.', retryMic: 'Could not start the microphone. Try again or tap an option.',
+        voicePrivacy: 'The browser may process audio through an online service; this site does not save microphone recordings.',
+        operations: 'Which ID and record should I use?', searchTitle: 'What should I search by?', recordTitle: 'What should I record?', codesTitle: 'Close codes listed in training guide', codesSearch: 'Search by code or reason', codeLabel: 'Code', reasonLabel: 'Reason',
+        toolLabel: 'Tool:', supportIssue: 'An error occurred while loading.', retryMic: 'Could not start the microphone. Check its permission or use the buttons.', micEnded: 'Listening ended after several attempts. Tap the microphone to try again.',
     },
 };
 
@@ -139,9 +141,13 @@ const App = {
         const selectedVoice = ref('');
         const autoRead = ref(true);
         const speechRate = ref(0.85);
+        const codeSearch = ref('');
         const voiceStatus = ref('');
         let activeRecognition = null;
         const t = (key) => COPY[language.value][key] ?? key;
+        let micWasStopped = false;
+        let micRetryCount = 0;
+        let micRetryTimer = null;
 
         const currentStep = computed(() => {
             if (!tree.value || !currentStepId.value) return null;
@@ -157,7 +163,14 @@ const App = {
             }
         }
         function stopAudio() { window.speechSynthesis?.cancel(); isSpeaking.value = false; }
-        function stopListening() { activeRecognition?.abort(); activeRecognition = null; isListening.value = false; }
+        function stopListening() {
+            micWasStopped = true;
+            if (micRetryTimer) clearTimeout(micRetryTimer);
+            micRetryTimer = null;
+            activeRecognition?.abort();
+            activeRecognition = null;
+            isListening.value = false;
+        }
         function stopAll() { stopListening(); stopAudio(); }
         function speak(text) {
             if (!window.speechSynthesis || !text) return;
@@ -195,29 +208,36 @@ const App = {
                 if (!label) return false;
                 if (spoken.includes(label) || label.includes(spoken)) return true;
                 const common = words.filter((word) => label.split(' ').includes(word));
-                return words.length > 0 && common.length >= Math.min(2, words.length);
+                return words.length > 0 && common.length >= 1;
             });
             return matches.length === 1 ? matches[0] : null;
         }
 
         function startListening() {
+            if (isListening.value) {
+                stopListening();
+                return;
+            }
             const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             if (!Recognition) {
                 voiceStatus.value = t('voiceUnsupported');
                 return;
             }
-            if (isListening.value) {
-                stopListening();
-                return;
-            }
             stopAudio();
+            micWasStopped = false;
+            micRetryCount = 0;
+            listenSession(Recognition);
+        }
 
+        function listenSession(Recognition) {
+            if (micWasStopped) return;
             const recognition = new Recognition();
             activeRecognition = recognition;
             recognition.lang = language.value === 'ar' ? 'ar-EG' : 'en-US';
             recognition.interimResults = false;
             recognition.maxAlternatives = 3;
-            recognition.continuous = false;
+            recognition.continuous = true;
+            isListening.value = true;
 
             recognition.onstart = () => {
                 isListening.value = true;
@@ -235,6 +255,7 @@ const App = {
 
                 if (uniqueMatches.length === 1) {
                     voiceStatus.value = t('matched');
+                    stopListening();
                     uniqueMatches[0].click();
                 } else {
                     voiceStatus.value = t('ambiguous');
@@ -246,17 +267,27 @@ const App = {
                     'service-not-allowed': t('voiceUnavailable'),
                     'no-speech': t('noSpeech'),
                     'audio-capture': t('micError'),
+                    'network': t('voiceUnavailable'),
                 };
                 voiceStatus.value = messages[event.error] || t('voiceError');
+                if (event.error !== 'no-speech') micWasStopped = true;
             };
             recognition.onend = () => {
                 isListening.value = false;
-                activeRecognition = null;
+                if (activeRecognition === recognition) activeRecognition = null;
+                if (!micWasStopped && micRetryCount < 3) {
+                    micRetryCount += 1;
+                    micRetryTimer = setTimeout(() => listenSession(Recognition), 500);
+                } else if (!micWasStopped) {
+                    micWasStopped = true;
+                    voiceStatus.value = t('micEnded');
+                }
             };
 
             try {
                 recognition.start();
             } catch {
+                micWasStopped = true;
                 isListening.value = false;
                 activeRecognition = null;
                 voiceStatus.value = t('retryMic');
@@ -416,6 +447,7 @@ const App = {
                     h('label', { class: 'flex items-center justify-between gap-2 text-sm text-gray-700' }, [t('voice'), h('select', { class: 'app-control max-w-[70%] rounded border bg-white p-2', value: selectedVoice.value, onChange: (event) => { selectedVoice.value = event.target.value; } }, [h('option', { value: '' }, language.value === 'ar' ? 'الافتراضي' : 'Default'), ...voices.value.map((voice) => h('option', { value: voice.voiceURI, key: voice.voiceURI }, `${voice.name} (${voice.lang})`))])]),
                     h('label', { class: 'flex items-center justify-between gap-2 text-sm' }, [language.value === 'ar' ? 'سرعة القراءة' : 'Speech speed', h('input', { type: 'range', min: '0.75', max: '1.05', step: '0.05', value: speechRate.value, onInput: (event) => { speechRate.value = event.target.value; } })]),
                     h('label', { class: 'flex items-center gap-2 text-sm sm:col-span-2' }, [h('input', { type: 'checkbox', checked: autoRead.value, onChange: (event) => { autoRead.value = event.target.checked; if (!autoRead.value) stopAudio(); } }), t('autoRead')]),
+                    h('p', { class: 'text-xs leading-5 text-gray-500 sm:col-span-2' }, t('voicePrivacy')),
                 ]),
                 loading.value
                     ? h('p', { class: 'py-8 text-center text-gray-500', role: 'status' }, t('loading'))
@@ -489,6 +521,23 @@ const App = {
                     h('div', { class: 'mt-4 space-y-4 leading-7 text-gray-700' }, [
                         h('section', [h('h3', { class: 'flex items-center gap-2 font-bold text-gray-900' }, [icon('search', 'size-4'), t('searchTitle')]), h('p', tree.value.operations_guide.search)]),
                         h('section', [h('h3', { class: 'flex items-center gap-2 font-bold text-gray-900' }, [icon('ticket', 'size-4'), t('recordTitle')]), h('p', tree.value.operations_guide.record)]),
+                    ]),
+                    h('details', { class: 'mt-4 rounded-xl border border-blue-100 bg-white/70 p-3' }, [
+                        h('summary', { class: 'cursor-pointer font-semibold text-blue-900' }, t('codesTitle')),
+                        h('p', { class: 'my-3 text-sm leading-6 text-amber-800' }, tree.value.operations_guide.codes_note),
+                        h('label', { class: 'mb-3 flex items-center gap-2 text-sm text-gray-700' }, [icon('search', 'size-4'), h('input', {
+                            class: 'app-control min-w-0 flex-1 rounded-lg border border-gray-200 bg-white px-3 py-2',
+                            type: 'search', value: codeSearch.value, placeholder: t('codesSearch'),
+                            onInput: (event) => { codeSearch.value = event.target.value; },
+                        })]),
+                        h('div', { class: 'max-h-72 overflow-auto rounded-lg border border-gray-200' }, [
+                            h('table', { class: 'w-full text-start text-sm' }, [
+                                h('thead', { class: 'sticky top-0 bg-slate-100 text-gray-800' }, [h('tr', [h('th', { class: 'p-2' }, t('codeLabel')), h('th', { class: 'p-2' }, t('reasonLabel'))])]),
+                                h('tbody', tree.value.operations_guide.closure_codes
+                                    .filter((row) => !codeSearch.value || `${row.code} ${row.reason}`.toLocaleLowerCase().includes(codeSearch.value.trim().toLocaleLowerCase()))
+                                    .map((row) => h('tr', { class: 'border-t border-gray-200', key: row.code }, [h('td', { class: 'p-2 font-bold' }, row.code), h('td', { class: 'p-2' }, row.reason)]))),
+                            ]),
+                        ]),
                     ]),
                 ]) : null,
                 notice.value ? h('p', {

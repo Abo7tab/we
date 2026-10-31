@@ -2,26 +2,30 @@
   "start": "start_menu",
   "operations_guide": {
     "search": "ابحث برقم الخدمة عند فتح ملف الخط أو متابعة طلب الخدمة. استخدم Account Number أو NAS Port ID عندما تطلب الأداة استعلام IP أو سجلات NST/NOC. اختر الحقل الذي تطلبه الشاشة وتأكد أن نتيجة البحث تخص نفس العميل والخدمة. لا تكتب أرقام العملاء في هذا الموقع.",
-    "record": "العطل الفني: حدّث TT الحالية بكل الفحوصات؛ عند التصعيد أنشئ/حدّث IR حسب مسار الحالة. SR (طلب خدمة) لطلب جديد أو تعديل يطلبه العميل، وليس بدل TT لعطل فني. DLAY فقط بعد تجاوز SLA أو عندما يطلب مسار الحالة ذلك؛ تحقق أولًا من عدم وجود تذكرة تأخير تلقائية، ثم جدّد SLA وسجل التأخير في I-Report/Cases حسب الإجراء."
+    "record": "العطل الفني: حدّث TT الحالية بكل الفحوصات؛ عند التصعيد أنشئ/حدّث IR حسب مسار الحالة. SR (طلب خدمة) لطلب جديد أو تعديل يطلبه العميل، وليس بدل TT لعطل فني. DLAY فقط بعد تجاوز SLA أو عندما يطلب مسار الحالة ذلك؛ تحقق أولًا من عدم وجود تذكرة تأخير تلقائية، ثم جدّد SLA وسجل التأخير في I-Report/Cases حسب الإجراء.",
+    "codes_note": "أكواد FCC التالية من جدول تدريبي في PDF مؤرخ/قديم؛ استخدم الكود فقط إذا طابق السبب الفعلي وخيارات TTS الحالية. لا تختَر الكود اعتمادًا على الرقم وحده.",
+    "closure_codes": [
+      {"code":"2","reason":"الخط مستقر / لم تُكتشف مشكلة"},{"code":"86","reason":"حُلّت المشكلة بعد تغيير راوتر العميل"},{"code":"87","reason":"حُلّت المشكلة بعد تغيير الـSplitter"},{"code":"8","reason":"حُلّت المشكلة بعد إصلاح التوصيلات الداخلية"},{"code":"9","reason":"حُلّت المشكلة بعد إصلاح السلك الخارجي"},{"code":"12","reason":"حُلّت المشكلة بعد تغيير السلك الخارجي"},{"code":"10","reason":"حُلّت المشكلة بعد تغيير التوصيلات الداخلية"},{"code":"13","reason":"حُلّت المشكلة بعد إصلاحها من البوكس"},{"code":"11","reason":"حُلّت المشكلة بعد إصلاحها من الكابينة"},{"code":"14","reason":"حُلّت المشكلة بعد إصلاحها من السنترال"},{"code":"18","reason":"حُلّت المشكلة بعد إعادة تحميل الصوت"},{"code":"35","reason":"تركيب بعد تغيير التعاقد"},{"code":"6","reason":"تركيب جديد"},{"code":"59","reason":"حُلّت المشكلة بعد تغيير بورت جديد"},{"code":"83","reason":"توصيلات داخلية لا يمكن حلها"},{"code":"20","reason":"عطل جسيم"},{"code":"84","reason":"توصيلات داخلية والعميل يرفض تعديلها"},{"code":"81","reason":"مشكلة داخلية تحتاج صيانة كابل"},{"code":"82","reason":"مشكلة خارجية تحتاج صيانة كابل"},{"code":"75","reason":"مشكلة Splitter والعميل لا يملك بديلًا"},{"code":"74","reason":"مشكلة راوتر العميل"},{"code":"65","reason":"إعداد CPE مطلوب؛ طابق المسمى الحالي في TTS"},{"code":"38","reason":"Stalagmite problem (المسمى كما في الجدول)"},{"code":"17","reason":"العميل غير متاح؛ يُحدد موعد في التعليق"},{"code":"28","reason":"العميل رفض الزيارة / رفض الدخول"},{"code":"96","reason":"العميل لا يرد"},{"code":"26","reason":"معاينة هندسية"},{"code":"19","reason":"شبكة داخلية - إغلاق مجمع"},{"code":"29","reason":"مشكلة في جهاز هاتف العميل"},{"code":"23","reason":"مشكلة فاتورة خدمة الصوت"},{"code":"4","reason":"أمر العمل لم يكتمل"},{"code":"30","reason":"غير متاح حسب طلب العميل"},{"code":"7","reason":"فشل التركيب"},{"code":"27","reason":"تعديل عنوان"},{"code":"73","reason":"العميل رفض التركيب"},{"code":"24","reason":"الخط خارج الخدمة"}
+    ]
   },
   "start_menu": {
-    "question": "ما نوع المشكلة أو طلب العميل؟",
+    "question": "ما سبب اتصال العميل؟ اختَر نوع المكالمة؛ وفي الأعطال راجع TTS History أولًا قبل بدء الفحص.",
     "options": [
-      { "label": "مشكلة فيزيائية: لمبة ADSL أو السلك أو الحرارة", "next_step": "physical_start" },
-      { "label": "مشكلة منطقية: لا يوجد IP أو التصفح أو البطء", "next_step": "logical_start" },
+      { "label": "انقطاع/ضعف الإنترنت أو مشكلة DSL", "next_step": "physical_start" },
       { "label": "الخط الأرضي أو الصوت", "next_step": "voice_start" },
       { "label": "طلب جديد أو متابعة تركيب", "next_step": "request_start" },
       { "label": "باقة أو خدمة أو استفسار عام", "next_step": "inquiry_start" },
-      { "label": "شكوى أو تصعيد", "next_step": "complaint_start" }
+      { "label": "شكوى أو تصعيد", "next_step": "complaint_start" },
+      { "label": "استثناء أو كود إغلاق ظاهر في TTS History", "next_step": "exceptions_start" }
     ]
   },
   "physical_start": {
-    "question": "ما حالة لمبة DSL/ADSL على الراوتر وقت المشكلة؟",
+    "question": "خلّي العميل يبص على لمبة DSL/ADSL: حالتها إيه وقت المشكلة؟",
     "options": [
-      { "label": "مطفأة أو تفصل باستمرار", "next_step": "power_check" },
-      { "label": "ثابتة لكن الإنترنت يفصل", "next_step": "instability_visit" },
-      { "label": "الحرارة والصوت فقط متأثران", "next_step": "voice_start" },
-      { "label": "اللمبة ثابتة والمشكلة تصفح أو IP", "next_step": "logical_start" }
+      { "label": "مطفأة", "next_step": "power_check" },
+      { "label": "بتفصل أو بتنور وتطفي", "next_step": "instability_visit" },
+      { "label": "ثابتة، لكن مفيش IP أو التصفح/السرعة فيها مشكلة", "next_step": "logical_start" },
+      { "label": "مش قادر يحدد حالة اللمبة", "next_step": "dsl_status_unknown" }
     ]
   },
   "power_check": {
@@ -30,6 +34,13 @@
       { "label": "لا، مطفأة أو غير ثابتة", "next_step": "power_terminal" },
       { "label": "نعم، ثابتة", "next_step": "data_down_logs" }
     ]
+  },
+  "dsl_status_unknown": {
+    "question": "اطلب من العميل قراءة لمبة DSL/ADSL على الراوتر، أو الرجوع لصورة الراوتر إن كانت متاحة.",
+    "action": "لا تصنف العطل فيزيائيًا أو منطقيًا قبل معرفة حالة اللمبة. استخدم دليل موديل الراوتر إذا كانت أسماء اللمبات مختلفة.",
+    "customer_script": "ممكن تبص على الراوتر وتقول لي لمبة DSL أو ADSL مطفية ولا ثابتة ولا بتفصل؟",
+    "sla": "استكمل التشخيص بعد تحديد الحالة",
+    "options": []
   },
   "power_terminal": {
     "question": "تمت الإشارة إلى احتمال مشكلة طاقة في الراوتر.",
@@ -377,9 +388,240 @@
   },
   "resolved_terminal": {
     "question": "أكد العميل عودة الخدمة بعد خطوات الفحص.",
-    "action": "أعد اختبار الخدمة، وثّق الخطوة التي حلت المشكلة وتأكيد العميل، ثم أغلق التذكرة باستخدام رمز الإغلاق الصحيح فقط.",
+    "action": "أعد اختبار الخدمة ووثّق الحل وتأكيد العميل. افتح جدول أكواد الإغلاق أسفل الصفحة وطابق الوصف مع السبب الفعلي في TTS قبل الإغلاق؛ إذا لم يطابق أي وصف، لا تخمّن واسأل المسؤول.",
     "customer_script": "ممتاز، هل الخدمة تعمل الآن بشكل طبيعي؟ سجلت الخطوة التي حلت المشكلة، شكرًا لتأكيدك.",
     "sla": "تم الحل أثناء المكالمة",
+    "options": []
+  },
+  "exceptions_start": {
+    "question": "هل ظهر في TTS History كود أو تحديث من الحالات الخاصة؟ راجع السجل المفتوح والمغلق قبل التشخيص.",
+    "options": [
+      {"label":"Close Code 74: مشكلة CPE خلال آخر 30 يومًا","next_step":"exception_74"},
+      {"label":"Close Code 81 أو 82: صيانة كابل","next_step":"exception_8182"},
+      {"label":"Close Code 67: مشكلة Data Ports","next_step":"exception_67"},
+      {"label":"Close Code 27: تعديل عنوان","next_step":"exception_27"},
+      {"label":"Close Code 24: الخط الأرضي خارج الخدمة","next_step":"exception_24"},
+      {"label":"Outside TEData: FCC في إدارة أخرى على نفس الخط","next_step":"exception_outside"},
+      {"label":"Major Fault: عودة الصوت وبقاء الإنترنت متأثرًا","next_step":"exception_major"},
+      {"label":"Close Code 28: رفض الزيارة/الدخول","next_step":"exception_28"},
+      {"label":"Physical Instability Contradiction: العميل يصف فصلًا وASSIA لا ترصد Physical Layer","next_step":"exception_contradiction"}
+    ]
+  },
+  "exception_74": {
+    "question": "هل العميل من القاهرة/الإسكندرية، أم من محافظة أخرى؟",
+    "options": [
+      {"label":"القاهرة أو الإسكندرية: فحص الراوتر بالفرع","next_step":"exception_74_cairo"},
+      {"label":"محافظة أخرى: تجربة راوتر بديل","next_step":"exception_74_other"}
+    ]
+  },
+  "exception_74_cairo": {
+    "question": "هل فُحص الراوتر في الفرع وما زالت المشكلة قائمة، مع وجود BLQ أو Physical Instability أو Data Down في سجل TTS؟",
+    "options": [
+      {"label":"نعم، الفحص والتاريخ مستوفيان","next_step":"exception_74_escalate"},
+      {"label":"لا، الفحص لم يتم أو شرط ناقص","next_step":"exception_74_branch"}
+    ]
+  },
+  "exception_74_other": {
+    "question": "هل جُرّب راوتر بديل وما زالت المشكلة قائمة، مع وجود BLQ أو Physical Instability أو Data Down في سجل TTS؟",
+    "options": [
+      {"label":"نعم، التجربة والتاريخ مستوفيان","next_step":"exception_74_escalate"},
+      {"label":"لا، التجربة لم تتم أو شرط ناقص","next_step":"exception_74_test"}
+    ]
+  },
+  "exception_74_branch": {
+    "question": "مسار Close Code 74 للقاهرة/الإسكندرية يحتاج فحص الراوتر بالفرع.",
+    "action": "أبلغ العميل بالتوجه للفرع لفحص الراوتر. لا تستبدل فحص الفرع بتجربة راوتر آخر في القاهرة/الإسكندرية حسب دليل التدريب. ارجع للمسار بعد توثيق الفحص.",
+    "customer_script": "نحتاج فحص الراوتر في الفرع أولًا. بعد الفحص، لو استمرت المشكلة هنكمل مع حضرتك خطوات التصعيد المناسبة.",
+    "sla": "لا تصعّد هذا المسار قبل توثيق فحص الفرع",
+    "options": []
+  },
+  "exception_74_test": {
+    "question": "مسار Close Code 74 في المحافظات الأخرى يحتاج تجربة راوتر بديل.",
+    "action": "اطلب تجربة راوتر بديل بالطريقة المعتمدة ووثّق النتيجة. لا تطلب كلمة مرور الراوتر. إذا استمرت المشكلة، أعد التحقق من BLQ أو Physical Instability أو Data Down في TTS History.",
+    "customer_script": "خلّينا نجرب راوترًا آخر مناسبًا ونسجل النتيجة؛ بعدها أحدد لك الإجراء الفني الصحيح.",
+    "sla": "لا تصعّد هذا المسار قبل توثيق التجربة",
+    "options": []
+  },
+  "exception_74_escalate": {
+    "question": "استمرت المشكلة بعد فحص CPE، ووجدت حالة مؤهلة في TTS History.",
+    "action": "دليل التدريب يطلب إغلاق شكوى TTS الحالية وإنشاء TT جديدة بتصنيف Technical Visit؛ المهلة المذكورة 24 ساعة والتواصل هاتفي. عند التأخير أنشئ/حدّث IR وجدّد يومًا حسب الإجراء. طابق التصنيف والمهلة مع النظام الحالي قبل التنفيذ.",
+    "customer_script": "وثقت فحص الراوتر واستمرار المشكلة، وهتابع الحالة مع الفريق المختص هاتفيًا حسب المهلة الظاهرة في النظام.",
+    "sla": "24 ساعة في دليل الحالة؛ أكّدها في النظام",
+    "options": []
+  },
+  "exception_8182": {
+    "question": "هل Close Code 81/82 موجود في TTS History وتحققت من عدم وجود Major Fault؟",
+    "options": [
+      {"label":"نعم، الكود موجود ولا يوجد Major Fault","next_step":"exception_8182_action"},
+      {"label":"يوجد Major Fault أو لم أتحقق","next_step":"exception_major_check"}
+    ]
+  },
+  "exception_8182_action": {
+    "question": "Close Code 81/82: صيانة كابل داخلي أو خارجي.",
+    "action": "نفّذ خطوات الفحص الفيزيائي المعتادة وتحقق من Major Fault أولًا. حسب الدليل اعتبر التوصيل مباشرًا وتجاوز سؤال تجربة السلك الرئيسي. بعد التشخيص أعد تصعيد التذكرة القائمة وسجل النتيجة والكود الفعلي في TTS.",
+    "customer_script": "راجعت تاريخ العطل والفحوصات، وهتابع التذكرة القائمة مع الفريق المختص حسب المهلة المسجلة.",
+    "sla": "راجع SLA الحالي في TTS",
+    "options": []
+  },
+  "exception_67": {
+    "question": "هل Close Code 67 ظاهر في تذكرة سابقة، وتحققت من عدم وجود Outage عام؟",
+    "options": [
+      {"label":"نعم، الكود موجود ولا يوجد Outage","next_step":"exception_67_action"},
+      {"label":"الكود غير موجود أو لم أتحقق من Outage","next_step":"exception_major_check"}
+    ]
+  },
+  "exception_67_action": {
+    "question": "يربط الدليل Close Code 67 بمشكلة Data Ports.",
+    "action": "تحقق من عدم وجود مشكلة عامة، ثم نفّذ الفحوصات المعتادة وأعد تصعيد التذكرة للفريق المختص. إذا كانت الحالة حياة كريمة/تكرار CPE فتأكد من انطباق المسار الحالي. لا تكرر تذكرة ولا تستخدم الكود كدليل على أن العطل اتحل.",
+    "customer_script": "هراجع حالة الشبكة العامة ونتائج الفحص، ثم أتابع التذكرة مع الفريق المختص.",
+    "sla": "حسب SLA التذكرة الحالي",
+    "options": []
+  },
+  "exception_27": {
+    "question": "هل يوجد FTTH Migration Order مرتبط بتحديث Address Modification / Close Code 27؟",
+    "options": [
+      {"label":"نعم، يوجد طلب نقل ألياف","next_step":"exception_27_migration"},
+      {"label":"لا يوجد طلب","next_step":"exception_27_branch"}
+    ]
+  },
+  "exception_27_migration": {
+    "question": "يوجد طلب FTTH Migration.",
+    "action": "تابع مرحلة الطلب واتبع FTTH Migration Script من الـWiki المعتمد. ابحث برقم الخدمة/الطلب، وسجل المرحلة، ولا تفتح طلبًا مكررًا.",
+    "customer_script": "هراجع مرحلة طلب نقل الخدمة للألياف وأوضح لحضرتك التحديث والخطوة التالية حسب حالة الطلب.",
+    "sla": "حسب مرحلة الطلب والمهلة الحالية في النظام",
+    "options": []
+  },
+  "exception_27_branch": {
+    "question": "لا يوجد طلب FTTH Migration مرتبط بتعديل العنوان.",
+    "action": "دليل التدريب يوجّه العميل إلى قسم الحسابات بالفرع بالمستندات المطلوبة لتعديل العنوان. تحقّق من المستندات ومواعيد الفرع الحالية قبل إبلاغ العميل؛ بيانات المواعيد في الدليل قديمة.",
+    "customer_script": "لا يظهر طلب نقل ألياف مرتبط بتحديث العنوان. هتأكد من المستندات وتعليمات الفرع الحالية وأوضحها لحضرتك.",
+    "sla": "حسب متطلبات تعديل العنوان الحالية",
+    "options": []
+  },
+  "exception_24": {
+    "question": "هل توجد حرارة (Dial Tone) على الخط الأرضي؟",
+    "options": [
+      {"label":"نعم، الحرارة تعمل","next_step":"exception_24_on"},
+      {"label":"لا، لا توجد حرارة","next_step":"exception_24_off"}
+    ]
+  },
+  "exception_24_on": {
+    "question": "الخط ظاهر Out of Service لكن الحرارة تعمل.",
+    "action": "طابق حالة الخط في النظام مع اختبار الحرارة، ثم أكمل خطوات فحص الخط/الصوت المعتادة. لا تعتمد على وصف Out of Service وحده إذا كانت الحرارة تعمل.",
+    "customer_script": "هطابق حالة الخط الظاهرة في النظام مع اختبار الحرارة وأكمل الفحص بناءً على النتيجة.",
+    "sla": "حسب حالة الخط الفعلية في النظام",
+    "options": []
+  },
+  "exception_24_off": {
+    "question": "الخط ظاهر Out of Service ولا توجد حرارة.",
+    "action": "تحقق من الفواتير وحالة إلغاء الخدمة. إذا وجدت مستحقات، وضّح خطوات السداد المعتمدة. إذا لم تكن الفواتير أو الإلغاء سببًا، اتبع Pending Fixing الظاهر في النظام؛ ملف التدريب يذكر 3 أيام وأن العميل يتواصل هاتفيًا، لكن أكّد المهلة الحالية أولًا.",
+    "customer_script": "هراجع الفواتير وحالة الخط أولًا، وبعدها أوضح لحضرتك الإجراء والمهلة الظاهرة في النظام.",
+    "sla": "تحقق من Pending Fixing الحالي؛ الدليل يذكر 3 أيام",
+    "options": []
+  },
+  "exception_outside": {
+    "question": "هل توجد FCC أخرى على نفس الخط في إدارة مختلفة، مثل خدمة الهاتف الأرضي؟",
+    "options": [
+      {"label":"نعم، يوجد Update باسم Outside TEData","next_step":"exception_outside_action"},
+      {"label":"لا أو النتيجة غير واضحة","next_step":"exception_major_check"}
+    ]
+  },
+  "exception_outside_action": {
+    "question": "Outside TEData: تذكرة في إدارة أخرى على نفس الخط.",
+    "action": "لا تسحب التذكرة ولا تنشئ نسخة مكررة. أبلغ بالـSLA الطبيعي الظاهر. عند التأخير افحص ADF: إذا الشكوى مفتوحة جدّد SLA، وإذا مغلقة أعد التشخيص. التواصل هاتفي فقط؛ أنشئ SR واحدًا بتصنيف FBB Tech Problem > System issue > Outside TEData بجانب الخطوات الأخرى.",
+    "customer_script": "وجدت متابعة مرتبطة بإدارة أخرى على نفس الخط. هتابع التذكرة والمهلة الظاهرة وهتواصل مع حضرتك هاتفيًا حسب الإجراء.",
+    "sla": "حسب التذكرة وADF؛ تحقق من النظام",
+    "options": []
+  },
+  "exception_major_check": {
+    "question": "هل تأكد Major Fault من Outage/ADF أو تحديث فريق الأعطال؟",
+    "options": [
+      {"label":"نعم، Major Fault مؤكد","next_step":"exception_major_action"},
+      {"label":"لا، لم يتأكد أو غير موجود","next_step":"exception_no_major"}
+    ]
+  },
+  "exception_major": {
+    "question": "في Major Fault سابق لـData and Voice Down، هل عادت الحرارة وبقي الإنترنت متأثرًا؟",
+    "options": [
+      {"label":"نعم، الصوت عاد والإنترنت ما زال متأثرًا","next_step":"exception_major_data"},
+      {"label":"لا، الصوت ما زال متأثرًا أيضًا","next_step":"exception_major_action"}
+    ]
+  },
+  "exception_major_action": {
+    "question": "Major Fault ما زال قائمًا أو يؤثر في الصوت والإنترنت.",
+    "action": "تحقق من Outage Tool/CST360 وADF أو تحديث فريق الأعطال؛ لا تصنف Major Fault من الأعراض وحدها. وضّح المهلة الرسمية الظاهرة، وراجع التاريخ قبل إنشاء تذكرة أخرى.",
+    "customer_script": "هتابع تحديث العطل الجسيم والمهلة الرسمية المسجلة، وأبلغ حضرتك بالمعلومات المؤكدة.",
+    "sla": "حسب Major Fault/Outage المسجل",
+    "options": []
+  },
+  "exception_no_major": {
+    "question": "لم يتأكد وجود Major Fault.",
+    "action": "استكمل مسار التشخيص الطبيعي ووثّق مصدر التحقق. لا تتجاوز اختبار التوصيل المباشر إلا عند انطباق Close Code 81/82 فعلًا.",
+    "customer_script": "لم يظهر عطل جسيم مؤكد، هكمل الفحص الفني المعتاد خطوة بخطوة.",
+    "sla": "حسب المسار الفني",
+    "options": []
+  },
+  "exception_major_data": {
+    "question": "عادت الحرارة وبقي الإنترنت متأثرًا بعد Major Fault.",
+    "action": "أعد خطوات Data Down فقط بعد عودة الصوت. إذا احتاج الإنترنت تصعيدًا، اتبع مسار Data Down الحالي؛ لا تكرر فحوصات الصوت التي تم حلها.",
+    "customer_script": "بما إن حرارة الخط عادت، هركز الآن على فحص الإنترنت فقط وأتابع الخطوة المناسبة.",
+    "sla": "حسب مسار Data Down الحالي",
+    "options": []
+  },
+  "exception_28": {
+    "question": "هل رفض العميل دخول الفني أو الزيارة فعلًا؟",
+    "options": [
+      {"label":"نعم، رفض العميل الزيارة/الدخول","next_step":"exception_28_action"},
+      {"label":"لا، لم يرفض أو سبب الفشل مختلف","next_step":"exception_no_major"}
+    ]
+  },
+  "exception_28_action": {
+    "question": "Close Code 28 يعني رفض الزيارة/الدخول.",
+    "action": "وثّق الرفض ووقت/نتيجة محاولة الزيارة. استخدم الكود فقط إذا كان الرفض هو السبب الفعلي، واتبع إجراء إعادة الجدولة؛ لا تسجل الحالة كأن العطل تم إصلاحه.",
+    "customer_script": "سجلت تعذر الزيارة بسبب عدم إتمام الدخول، وهشرح لحضرتك طريقة إعادة تحديد الموعد المعتمدة.",
+    "sla": "حسب إجراء إعادة الزيارة في النظام",
+    "options": []
+  },
+  "exception_contradiction": {
+    "question": "هل العميل يؤكد عدم استقرار/فصل لمبة DSL بينما نتيجة ASSIA Clear View هي No DSL Physical Layer؟",
+    "options": [
+      {"label":"نعم، كلام العميل يناقض نتيجة ASSIA","next_step":"exception_contradiction_hdm"},
+      {"label":"لا، النتيجة والأعراض متوافقة","next_step":"exception_no_major"}
+    ]
+  },
+  "exception_contradiction_hdm": {
+    "question": "هل راجعت HDM: DSL Physical Uptime وSystem Uptime، مع تاريخ Clear View وFix Mode؟",
+    "options": [
+      {"label":"نعم، نتيجة HDM/ASSIA تؤكد الاستقرار رغم شكوى العميل","next_step":"exception_contradiction_cpe"},
+      {"label":"لا، الأداة غير متاحة أو توجد نتيجة Physical/Dispatch","next_step":"exception_contradiction_tools"}
+    ]
+  },
+  "exception_contradiction_cpe": {
+    "question": "هل جرّب العميل راوترًا آخر لمدة يوم كامل، موصلًا من السلك الرئيسي، وما زالت المشكلة؟",
+    "options": [
+      {"label":"نعم، التجربة تمت والمشكلة مستمرة","next_step":"exception_contradiction_escalate"},
+      {"label":"لا، لم تتم التجربة أو العميل لا يملك راوترًا بديلًا","next_step":"exception_contradiction_test"}
+    ]
+  },
+  "exception_contradiction_test": {
+    "question": "اختبار الراوتر البديل ليوم كامل من السلك الرئيسي غير مكتمل.",
+    "action": "اطلب تجربة راوتر بديل لمدة يوم كامل من السلك الرئيسي. إذا لم يتوفر، وجّه العميل لفحص راوتره في أقرب فرع دعم فني حسب الإجراء. وثّق النتيجة ثم ارجع لمسار التناقض.",
+    "customer_script": "عشان نحدد سبب عدم الاستقرار، محتاجين نجرب راوترًا آخر من السلك الرئيسي لمدة يوم كامل. لو مش متاح، نرتب فحص الراوتر في الفرع حسب الإجراء.",
+    "sla": "استكمل التحقق قبل إنشاء شكوى التناقض",
+    "options": []
+  },
+  "exception_contradiction_tools": {
+    "question": "نتيجة ASSIA/HDM غير حاسمة أو تشير إلى Physical Layer/Technician Dispatch.",
+    "action": "راجع Clear View History وتاريخ الجمع وFix Mode، ثم افحص HDM وLine Details/Faults وNST Logs حسب الدليل. إذا كانت النتيجة Technician Dispatch أو Physical Layer، اتبع Physical Instability الطبيعي. لا تستخدم مسار Contradiction قبل التحقق من نتيجة الأدوات.",
+    "customer_script": "هراجع قياسات الخط وتاريخ الفحص أولًا، وبعدها هحدد هل نكمل مسار عدم الاستقرار أو نحتاج مراجعة مختلفة.",
+    "sla": "حسب نتيجة الأدوات والمسار الحالي",
+    "options": []
+  },
+  "exception_contradiction_escalate": {
+    "question": "تأكد اختلاف وصف العميل عن الأدوات بعد التجربة الموثقة.",
+    "action": "أنشئ شكوى Physical Instability Contradiction بعد Voice Verification، واختر التصنيف من القيم الظاهرة في النظام حسب الحالة. وثّق HDM/ASSIA ومدة تجربة الراوتر. راجع فرع Hayah Karima ومتطلبات الشكوى قبل التصعيد. الدليل يذكر مهلة 24 ساعة؛ جدّد SLA وأنشئ Delay Ticket على IR/Case عند التأخير طبقًا للنظام الحالي.",
+    "customer_script": "بعد مراجعة نتيجة الخط وتجربة الراوتر، سجلت الحالة للمراجعة الفنية. هنتابع مع حضرتك حسب المهلة المسجلة في النظام.",
+    "sla": "24 ساعة في دليل التدريب؛ تحقق من SLA الحالي",
     "options": []
   }
 }

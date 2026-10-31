@@ -533,10 +533,6 @@
         "next_step": "voice_verification"
       },
       {
-        "label": "Follow up a problem with an existing TT",
-        "next_step": "existing_tt_terminal"
-      },
-      {
         "label": "Complaint about a visit/staff interaction or supervisor request",
         "next_step": "complaint_start"
       }

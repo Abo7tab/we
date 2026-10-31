@@ -533,10 +533,6 @@
         "next_step": "voice_verification"
       },
       {
-        "label": "متابعة مشكلة لها TT قائمة",
-        "next_step": "existing_tt_terminal"
-      },
-      {
         "label": "شكوى عن زيارة/تعامل أو طلب تصعيد",
         "next_step": "complaint_start"
       }

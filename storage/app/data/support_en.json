@@ -3255,5 +3255,17 @@
     "customer_prompt": "We will reconfigure the router using the approved steps, then test the connection.",
     "action": "If the issue persists, test another CPE/device if available, then escalate if eligible. Record results and times instead of assuming the Login subtype.",
     "source_reference": "day 13.pdf pp. 11-12; threshold classification needs verification."
+  },
+  "package_change_quick": {
+    "question": "Change the customer’s fixed broadband package",
+    "finding": "Quick guide for changing a fixed-internet plan or payment type. Complete the checks before submitting a request.",
+    "check_guidance": "In BSS, match the service number to the account, current payment type, and package; confirm the service is Active. Check debt, offer and speed/technology eligibility, renewal date, and any open Processing Order. Find the target plan in the Packages tool or BSS and verify final price, tax, and effective date.",
+    "action": "After the customer approves the selected offer, open BSS Tool > Change Offering (Fixed) and choose the requested payment type or plan as displayed. Review fees and effective date before Submit. Create the Service Request/Order through the path shown in BSS, record its reference and actual SLA, then track it without creating a duplicate. If service is suspended, debt is due, or another order is open, resolve that first.",
+    "customer_prompt": "I will check your current plan and line eligibility, then explain the plan, price, and effective date before submitting. Do you approve the details shown?",
+    "customer_script": "With your approval, I submitted the package-change request under (read the BSS request/SR reference). The displayed timeframe is (read the SLA shown in the system).",
+    "reference_guidance": "Give the customer the customer-facing request/SR reference and actual displayed timeframe. Do not share an internal IR or invent a number or duration.",
+    "sla": "Depends on the change request and SLA shown by BSS; no fixed duration is provided here.",
+    "source_reference": "Fixed-offer change guidance recorded in the support guide; verify the current BSS workflow before submission.",
+    "options": []
   }
 }

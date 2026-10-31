@@ -189,6 +189,7 @@ const COPY = {
         sourceReference: 'مصدر الإجراء وحدود الاعتماد',
         howToCheck: 'أعرف منين وأعمل إيه؟', checkGuidance: 'أتحقق إزاي؟', whatToDo: 'أعمل إيه حسب النتيجة؟', generalCheckHint: 'اقرأ السؤال للعميل أو راجع الأداة المذكورة، ثم اختَر النتيجة المطابقة. لو النتيجة مش واضحة أو مش موجودة ضمن الاختيارات، ما تخمّنش وارجع للإجراء الحالي.',
         quickSla: 'مواعيد الـSLA', quickCodes: 'أكواد الإغلاق', quickPackages: 'الباقات', quickToolSearch: 'ابحث بالاسم أو الحالة أو الرقم أو المدة…',
+        quickChangePackage: 'تغيير باقة',
         slaSearchPlaceholder: 'الحالة أو رقم الساعات/الأيام…', packageSearchPlaceholder: 'اسم الباقة أو السرعة أو السعة…', packagesNote: 'البحث يشمل السعة والسرعة والاسم والأسعار الموجودة في الجداول. عدد الأشخاص ليس تصنيفًا رسميًا في البيانات؛ استخدم الاستهلاك وعدد الأجهزة ولا تفترض سعة مناسبة من عدد الأفراد وحده.',
         noQuickMatches: 'لا توجد نتيجة مطابقة.', sourceCaution: 'مرجع تدريبي؛ طابق المهلة مع التذكرة الحالية قبل إبلاغ العميل.', packageAddons: 'إضافات',
         guidedMode: 'وجّهني في المكالمة', referenceMode: 'مرجع الدعم', referenceIntro: 'ابحث بالعرض أو اسم الإجراء، أو افتح موضوعًا شائعًا. النتائج تعرض مسار الدعم ومصدر الإجراء عند توفره.',
@@ -215,6 +216,7 @@ const COPY = {
         sourceReference: 'Procedure source and verification note',
         howToCheck: 'How do I verify this and what should I do?', checkGuidance: 'How to check', whatToDo: 'What to do with the result', generalCheckHint: 'Ask the question shown or check the named tool, then choose the matching result. If the result is unclear or not listed, do not guess; check the current procedure.',
         quickSla: 'SLA lookup', quickCodes: 'Close codes', quickPackages: 'Packages', quickToolSearch: 'Search by name, case, code, or timeframe…',
+        quickChangePackage: 'Change package',
         slaSearchPlaceholder: 'Case or hours/days…', packageSearchPlaceholder: 'Package name, speed, or quota…', packagesNote: 'Search covers the names, speeds, quotas, and prices in the available tables. Number of people is not an official package field; use actual usage and device count, and do not infer a quota from household size alone.',
         noQuickMatches: 'No matching entries.', sourceCaution: 'Training reference; verify the current ticket SLA before telling the customer.', packageAddons: 'Add-ons',
         guidedMode: 'Guide the call', referenceMode: 'Support reference', referenceIntro: 'Search by symptom or procedure, or open a common topic. Results show the support path and its source when available.',
@@ -598,11 +600,14 @@ const App = {
                         h('button', { class: 'app-control rounded-xl border p-2', type: 'button', onClick: () => switchTheme(theme.value === 'light' ? 'dark' : 'light'), 'aria-label': theme.value === 'light' ? t('dark') : t('light'), title: theme.value === 'light' ? t('dark') : t('light') }, [icon(theme.value === 'light' ? 'moon' : 'sun')]),
                     ]),
                 ]),
-                (currentStepId.value === tree.value?.start || workspaceMode.value === 'reference') ? h('section', { class: 'mb-4 grid grid-cols-3 gap-2', 'aria-label': t('quickSla') }, [
-                    ...[['sla', t('quickSla'), 'clock'], ['codes', t('quickCodes'), 'ticket'], ['packages', t('quickPackages'), 'search']].map(([key, label, iconName]) => h('button', {
+                (currentStepId.value === tree.value?.start || workspaceMode.value === 'reference') ? h('section', { class: 'mb-4 grid grid-cols-2 gap-2 sm:grid-cols-4', 'aria-label': t('quickSla') }, [
+                    ...[['sla', t('quickSla'), 'clock'], ['codes', t('quickCodes'), 'ticket'], ['packages', t('quickPackages'), 'search'], ['change', t('quickChangePackage'), 'ticket']].map(([key, label, iconName]) => h('button', {
                         class: `inline-flex min-h-[4.25rem] flex-col items-center justify-center gap-1 rounded-xl border px-2 py-2 text-center text-xs font-bold transition ${quickToolsOpen.value === key ? 'border-blue-400 bg-blue-50 text-blue-900' : 'app-control hover:bg-slate-50'}`,
                         type: 'button', 'aria-expanded': quickToolsOpen.value === key,
-                        onClick: () => { quickToolsOpen.value = quickToolsOpen.value === key ? '' : key; },
+                        onClick: () => {
+                            if (key === 'change') jumpToStep('package_change_quick');
+                            else quickToolsOpen.value = quickToolsOpen.value === key ? '' : key;
+                        },
                     }, [icon(iconName, 'size-4'), label])),
                 ]) : null,
                 quickToolsOpen.value === 'sla' ? h('section', { class: 'mb-4 rounded-2xl border border-blue-100 bg-white p-3 sm:p-4' }, [

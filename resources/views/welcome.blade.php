@@ -9,5 +9,10 @@
     </head>
     <body>
         <div id="app"></div>
+        <noscript>
+            <p dir="rtl" style="margin: 2rem auto; max-width: 32rem; padding: 1rem; text-align: center; font-family: sans-serif;">
+                يلزم تفعيل JavaScript لاستخدام شجرة القرارات.
+            </p>
+        </noscript>
     </body>
 </html>

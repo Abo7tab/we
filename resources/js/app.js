@@ -130,7 +130,7 @@ const COPY = {
         refNone: 'لم تُنشأ تذكرة', refTT: 'TT', refSR: 'SR', refOrder: 'رقم الطلب', refIR: 'IR داخلي',
         copyComment: 'نسخ التعليق', commentCopied: 'تم نسخ التعليق. راجعه قبل لصقه في النظام.',
         quickSearch: 'بحث سريع', quickSearchPlaceholder: 'ابحث عن إجراء أو كود أو مهلة…', noSearchResults: 'لا توجد نتيجة مطابقة مؤكدة؛ راجع النظام الحالي قبل الاعتماد عليها.', dark: 'الوضع الداكن', light: 'الوضع الفاتح',
-        checkBeforeQuote: 'تحقّق قبل ما تعرض السعر', toolsHub: 'أدلة مساعدة', exceed: 'EXCEED', internalTool: 'أداة دعم داخلية', operations: 'رقم البحث والتسجيل في النظام', searchTitle: 'أبحث بأي رقم؟', recordTitle: 'أسجل إيه؟', codesTitle: 'أكواد الإغلاق الظاهرة في دليل التدريب', codesSearch: 'ابحث برقم الكود أو الوصف', codeLabel: 'الكود', reasonLabel: 'الوصف',
+        checkBeforeQuote: 'تحقّق قبل عرض السعر', packageMonthly: 'شهري', packageYearly: 'سنوي', packageQuarterly: 'ربع سنوي', packageAccountType: 'حدد نوع الحساب من BSS', packagePrepaid: 'Prepaid', packagePostpaid: 'Postpaid', packageSelect: 'اختار الباقة', packageNoQuarterly: 'WE Space للإنترنت فقط يعرض باقات شهرية وسنوية. الربع سنوي لباقات WE Ardy للخط الأرضي الصوتي، وليس باقة الإنترنت.', packagePlanScript: 'نص العرض بعد اختيار الباقة', packageNeedAccount: 'اختار نوع الحساب الظاهر في BSS علشان نعرض الكتالوج المناسب.', packageSourceNote: 'السعر النهائي والضريبة والأهلية تتأكد من BSS قبل تسجيل الطلب.', toolsHub: 'أدلة مساعدة', exceed: 'EXCEED', internalTool: 'أداة دعم داخلية', operations: 'رقم البحث والتسجيل في النظام', searchTitle: 'أبحث بأي رقم؟', recordTitle: 'أسجل إيه؟', codesTitle: 'أكواد الإغلاق الظاهرة في دليل التدريب', codesSearch: 'ابحث برقم الكود أو الوصف', codeLabel: 'الكود', reasonLabel: 'الوصف',
     },
     en: {
         brand: 'WE Technical Support Assistant', title: 'Support Guide', fresh: 'New', loading: 'Loading decision tree…', retry: 'Try again',
@@ -149,7 +149,7 @@ const COPY = {
         refNone: 'No ticket created', refTT: 'TT', refSR: 'SR', refOrder: 'Order number', refIR: 'Internal IR',
         copyComment: 'Copy comment', commentCopied: 'Comment copied. Review it before pasting into the system.',
         quickSearch: 'Quick search', quickSearchPlaceholder: 'Search a procedure, code, or SLA…', noSearchResults: 'No confirmed matching result. Check the current system before relying on it.', dark: 'Dark mode', light: 'Light mode',
-        checkBeforeQuote: 'Check before quoting', toolsHub: 'Quick guides', exceed: 'EXCEED', internalTool: 'Internal support tool', operations: 'Which ID and record should I use?', searchTitle: 'What should I search by?', recordTitle: 'What should I record?', codesTitle: 'Close codes listed in training guide', codesSearch: 'Search by code or reason', codeLabel: 'Code', reasonLabel: 'Reason',
+        checkBeforeQuote: 'Check before quoting', packageMonthly: 'Monthly', packageYearly: 'Yearly', packageQuarterly: 'Quarterly', packageAccountType: 'Select the account type shown in BSS', packagePrepaid: 'Prepaid', packagePostpaid: 'Postpaid', packageSelect: 'Select this package', packageNoQuarterly: 'WE Space internet-only plans are monthly or yearly. Quarterly cycles belong to WE Ardy fixed voice, not the internet-only package.', packagePlanScript: 'Customer wording for the selected plan', packageNeedAccount: 'Select the account type shown in BSS to view the catalog.', packageSourceNote: 'Confirm final price, tax, and eligibility in BSS before creating an order.', toolsHub: 'Quick guides', exceed: 'EXCEED', internalTool: 'Internal support tool', operations: 'Which ID and record should I use?', searchTitle: 'What should I search by?', recordTitle: 'What should I record?', codesTitle: 'Close codes listed in training guide', codesSearch: 'Search by code or reason', codeLabel: 'Code', reasonLabel: 'Reason',
     },
 };
 
@@ -166,6 +166,9 @@ const App = {
         const theme = ref('light');
         const codeSearch = ref('');
         const quickSearch = ref('');
+        const packagePeriod = ref('monthly');
+        const packageAccountMode = ref('');
+        const selectedPackage = ref(null);
         const commentDetails = ref('');
         const commentRefType = ref('none');
         const commentRefNumber = ref('');
@@ -176,6 +179,44 @@ const App = {
             return tree.value[currentStepId.value] ?? null;
         });
         const isFinished = computed(() => currentStep.value?.options?.length === 0);
+        const isPackageInquiry = computed(() => currentStepId.value === 'package_inquiry_terminal');
+        const packageCustomerScript = computed(() => {
+            if (!currentStep.value?.package_catalog) return '';
+            if (packagePeriod.value === 'quarterly') {
+                return language.value === 'ar'
+                    ? 'كتالوج WE Space للإنترنت المنزلي شهري أو سنوي. الربع سنوي يخص باقات WE Ardy للخط الأرضي الصوتي؛ تحب أراجع لحضرتك باقات الخط الأرضي؟'
+                    : 'WE Space home internet is offered monthly or yearly. Quarterly plans are for WE Ardy fixed voice; would you like me to check the fixed-line plans for you?';
+            }
+            if (!selectedPackage.value) return '';
+            const { period, row } = selectedPackage.value;
+            const account = packageAccountMode.value === 'prepaid'
+                ? (language.value === 'ar' ? 'مسبق الدفع' : 'prepaid')
+                : (language.value === 'ar' ? 'على الفاتورة' : 'postpaid');
+            const plan = row.plan || row.speed;
+            if (language.value === 'ar') {
+                const renewal = period === 'yearly'
+                    ? 'الحصة السنوية بتكون متاحة للعميل كاملة على مدار السنة.'
+                    : packageAccountMode.value === 'prepaid'
+                        ? 'التجديد كل 30 يومًا عند توفر الرصيد الكافي.'
+                        : 'هراجع طريقة احتسابها على الفاتورة قبل تأكيد الاشتراك.';
+                return `حضرتك على نظام ${account}، باقة WE Space ${plan} بسعة ${row.quota}، والسعر الظاهر ${row.price}. ${renewal} هأكد السعر النهائي والضريبة وأهلية الخط على BSS قبل تسجيل أي تغيير.`;
+            }
+            const renewal = period === 'yearly'
+                ? 'The yearly quota is available as a full annual allowance.'
+                : packageAccountMode.value === 'prepaid'
+                    ? 'It renews every 30 days when sufficient balance is available.'
+                    : 'I will confirm how it is charged on the bill before confirming the subscription.';
+            return `Your account is ${account}. WE Space ${plan} includes ${row.quota}; the listed price is ${row.price}. ${renewal} I will confirm the final price, tax, and line eligibility in BSS before submitting any change.`;
+        });
+        function resetPackageControls() {
+            packagePeriod.value = 'monthly';
+            packageAccountMode.value = '';
+            selectedPackage.value = null;
+        }
+        function selectPackage(row, index) {
+            selectedPackage.value = { period: packagePeriod.value, row, index };
+        }
+
         const quickSearchResults = computed(() => {
             const query = normalizeSearch(quickSearch.value, language.value);
             if (!query || !tree.value) return [];
@@ -254,6 +295,7 @@ const App = {
             commentDetails.value = '';
             commentRefNumber.value = '';
             quickSearch.value = '';
+            resetPackageControls();
             afterStepChange();
         }
 
@@ -336,6 +378,7 @@ const App = {
             const selectedIndex = currentStep.value.options.indexOf(option);
             pathSelections.value = [...pathSelections.value, { stepId: currentStepId.value, optionIndex: selectedIndex }];
             currentStepId.value = nextStep;
+            resetPackageControls();
             notice.value = '';
             afterStepChange();
         }
@@ -345,6 +388,7 @@ const App = {
             currentStepId.value = history.value.at(-1);
             history.value = history.value.slice(0, -1);
             pathSelections.value = pathSelections.value.slice(0, -1);
+            resetPackageControls();
             notice.value = '';
             afterStepChange();
         }
@@ -358,12 +402,15 @@ const App = {
             commentRefType.value = 'none';
             commentRefNumber.value = '';
             quickSearch.value = '';
+            resetPackageControls();
             notice.value = '';
             afterStepChange();
         }
 
         async function copyCustomerScript() {
-            const script = currentStep.value?.customer_script;
+            const script = isPackageInquiry.value && packageCustomerScript.value
+                ? packageCustomerScript.value
+                : currentStep.value?.customer_script;
             if (typeof script !== 'string' || script.length === 0) {
                 notice.value = t('noScript');
                 return;
@@ -486,49 +533,97 @@ const App = {
                                 ]) : null,
                                 currentStep.value.package_catalog ? (() => {
                                     const catalog = currentStep.value.package_catalog;
-                                    const renderTable = (columns, rows, keys, tableTitle) => h('section', { class: 'mt-4' }, [
+                                    const renderTable = (columns, rows, keys, tableTitle, selectable = true) => h('section', { class: 'mt-4' }, [
                                         h('h4', { class: 'mb-2 text-sm font-bold text-slate-900' }, tableTitle),
-                                        h('div', { class: 'max-h-72 overflow-auto rounded-xl border border-slate-200' }, [
-                                            h('table', { class: 'w-full min-w-[32rem] text-start text-sm' }, [
-                                                h('thead', { class: 'sticky top-0 bg-slate-100 text-slate-800' }, [h('tr', columns.map((column) => h('th', { class: 'p-2 font-semibold' }, column)))]),
-                                                h('tbody', rows.map((row, index) => h('tr', { class: 'border-t border-slate-200 odd:bg-white even:bg-slate-50', key: `${tableTitle}-${index}` }, keys.map((key) => h('td', { class: 'p-2 align-top' }, row[key]))))),
+                                        h('div', { class: 'grid gap-2 md:hidden' }, rows.map((row, index) => h('article', {
+                                            class: `rounded-xl border p-3 ${selectedPackage.value?.index === index && selectedPackage.value?.period === packagePeriod.value ? 'border-blue-500 bg-blue-50' : 'border-slate-200 bg-white'}`,
+                                            key: `${tableTitle}-card-${index}`,
+                                        }, [
+                                            h('dl', { class: 'grid grid-cols-[auto_1fr] gap-x-3 gap-y-1.5 text-sm' }, keys.flatMap((key, fieldIndex) => [
+                                                h('dt', { class: 'font-medium text-slate-500' }, columns[fieldIndex]),
+                                                h('dd', { class: 'm-0 text-end font-semibold text-slate-900' }, row[key]),
+                                            ])),
+                                            selectable ? h('button', {
+                                                class: 'mt-3 min-h-10 w-full rounded-lg bg-blue-700 px-3 py-2 text-sm font-bold text-white transition hover:bg-blue-800 active:scale-[0.99]',
+                                                type: 'button',
+                                                'aria-pressed': selectedPackage.value?.index === index && selectedPackage.value?.period === packagePeriod.value,
+                                                onClick: () => selectPackage(row, index),
+                                            }, t('packageSelect')) : null,
+                                        ]))),
+                                        h('div', { class: 'hidden overflow-x-auto rounded-xl border border-slate-200 md:block' }, [
+                                            h('table', { class: 'w-full text-start text-sm' }, [
+                                                h('thead', { class: 'sticky top-0 bg-slate-100 text-slate-800' }, [h('tr', [
+                                                    ...columns.map((column) => h('th', { class: 'p-2 font-semibold' }, column)),
+                                                    ...(selectable ? [h('th', { class: 'p-2 font-semibold' }, t('packageSelect'))] : []),
+                                                ])]),
+                                                h('tbody', rows.map((row, index) => h('tr', { class: `border-t border-slate-200 ${selectedPackage.value?.index === index && selectedPackage.value?.period === packagePeriod.value ? 'bg-blue-50' : 'odd:bg-white even:bg-slate-50'}`, key: `${tableTitle}-${index}` }, [
+                                                    ...keys.map((key) => h('td', { class: 'p-2 align-top' }, row[key])),
+                                                    ...(selectable ? [h('td', { class: 'p-2 text-end' }, [h('button', {
+                                                        class: 'rounded-lg bg-blue-700 px-3 py-1.5 text-xs font-bold text-white hover:bg-blue-800',
+                                                        type: 'button', onClick: () => selectPackage(row, index),
+                                                    }, t('packageSelect'))])] : []),
+                                                ]))),
                                             ]),
                                         ]),
                                     ]);
                                     return h('section', { class: 'package-catalog mb-5 rounded-2xl border border-indigo-200 bg-indigo-50/70 p-4 sm:p-5' }, [
                                         h('h3', { class: 'flex items-center gap-2 text-lg font-bold text-indigo-950' }, [icon('ticket', 'size-5'), catalog.title]),
-                                        h('p', { class: 'mt-2 text-sm leading-6 text-indigo-950' }, catalog.notes[0]),
-                                        renderTable(catalog.monthly_columns, catalog.monthly_rows, ['speed', 'quota', 'price'], catalog.monthly_title),
-                                        h('section', { class: 'mt-3 rounded-xl border border-indigo-100 bg-white/80 p-3' }, [
-                                            h('h4', { class: 'text-sm font-bold text-slate-900' }, t('checkBeforeQuote')),
+                                        h('p', { class: 'mt-2 text-sm leading-6 text-indigo-950' }, catalog.scope_note),
+                                        h('div', { class: 'mt-4 grid grid-cols-3 gap-2 rounded-xl bg-white p-1.5' }, [
+                                            ...[['monthly', t('packageMonthly')], ['yearly', t('packageYearly')], ['quarterly', t('packageQuarterly')]].map(([period, label]) => h('button', {
+                                                class: `min-h-10 rounded-lg px-2 py-2 text-xs font-bold transition sm:text-sm ${packagePeriod.value === period ? 'bg-indigo-700 text-white' : 'text-slate-700 hover:bg-indigo-50'}`,
+                                                type: 'button', 'aria-pressed': packagePeriod.value === period,
+                                                onClick: () => { packagePeriod.value = period; selectedPackage.value = null; },
+                                            }, label)),
+                                        ]),
+                                        packagePeriod.value === 'quarterly' ? h('p', { class: 'mt-3 rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm leading-6 text-amber-950' }, catalog.quarterly_note) : h('div', { class: 'mt-4 rounded-xl border border-indigo-100 bg-white p-3' }, [
+                                            h('p', { class: 'mb-2 text-sm font-bold text-slate-900' }, catalog.payment_mode_title),
+                                            h('div', { class: 'grid grid-cols-2 gap-2' }, [
+                                                ...[['prepaid', t('packagePrepaid')], ['postpaid', t('packagePostpaid')]].map(([mode, label]) => h('button', {
+                                                    class: `min-h-10 rounded-lg border px-3 py-2 text-sm font-semibold ${packageAccountMode.value === mode ? 'border-indigo-700 bg-indigo-50 text-indigo-900' : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'}`,
+                                                    type: 'button', 'aria-pressed': packageAccountMode.value === mode,
+                                                    onClick: () => { packageAccountMode.value = mode; selectedPackage.value = null; },
+                                                }, label)),
+                                            ]),
+                                            h('p', { class: 'mt-2 text-xs leading-5 text-slate-600' }, catalog.payment_mode_note),
+                                        ]),
+                                        packagePeriod.value === 'monthly' && packageAccountMode.value ? renderTable(catalog.monthly_columns, catalog.monthly_rows, ['speed', 'quota', 'price'], catalog.monthly_title) : null,
+                                        packagePeriod.value === 'yearly' && packageAccountMode.value ? renderTable(catalog.yearly_columns, catalog.yearly_rows, ['plan', 'quota', 'price'], catalog.yearly_title) : null,
+                                        packagePeriod.value !== 'quarterly' && !packageAccountMode.value ? h('p', { class: 'mt-3 rounded-xl bg-white p-3 text-sm text-slate-600' }, t('packageNeedAccount')) : null,
+                                        packageCustomerScript.value ? h('section', { class: 'mt-4 rounded-xl border border-green-200 bg-green-50 p-3 sm:p-4' }, [
+                                            h('h4', { class: 'font-bold text-green-950' }, t('packagePlanScript')),
+                                            h('p', { class: 'mt-2 text-sm leading-6 text-green-950' }, packageCustomerScript.value),
+                                            h('button', { class: 'mt-3 min-h-10 rounded-lg bg-green-800 px-3 py-2 text-sm font-bold text-white hover:bg-green-900', type: 'button', onClick: copyCustomerScript }, [icon('copy', 'size-4'), t('copy')]),
+                                        ]) : null,
+                                        h('details', { class: 'mt-3 rounded-xl border border-indigo-100 bg-white/80 p-3' }, [
+                                            h('summary', { class: 'cursor-pointer font-semibold text-indigo-900' }, t('checkBeforeQuote')),
                                             h('ul', { class: 'mt-2 list-disc space-y-1 ps-5 text-sm leading-6 text-slate-700' }, catalog.staff_checks.map((check) => h('li', check))),
                                         ]),
                                         h('details', { class: 'mt-3 rounded-xl border border-indigo-100 bg-white/80 p-3' }, [
-                                            h('summary', { class: 'cursor-pointer font-semibold text-indigo-900' }, catalog.yearly_title),
-                                            renderTable(catalog.yearly_columns, catalog.yearly_rows, ['plan', 'quota', 'price'], catalog.yearly_title),
+                                            h('summary', { class: 'cursor-pointer font-semibold text-indigo-900' }, catalog.addons_title),
+                                            renderTable(catalog.addon_columns, catalog.addon_rows, ['kind', 'quota', 'price', 'term'], catalog.addons_title, false),
                                         ]),
                                         h('details', { class: 'mt-3 rounded-xl border border-indigo-100 bg-white/80 p-3' }, [
-                                            h('summary', { class: 'cursor-pointer font-semibold text-indigo-900' }, catalog.addons_title),
-                                            renderTable(catalog.addon_columns, catalog.addon_rows, ['kind', 'quota', 'price', 'term'], catalog.addons_title),
+                                            h('summary', { class: 'cursor-pointer font-semibold text-indigo-900' }, language.value === 'ar' ? 'ملاحظات السعر والتجديد' : 'Price and renewal notes'),
+                                            h('ul', { class: 'mt-2 list-disc space-y-1 ps-5 text-xs leading-5 text-slate-700' }, catalog.notes.map((note) => h('li', note))),
                                         ]),
-                                        h('ul', { class: 'mt-3 list-disc space-y-1 ps-5 text-xs leading-5 text-slate-700' }, catalog.notes.slice(1).map((note) => h('li', note))),
                                         h('a', { class: 'mt-3 inline-flex text-xs font-semibold text-blue-800 underline', href: catalog.source_url, target: '_blank', rel: 'noopener noreferrer' }, catalog.source_label),
                                     ]);
                                 })() : null,
                                 isFinished.value
                                     ? h('div', { class: 'space-y-4', role: 'status' }, [
-                                        h('div', { class: 'inline-flex items-center gap-2 rounded-full bg-slate-800 px-4 py-2 text-sm font-semibold text-white' }, [
+                                        !isPackageInquiry.value ? h('div', { class: 'inline-flex items-center gap-2 rounded-full bg-slate-800 px-4 py-2 text-sm font-semibold text-white' }, [
                                             icon('clock', 'size-5'),
                                             h('span', t('sla')),
                                             h('span', currentStep.value.sla || '—'),
-                                        ]),
-                                        h('section', { class: 'rounded-2xl border border-orange-200 bg-orange-100 p-4 sm:p-5' }, [
+                                        ]) : null,
+                                        !isPackageInquiry.value ? h('section', { class: 'rounded-2xl border border-orange-200 bg-orange-100 p-4 sm:p-5' }, [
                                             h('h3', { class: 'mb-2 flex items-center gap-2 font-bold text-orange-950' }, [
                                                 icon('alert', 'size-5'), t('action'),
                                             ]),
                                             h('p', { class: 'leading-7 text-orange-950' }, currentStep.value.action || '—'),
-                                        ]),
-                                        currentStep.value.reference_guidance ? h('section', { class: 'reference-guidance rounded-2xl border border-blue-200 bg-blue-50 p-4 sm:p-5' }, [
+                                        ]) : null,
+                                        !isPackageInquiry.value && currentStep.value.reference_guidance ? h('section', { class: 'reference-guidance rounded-2xl border border-blue-200 bg-blue-50 p-4 sm:p-5' }, [
                                             h('h3', { class: 'mb-2 flex items-center gap-2 font-bold text-blue-950' }, [icon('ticket', 'size-5'), t('referenceGuidance')]),
                                             h('p', { class: 'leading-7 text-blue-950' }, currentStep.value.reference_guidance),
                                         ]) : null,
@@ -539,13 +634,13 @@ const App = {
                                             ]),
                                             h('p', { class: 'mt-2 rounded-lg bg-white/80 px-3 py-2 font-mono text-sm text-indigo-950' }, currentStep.value.clear_description),
                                         ]) : null,
-                                        h('section', { class: 'rounded-2xl border border-green-200 bg-green-100 p-4 sm:p-5' }, [
+                                        !isPackageInquiry.value ? h('section', { class: 'rounded-2xl border border-green-200 bg-green-100 p-4 sm:p-5' }, [
                                             h('h3', { class: 'mb-2 flex items-center gap-2 font-bold text-green-950' }, [
                                                 icon('chat', 'size-5'), t('customerScript'),
                                             ]),
-                                            h('p', { class: 'leading-7 text-green-950' }, currentStep.value.customer_script || '—'),
-                                        ]),
-                                        h('details', { class: 'comment-generator overflow-hidden rounded-2xl border border-slate-200 bg-slate-50' }, [
+                                            h('p', { class: 'leading-7 text-green-950' }, packageCustomerScript.value || currentStep.value.customer_script || '—'),
+                                        ]) : null,
+                                        !isPackageInquiry.value ? h('details', { class: 'comment-generator overflow-hidden rounded-2xl border border-slate-200 bg-slate-50' }, [
                                             h('summary', { class: 'flex cursor-pointer list-none items-center gap-2 px-4 py-3 font-bold text-slate-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-blue-500' }, [icon('copy', 'size-5 text-blue-700'), t('commentGenerator')]),
                                             h('div', { class: 'space-y-3 border-t border-slate-200 p-4' }, [
                                                 h('p', { class: 'text-xs leading-5 text-slate-600' }, t('commentHelp')),
@@ -575,14 +670,14 @@ const App = {
                                                 commentRefType.value === 'IR' ? h('p', { class: 'text-xs font-semibold text-amber-800' }, language.value === 'ar' ? 'رقم IR داخلي؛ لا تقله للعميل إلا إذا كان النظام يقدمه كمرجع عميل.' : 'IR is internal; do not give it to the customer unless the system marks it as a customer-facing reference.') : null,
                                                 h('button', { class: 'inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-blue-700 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-blue-800 active:scale-[0.99]', type: 'button', onClick: copyComment }, [icon('copy', 'size-5'), t('copyComment')]),
                                             ]),
-                                        ]),
-                                        h('div', { class: 'grid gap-2 sm:grid-cols-2' }, [
+                                        ]) : null,
+                                        !isPackageInquiry.value ? h('div', { class: 'grid gap-2 sm:grid-cols-2' }, [
                                             h('button', {
                                                 class: 'inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-green-800 px-4 py-2.5 text-sm font-semibold text-white transition-all hover:bg-green-900 active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2',
                                                 type: 'button',
                                                 onClick: copyCustomerScript,
                                             }, [icon('copy', 'size-5'), t('copy')]),
-                                        ]),
+                                        ]) : null,
                                         h('button', {
                                             class: 'inline-flex w-full items-center justify-center gap-2 rounded-xl border border-gray-200 px-4 py-3 font-semibold text-gray-700 transition-all hover:bg-gray-50 active:scale-95 focus:outline-none focus:ring-2 focus:ring-blue-500',
                                             type: 'button',

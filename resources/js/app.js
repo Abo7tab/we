@@ -710,7 +710,7 @@ const App = {
                     ]),
                     h('p', { class: 'mb-3 rounded-lg bg-amber-50 p-2.5 text-xs leading-5 text-amber-900' }, tree.value?.operations_guide?.codes_note || t('sourceCaution')),
                     h('input', { class: 'app-control mb-3 w-full rounded-xl border px-3 py-2.5 text-sm', type: 'search', value: codeSearch.value, placeholder: t('codesSearch'), onInput: (event) => { codeSearch.value = event.target.value; } }),
-                    h('div', { class: 'max-h-96 space-y-2 overflow-y-auto pe-1', 'aria-live': 'polite' }, (tree.value?.operations_guide?.closure_codes || []).filter((row) => !codeSearch.value || normalizeSearch(`${row.code} ${row.reason}`, language.value).includes(normalizeSearch(codeSearch.value, language.value))).map((row) => h('article', { class: 'flex items-start gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3', key: row.code }, [
+                    h('div', { class: 'max-h-96 space-y-2 overflow-y-auto pe-1', 'aria-live': 'polite' }, (tree.value?.operations_guide?.closure_codes || []).filter((row) => !codeSearch.value || normalizeSearch(`${row.code} ${row.reason}`, language.value).includes(normalizeSearch(codeSearch.value, language.value))).sort((a, b) => Number(a.code) - Number(b.code)).map((row) => h('article', { class: 'flex items-start gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3', key: row.code }, [
                         h('span', { class: 'inline-flex min-w-10 items-center justify-center rounded-lg bg-indigo-100 px-2 py-1 font-bold text-indigo-900' }, row.code),
                         h('p', { class: 'm-0 text-sm leading-6 text-slate-800' }, row.reason),
                     ]))),

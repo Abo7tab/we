@@ -8,12 +8,16 @@
         "reason": "Line stable / no problem found"
       },
       {
-        "code": "86",
-        "reason": "Problem solved after changing customer CPE"
+        "code": "4",
+        "reason": "Work order not finished"
       },
       {
-        "code": "87",
-        "reason": "Problem solved after changing splitter"
+        "code": "6",
+        "reason": "New installation"
+      },
+      {
+        "code": "7",
+        "reason": "Installation failed"
       },
       {
         "code": "8",
@@ -24,52 +28,120 @@
         "reason": "Problem solved after fixing external wire"
       },
       {
-        "code": "12",
-        "reason": "Problem solved after changing external wire"
-      },
-      {
         "code": "10",
         "reason": "Problem solved after changing internal wiring"
-      },
-      {
-        "code": "13",
-        "reason": "Problem solved after fixing from box side"
       },
       {
         "code": "11",
         "reason": "Problem solved after fixing from cabin side"
       },
       {
+        "code": "12",
+        "reason": "Problem solved after changing external wire"
+      },
+      {
+        "code": "13",
+        "reason": "Problem solved after fixing from box side"
+      },
+      {
         "code": "14",
         "reason": "Problem solved after fixing from exchange"
+      },
+      {
+        "code": "17",
+        "reason": "Customer unavailable - schedule in comment"
       },
       {
         "code": "18",
         "reason": "Problem solved after voice resplit"
       },
       {
-        "code": "35",
-        "reason": "Split after contract change"
-      },
-      {
-        "code": "6",
-        "reason": "New installation"
-      },
-      {
-        "code": "59",
-        "reason": "Problem solved after changing new port"
-      },
-      {
-        "code": "83",
-        "reason": "Internal wiring and cannot be solved"
+        "code": "19",
+        "reason": "Internal network - close compound"
       },
       {
         "code": "20",
         "reason": "Major fault"
       },
       {
-        "code": "84",
-        "reason": "Internal wiring; customer refuses to change it"
+        "code": "23",
+        "reason": "Customer voice-service invoice problem"
+      },
+      {
+        "code": "24",
+        "reason": "Line out of service"
+      },
+      {
+        "code": "26",
+        "reason": "Engineering inspection"
+      },
+      {
+        "code": "27",
+        "reason": "Address modification"
+      },
+      {
+        "code": "28",
+        "reason": "Customer refused visit / refused entry"
+      },
+      {
+        "code": "29",
+        "reason": "Customer phone device problem"
+      },
+      {
+        "code": "30",
+        "reason": "Unavailable as per customer request"
+      },
+      {
+        "code": "35",
+        "reason": "Split after contract change"
+      },
+      {
+        "code": "36",
+        "reason": "Need Address Modification for fixed voice installation: address mismatch/error; direct the customer to correct it with required documents per the procedure."
+      },
+      {
+        "code": "37",
+        "reason": "Customer did not answer the fixed voice installation visit call (Fixed Voice SR Follow Up / Installation)."
+      },
+      {
+        "code": "38",
+        "reason": "Stalagmite problem (label as shown in table)"
+      },
+      {
+        "code": "39",
+        "reason": "Need Address Modification for fixed voice installation: use after confirming the same number exists in the building according to Check Availability."
+      },
+      {
+        "code": "59",
+        "reason": "Problem solved after changing new port"
+      },
+      {
+        "code": "61",
+        "reason": "Fixed voice Change Customer Category: successful closure in the category-change flow; match the actual result to the current procedure."
+      },
+      {
+        "code": "63",
+        "reason": "Fixed voice Change Customer Category: failed closure in the category-change flow; match the actual result to the current procedure."
+      },
+      {
+        "code": "65",
+        "reason": "CPE configuration required; match the current TTS label"
+      },
+      {
+        "code": "67",
+        "reason": "Data Ports problem after ruling out a general outage; follow the approved checks and escalation flow."
+      },
+      {
+        "code": "73",
+        "reason": "Installation refused by customer"
+      },
+      {
+        "code": "74",
+        "reason": "Customer CPE problem"
+      },
+      {
+        "code": "75",
+        "reason": "Splitter problem - customer has no spare"
       },
       {
         "code": "81",
@@ -80,72 +152,24 @@
         "reason": "External problem - cable maintenance needed"
       },
       {
-        "code": "75",
-        "reason": "Splitter problem - customer has no spare"
+        "code": "83",
+        "reason": "Internal wiring and cannot be solved"
       },
       {
-        "code": "74",
-        "reason": "Customer CPE problem"
+        "code": "84",
+        "reason": "Internal wiring; customer refuses to change it"
       },
       {
-        "code": "65",
-        "reason": "CPE configuration required; match the current TTS label"
+        "code": "86",
+        "reason": "Problem solved after changing customer CPE"
       },
       {
-        "code": "38",
-        "reason": "Stalagmite problem (label as shown in table)"
-      },
-      {
-        "code": "17",
-        "reason": "Customer unavailable - schedule in comment"
-      },
-      {
-        "code": "28",
-        "reason": "Customer refused visit / refused entry"
+        "code": "87",
+        "reason": "Problem solved after changing splitter"
       },
       {
         "code": "96",
         "reason": "Customer did not answer"
-      },
-      {
-        "code": "26",
-        "reason": "Engineering inspection"
-      },
-      {
-        "code": "19",
-        "reason": "Internal network - close compound"
-      },
-      {
-        "code": "29",
-        "reason": "Customer phone device problem"
-      },
-      {
-        "code": "23",
-        "reason": "Customer voice-service invoice problem"
-      },
-      {
-        "code": "4",
-        "reason": "Work order not finished"
-      },
-      {
-        "code": "30",
-        "reason": "Unavailable as per customer request"
-      },
-      {
-        "code": "7",
-        "reason": "Installation failed"
-      },
-      {
-        "code": "27",
-        "reason": "Address modification"
-      },
-      {
-        "code": "73",
-        "reason": "Installation refused by customer"
-      },
-      {
-        "code": "24",
-        "reason": "Line out of service"
       }
     ]
   },

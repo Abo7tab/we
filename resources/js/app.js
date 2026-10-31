@@ -3,6 +3,63 @@ import { computed, createApp, h, onMounted, ref } from 'vue';
 
 const MAX_STEPS_PER_CALL = 100;
 
+function icon(name, className = 'size-5') {
+    const paths = {
+        router: [
+            h('path', { d: 'M4 10.5a12 12 0 0 1 16 0' }),
+            h('path', { d: 'M7 13.5a7.5 7.5 0 0 1 10 0' }),
+            h('path', { d: 'M10 16.5a3 3 0 0 1 4 0' }),
+            h('path', { d: 'M12 20h.01' }),
+        ],
+        cable: [
+            h('path', { d: 'M8 7V4m8 3V4M6 7h12v4a6 6 0 0 1-12 0V7Z' }),
+            h('path', { d: 'M12 17v3' }),
+        ],
+        question: [
+            h('circle', { cx: '12', cy: '12', r: '9' }),
+            h('path', { d: 'M9.5 9a2.5 2.5 0 1 1 4.2 1.8c-1.1 1-1.7 1.4-1.7 2.7M12 17h.01' }),
+        ],
+        arrow: [h('path', { d: 'M19 12H5m7 7-7-7 7-7' })],
+        back: [h('path', { d: 'm15 18-6-6 6-6' })],
+        home: [
+            h('path', { d: 'm3 10 9-7 9 7' }),
+            h('path', { d: 'M5 9v11h14V9M9 20v-6h6v6' }),
+        ],
+        alert: [
+            h('path', { d: 'M10.3 4.3 2.8 17a2 2 0 0 0 1.7 3h15a2 2 0 0 0 1.7-3L13.7 4.3a2 2 0 0 0-3.4 0Z' }),
+            h('path', { d: 'M12 9v4m0 4h.01' }),
+        ],
+        clock: [
+            h('circle', { cx: '12', cy: '12', r: '9' }),
+            h('path', { d: 'M12 7v5l3 2' }),
+        ],
+        chat: [
+            h('path', { d: 'M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8A8.5 8.5 0 0 1 8.7 3.9a8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8v.5Z' }),
+        ],
+        copy: [
+            h('rect', { x: '8', y: '8', width: '12', height: '12', rx: '2' }),
+            h('path', { d: 'M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3' }),
+        ],
+    };
+
+    return h('svg', {
+        class: className,
+        viewBox: '0 0 24 24',
+        fill: 'none',
+        stroke: 'currentColor',
+        'stroke-width': '1.8',
+        'stroke-linecap': 'round',
+        'stroke-linejoin': 'round',
+        'aria-hidden': 'true',
+    }, paths[name] ?? paths.question);
+}
+
+function optionIcon(label = '') {
+    if (/adsl|router|راوتر|لمب|واي.?فاي|wifi/i.test(label)) return 'router';
+    if (/cable|wire|fiber|سلك|كابل|فايبر/i.test(label)) return 'cable';
+    return 'question';
+}
+
 const App = {
     setup() {
         const tree = ref(null);
@@ -105,31 +162,31 @@ const App = {
         onMounted(loadTree);
 
         return () => h('main', {
-            class: 'min-h-screen bg-slate-50 px-4 py-8 text-slate-900 sm:px-6',
+                class: 'min-h-screen bg-gray-50 px-4 py-6 text-gray-800 sm:px-6 sm:py-10',
         }, [
             h('section', {
-                class: 'mx-auto max-w-lg rounded-3xl bg-white p-6 shadow-lg shadow-slate-200/60 sm:p-8',
+                class: 'mx-auto max-w-lg rounded-3xl bg-white p-5 shadow-lg shadow-gray-200/70 sm:p-8',
                 'aria-busy': loading.value ? 'true' : 'false',
             }, [
                 h('header', { class: 'mb-6 flex items-start justify-between gap-4' }, [
                     h('div', [
-                        h('p', { class: 'mb-2 text-sm font-semibold text-indigo-600' }, 'مساعد الدعم الفني'),
-                        h('h1', { class: 'text-2xl font-bold' }, 'شجرة قرارات تجريبية'),
+                        h('p', { class: 'mb-2 text-sm font-semibold text-blue-700' }, 'مساعد الدعم الفني'),
+                        h('h1', { class: 'text-2xl font-bold text-gray-900' }, 'شجرة قرارات تجريبية'),
                     ]),
                     tree.value ? h('button', {
-                        class: 'shrink-0 rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500',
+                        class: 'inline-flex shrink-0 items-center gap-2 rounded-xl border border-gray-200 px-3 py-2 text-sm font-medium text-gray-600 transition-all hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500',
                         type: 'button',
                         onClick: restart,
                         'aria-label': 'إعادة بدء المسار',
-                    }, 'إعادة البدء') : null,
+                    }, [icon('home', 'size-4'), 'جديد']) : null,
                 ]),
                 loading.value
-                    ? h('p', { class: 'py-8 text-center text-slate-500', role: 'status' }, 'جاري تحميل شجرة القرارات…')
+                    ? h('p', { class: 'py-8 text-center text-gray-500', role: 'status' }, 'جاري تحميل شجرة القرارات…')
                     : loadError.value
                         ? h('div', { class: 'space-y-4', role: 'alert' }, [
                             h('p', { class: 'text-red-700' }, loadError.value),
                             h('button', {
-                                class: 'w-full rounded-xl bg-indigo-600 px-4 py-3 font-semibold text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2',
+                                class: 'w-full rounded-xl bg-blue-700 px-4 py-3 font-semibold text-white transition-all hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2',
                                 type: 'button',
                                 onClick: loadTree,
                             }, 'إعادة المحاولة'),
@@ -138,54 +195,63 @@ const App = {
                             ? h('p', { class: 'text-red-700', role: 'alert' }, 'الخطوة الحالية غير موجودة في الشجرة.')
                             : h('div', [
                                 h('div', { class: 'mb-3 flex items-center justify-between gap-4' }, [
-                                    h('p', { class: 'text-sm text-slate-500' }, `الخطوة ${history.value.length + 1}`),
+                                    h('p', { class: 'text-sm text-gray-500' }, `الخطوة ${history.value.length + 1}`),
                                     history.value.length > 0 ? h('button', {
-                                        class: 'rounded-lg px-3 py-2 text-sm font-medium text-indigo-700 hover:bg-indigo-50 focus:outline-none focus:ring-2 focus:ring-indigo-500',
+                                        class: 'inline-flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium text-blue-800 transition-all hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500',
                                         type: 'button',
                                         onClick: goBack,
-                                    }, 'رجوع') : null,
+                                    }, [icon('back', 'size-4'), 'رجوع خطوة']) : null,
                                 ]),
-                                h('h2', { class: 'mb-6 text-lg font-semibold leading-8' }, currentStep.value.question),
+                                h('h2', { class: 'mb-6 text-xl font-semibold leading-9 text-gray-800' }, currentStep.value.question),
                                 isFinished.value
-                                    ? h('div', { class: 'space-y-4 rounded-2xl border border-emerald-200 bg-emerald-50 p-5', role: 'status' }, [
-                                        h('div', [
-                                            h('h3', { class: 'mb-1 font-bold text-emerald-900' }, 'الإجراء المطلوب'),
-                                            h('p', { class: 'leading-7 text-emerald-950' }, currentStep.value.action || 'لا يوجد إجراء محدد.'),
+                                    ? h('div', { class: 'space-y-4', role: 'status' }, [
+                                        h('div', { class: 'inline-flex items-center gap-2 rounded-full bg-slate-800 px-4 py-2 text-sm font-semibold text-white' }, [
+                                            icon('clock', 'size-5'),
+                                            h('span', 'المهلة: '),
+                                            h('span', currentStep.value.sla || 'غير محددة'),
                                         ]),
-                                        h('div', [
-                                            h('h3', { class: 'mb-1 font-bold text-emerald-900' }, 'مهلة الحل'),
-                                            h('p', { class: 'text-emerald-950' }, currentStep.value.sla || 'غير محددة'),
+                                        h('section', { class: 'rounded-2xl border border-orange-200 bg-orange-100 p-4 sm:p-5' }, [
+                                            h('h3', { class: 'mb-2 flex items-center gap-2 font-bold text-orange-950' }, [
+                                                icon('alert', 'size-5'), 'إجراء الموظف',
+                                            ]),
+                                            h('p', { class: 'leading-7 text-orange-950' }, currentStep.value.action || 'لا يوجد إجراء محدد.'),
                                         ]),
-                                        h('div', [
-                                            h('h3', { class: 'mb-1 font-bold text-emerald-900' }, 'نص العميل'),
-                                            h('p', { class: 'leading-7 text-emerald-950' }, currentStep.value.customer_script || 'لا يوجد نص محدد.'),
+                                        h('section', { class: 'rounded-2xl border border-green-200 bg-green-100 p-4 sm:p-5' }, [
+                                            h('h3', { class: 'mb-2 flex items-center gap-2 font-bold text-green-950' }, [
+                                                icon('chat', 'size-5'), 'نص تقوله للعميل',
+                                            ]),
+                                            h('p', { class: 'leading-7 text-green-950' }, currentStep.value.customer_script || 'لا يوجد نص محدد.'),
                                         ]),
                                         h('button', {
-                                            class: 'w-full rounded-xl bg-emerald-700 px-4 py-3 font-semibold text-white hover:bg-emerald-800 focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:ring-offset-2',
+                                            class: 'inline-flex w-full items-center justify-center gap-2 rounded-xl bg-green-800 px-4 py-3 font-semibold text-white transition-all hover:bg-green-900 active:scale-95 focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2',
                                             type: 'button',
                                             onClick: copyCustomerScript,
-                                        }, 'نسخ نص العميل'),
+                                        }, [icon('copy', 'size-5'), 'نسخ نص العميل']),
                                         h('button', {
-                                            class: 'w-full rounded-xl border border-emerald-300 px-4 py-3 font-semibold text-emerald-900 hover:bg-emerald-100 focus:outline-none focus:ring-2 focus:ring-emerald-600',
+                                            class: 'inline-flex w-full items-center justify-center gap-2 rounded-xl border border-gray-200 px-4 py-3 font-semibold text-gray-700 transition-all hover:bg-gray-50 active:scale-95 focus:outline-none focus:ring-2 focus:ring-blue-500',
                                             type: 'button',
                                             onClick: restart,
-                                        }, 'بدء مسار جديد'),
+                                        }, [icon('home', 'size-5'), 'بدء استعلام جديد']),
                                     ])
                                     : h('div', { class: 'grid gap-3' }, currentStep.value.options.map((option, index) =>
                                         h('button', {
-                                            class: 'w-full rounded-xl border border-slate-200 px-4 py-3 text-right font-medium transition hover:border-indigo-500 hover:bg-indigo-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2',
+                                            class: 'group flex min-h-16 w-full items-center gap-3 rounded-2xl border border-gray-200 bg-white px-4 py-3 text-right font-medium text-gray-800 shadow-sm transition-all hover:border-blue-300 hover:bg-blue-50 active:scale-95 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2',
                                             type: 'button',
                                             key: `${currentStepId.value}-${index}`,
                                             onClick: () => choose(option),
-                                        }, option.label || 'اختيار'),
+                                        }, [
+                                            h('span', { class: 'inline-flex size-10 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-700 transition-all group-hover:bg-blue-100' }, [icon(optionIcon(option.label))]),
+                                            h('span', { class: 'flex-1 leading-6' }, option.label || 'اختيار'),
+                                            h('span', { class: 'text-blue-700 transition-transform group-hover:-translate-x-1' }, [icon('arrow', 'size-5')]),
+                                        ]),
                                     )),
                             ]),
                 notice.value ? h('p', {
-                    class: 'mt-4 rounded-lg bg-slate-100 px-3 py-2 text-sm text-slate-700',
+                    class: 'mt-4 rounded-lg bg-gray-100 px-3 py-2 text-sm text-gray-700',
                     role: 'status',
                     'aria-live': 'polite',
                 }, notice.value) : null,
-                h('p', { class: 'mt-6 text-xs text-slate-400' }, 'تُحمّل الشجرة من Laravel، وتتم خطوات المسار داخل المتصفح.'),
+                h('p', { class: 'mt-6 text-xs text-gray-400' }, 'تُحمّل الشجرة من Laravel، وتتم خطوات المسار داخل المتصفح.'),
             ]),
         ]);
     },

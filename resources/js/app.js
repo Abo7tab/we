@@ -833,20 +833,24 @@ const App = {
                                     h('h3', { class: 'mb-1 flex items-center gap-2 font-bold text-sky-950' }, [icon('search', 'size-5'), language.value === 'ar' ? 'النتيجة التي وجدتها' : 'What we found']),
                                     h('p', { class: 'leading-7 text-sky-950' }, currentStep.value.finding || currentStep.value.question),
                                 ]) : null,
-                                isFinished.value ? h('section', { class: 'mb-5 rounded-2xl border border-indigo-200 bg-indigo-50 px-4 py-3.5 sm:px-5' }, [
+                                isFinished.value && currentStep.value.check_guidance ? h('section', { class: 'mb-5 rounded-2xl border border-indigo-200 bg-indigo-50 px-4 py-3.5 sm:px-5' }, [
                                     h('h3', { class: 'mb-1 flex items-center gap-2 text-xs font-bold text-indigo-800' }, [icon('search', 'size-4'), t('checkGuidance')]),
-                                    h('p', { class: 'leading-7 text-indigo-950' }, currentStep.value.check_guidance || t('generalCheckHint')),
+                                    h('p', { class: 'leading-7 text-indigo-950' }, currentStep.value.check_guidance),
                                 ]) : null,
                                 currentStep.value.customer_prompt ? h('section', { class: 'customer-prompt mb-5 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3.5 sm:px-5', 'aria-label': t('askCustomer') }, [
                                     h('h3', { class: 'mb-1 flex items-center gap-2 text-xs font-bold text-emerald-800' }, [icon('chat', 'size-4'), t('askCustomer')]),
                                     h('p', { class: 'leading-7 text-emerald-950' }, currentStep.value.customer_prompt),
                                 ]) : null,
-                                currentStep.value.options?.length > 0 && currentStepId.value !== 'start_menu' && currentStepId.value !== 'tools_hub' ? h('section', { class: 'staff-check mb-5 rounded-2xl border border-indigo-200 bg-indigo-50 px-4 py-3.5 sm:px-5' }, [
+                                currentStep.value.options?.length > 0 && currentStepId.value !== 'start_menu' && currentStepId.value !== 'tools_hub' && (currentStep.value.check_guidance || currentStep.value.action) ? h('section', { class: 'staff-check mb-5 rounded-2xl border border-indigo-200 bg-indigo-50 px-4 py-3.5 sm:px-5' }, [
                                     h('h3', { class: 'mb-2 flex items-center gap-2 text-xs font-bold text-indigo-800' }, [icon('ticket', 'size-4'), t('staffCheck')]),
-                                    h('h4', { class: 'text-xs font-bold text-indigo-900' }, t('checkGuidance')),
-                                    h('p', { class: 'mt-1 leading-7 text-indigo-950' }, currentStep.value.check_guidance || t('generalCheckHint')),
-                                    h('h4', { class: 'mt-3 text-xs font-bold text-indigo-900' }, t('whatToDo')),
-                                    h('p', { class: 'mt-1 leading-7 text-indigo-950' }, currentStep.value.action || t('generalCheckHint')),
+                                    currentStep.value.check_guidance ? h('div', [
+                                        h('h4', { class: 'text-xs font-bold text-indigo-900' }, t('checkGuidance')),
+                                        h('p', { class: 'mt-1 leading-7 text-indigo-950' }, currentStep.value.check_guidance),
+                                    ]) : null,
+                                    currentStep.value.action ? h('div', { class: currentStep.value.check_guidance ? 'mt-3' : '' }, [
+                                        h('h4', { class: 'text-xs font-bold text-indigo-900' }, t('whatToDo')),
+                                        h('p', { class: 'mt-1 leading-7 text-indigo-950' }, currentStep.value.action),
+                                    ]) : null,
                                 ]) : null,
                                 currentStep.value.source_reference ? h('details', { class: 'mb-5 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2' }, [
                                     h('summary', { class: 'cursor-pointer text-xs font-bold text-slate-600' }, t('sourceReference')),

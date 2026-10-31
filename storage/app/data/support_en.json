@@ -451,7 +451,7 @@
     ]
   },
   "preflight_start": {
-    "question": "Before troubleshooting, have you checked TTS History for an open TT for this same fault?",
+    "question": "Open TTS History and check whether there is an open TT for the same fault on this service.",
     "options": [
       {
         "label": "No open TT for this fault; continue checks",
@@ -465,7 +465,10 @@
         "label": "TT status is unclear; search by service number first",
         "next_step": "existing_tt_terminal"
       }
-    ]
+    ],
+    "check_guidance": "Open TTS History and search by service number. Check ticket status and latest update, and confirm it is the same service and fault type; another TT on the line may be unrelated.",
+    "action": "No open TT for this fault: continue to the Outage check. An open TT exists for the same fault: record its number and update that TT with today’s findings; do not create a duplicate. Status unclear: search the service number in History before continuing.",
+    "source_reference": "TTS History pre-check procedure in the support files; day 6.pdf pp. 74-75 and day 13.pdf p. 2. Verify status in current TTS."
   },
   "outage_precheck": {
     "question": "Does the approved tool show an outage, planned outage, or major fault for this service or area?",
@@ -482,7 +485,10 @@
         "label": "An outage is possible or the tool result is unclear",
         "next_step": "outage_unconfirmed_terminal"
       }
-    ]
+    ],
+    "check_guidance": "Open CST360/Customer360 and check Outage for the service number or area; for TDM lines use Matrix, and for Major Fault use ADF Tool. Match area/POP, service type, status, and announcement time. Treat it as confirmed only when the active announcement includes this service and area.",
+    "action": "Active matching announcement: follow outage_terminal and do not create a duplicate individual fault. No matching announcement: check account status in BSS. Possible outage or unclear data: do not guess; ask the team leader to confirm before classifying.",
+    "source_reference": "Outage checks in CST360/Matrix and Major Fault in ADF; day 13.pdf and day 14.pdf. Use the current announcement only."
   },
   "billing_precheck": {
     "question": "Is the account/service active with no unpaid balance or billing suspension?",
@@ -499,7 +505,10 @@
         "label": "Status is unclear; verify the account before troubleshooting",
         "next_step": "billing_verify_terminal"
       }
-    ]
+    ],
+    "check_guidance": "Open BSS and search by service number. Review FBB Account: Account Status, outstanding balance, and suspension reason. Match the service number before choosing; do not use another customer account’s status.",
+    "action": "Account is Active with no financial block: check package usage. Outstanding balance or financial suspension: open billing_terminal and give the amount and payment channel shown in BSS. Status unclear: do not start Logical/Physical diagnosis until verified.",
+    "source_reference": "BSS account check procedure; day 6.pdf p. 4. Verify current status and balance in BSS."
   },
   "quota_precheck": {
     "question": "Check package usage and validity in the support systems.",
@@ -522,7 +531,7 @@
     "source_reference": "day 12.pdf p. 20 (Offer Management > Top Applications & Consumption details); day 11.pdf p. 4 (CST360/NST Session Logs or Matrix > Get Online Service for TDM); day 13.pdf (Check Quota and Exceed Quota flow)."
   },
   "technical_type": {
-    "question": "Choose the issue type confirmed after the pre-checks.",
+    "question": "After checking TT, outage, account, and package, identify the service affected.",
     "options": [
       {
         "label": "Internet issue (outage, slowness, or browsing)",
@@ -536,15 +545,29 @@
         "label": "Complaint about a visit/staff interaction or supervisor request",
         "next_step": "complaint_start"
       }
-    ]
+    ],
+    "check_guidance": "This step identifies the service; it does not classify Physical/Logical. For internet, continue to the connection and DSL-light check. For landline voice, test for dial tone. Do not open a complaint before selecting the correct technical path.",
+    "action": "Internet complaint: use the next connection-status step; stable DSL with slowness/browsing or logical drops → Logical, DSL off/blinking → Physical. Landline voice complaint: test Tone and follow the voice path. Complete diagnosis before escalation.",
+    "source_reference": "Pre-diagnosis sequence and Physical/Logical paths in the support tree; verify the current TTS procedure."
   },
   "existing_tt_terminal": {
-    "question": "Check fault tickets before creating a new one.",
-    "action": "Search TTS History by service number. If an open TT exists for the same fault, record its reference and update it instead of creating a duplicate. Then return and check outage, account status, and package usage.",
-    "customer_script": "I will first check the fault history for your line so I can follow the existing case and avoid creating a duplicate request.",
-    "reference_guidance": "If updating an existing TT, tell the customer its TTS reference and displayed SLA. Do not create a duplicate. IR is internal; share it only if the system explicitly marks it as a customer-facing reference.",
-    "sla": "Use the SLA recorded on the existing ticket",
-    "options": []
+    "question": "After searching by service number in TTS History, what did you find?",
+    "action": "An open TT exists for the same fault: record its number, update it, then check Outage. No open TT for the same fault: continue to Outage. TTS cannot be opened or the result is unclear: do not guess or create a duplicate; choose the verification-failed path.",
+    "options": [
+      {
+        "label": "Found an open TT for the same fault; record and update it",
+        "next_step": "outage_precheck"
+      },
+      {
+        "label": "No open TT for the same fault",
+        "next_step": "outage_precheck"
+      },
+      {
+        "label": "Could not open TTS or confirm the result",
+        "next_step": "tt_history_unavailable_terminal"
+      }
+    ],
+    "check_guidance": "In TTS History, search by service number and open the ticket history. Match the service number and fault type, then check Status and latest Update. A closed ticket or a different fault is not an open ticket for this issue."
   },
   "outage_unconfirmed_terminal": {
     "question": "A general outage is possible, but it is not confirmed in the tool.",
@@ -603,7 +626,8 @@
         "next_step": "dsl_status_unknown"
       }
     ],
-    "action": "Classify from the DSL/ADSL light: off or blinking routes to Physical and power/wiring checks. A steady light routes to Logical even if the customer reports no internet; then check WAN IP. Do not record a cause or repair before a test confirms it."
+    "action": "Off → power_check. Blinking/dropping → instability_visit. Steady with slowness/browsing/no IP → logical_start. If the customer cannot identify it → dsl_status_unknown. Do not record a cause or repair before verification.",
+    "check_guidance": "Ask about the DSL/ADSL light at the exact time of the fault. Off: check Power first. Blinking/dropping: follow the instability/line path. Steady: do not label it Physical; move to Logical and check WAN IP."
   },
   "power_check": {
     "question": "Check the router power source and Power light status.",
@@ -790,7 +814,8 @@
         "next_step": "logical_other_symptom"
       }
     ],
-    "action": "Complete initial checks before technical steps. Select the specific case; do not equate slowness with BLQ or skip Physical checks before Gaming."
+    "action": "Drops while DSL stays steady → Logical Instability. General slowness → Slowness. Line quality/low speed → BLQ then ASSIA. Ping/game issue → Gaming. No WAN IP or sites fail → logical_other_symptom. If DSL is off/blinking, return to Physical.",
+    "check_guidance": "Use this path only after ruling out Outage, account/billing blocks, and package exhaustion, and when DSL is steady or line checks indicate the fault is not Physical. Select the symptom using the call details and test result, not the phrase “internet is down” alone."
   },
   "no_ip_check": {
     "question": "Using the approved support tool, and without asking for the customer's password, have you checked MAC status, CPE settings, and connection details?",
@@ -1530,12 +1555,21 @@
     ]
   },
   "technical_complaint_terminal": {
-    "question": "Technical complaint.",
-    "action": "Record the customer's description, time, completed checks, and results. Link the complaint to an existing technical ticket if available. Select the escalation team and SLA for the issue. Do not promise a timeframe that is not shown in the system.",
-    "customer_script": "I am sorry about the issue. I have recorded the details and checks completed, and I will follow it with the specialist team according to the stated timeframe.",
-    "reference_guidance": "Link the complaint to the existing TT or new complaint reference, then give the customer the follow-up reference and displayed timeframe. Do not share internal IR numbers.",
-    "sla": "Depends on the complaint type and assigned team",
-    "options": []
+    "question": "After the pre-checks, identify the service involved to start technical troubleshooting.",
+    "action": "Internet: check whether it works and the DSL light during the fault; stable DSL with slowness/browsing or logical drops indicates Logical, while off/blinking DSL indicates Physical. Landline voice: test Tone at the phone socket and follow the voice path. Complete troubleshooting, then create/update the correct ticket with its actual reference and current SLA; do not duplicate a TT.",
+    "options": [
+      {
+        "label": "Internet/data complaint: classify Physical or Logical",
+        "next_step": "internet_working_check"
+      },
+      {
+        "label": "Landline voice complaint: test Tone",
+        "next_step": "voice_verification"
+      }
+    ],
+    "customer_prompt": "Is the complaint about internet (for example, slow or disconnected service) or landline voice?",
+    "check_guidance": "TT, outage, account, and package checks are already complete before this step. Do not repeat them. Select the service, then check its technical indicator to classify Physical or Logical.",
+    "source_reference": "Internet and voice verification paths in the support guide; verify the current TTS category and SLA."
   },
   "conduct_complaint_terminal": {
     "question": "Complaint about a technician visit or staff conduct.",
@@ -1942,7 +1976,10 @@
         "label": "Could not test",
         "next_step": "voice_verify_unknown"
       }
-    ]
+    ],
+    "check_guidance": "This is a customer-side handset test, not an internal tool lookup: ask them to disconnect and reconnect the phone at the line socket, then lift the handset and listen for dial tone. Record whether voice only or both voice and internet are affected.",
+    "action": "Tone present: continue the line/service checks for the reported issue. No Tone or voice is affected: open voice_start. Test cannot be done: choose voice_verify_unknown; do not assume the tone result.",
+    "source_reference": "Dial-tone check at the phone socket; follow the voice path in the support tree."
   },
   "voice_verify_unknown": {
     "question": "Voice service status could not be confirmed.",
@@ -1967,7 +2004,9 @@
         "label": "Cannot test or main socket is unclear",
         "next_step": "connection_unknown_terminal"
       }
-    ]
+    ],
+    "check_guidance": "Customer test: remove extension cords/splitters, then connect the router directly to the main socket. Wait for DSL/ADSL to sync and record whether the light becomes steady or stays off/blinking.",
+    "action": "Choose the result actually observed after the direct connection. If internal wiring is the cause, document it and follow that path; if DSL still does not sync, continue Physical checks. If the main socket is unclear, do not ask the customer to open wiring boxes or equipment."
   },
   "connection_unknown_terminal": {
     "question": "Internal wiring has not been ruled out.",
@@ -2488,21 +2527,27 @@
   "internet_working_check": {
     "question": "Is the customer’s internet working right now?",
     "customer_prompt": "After checking outages, account status, and quota: is the internet working now? If yes, is it slow or are only some sites affected?",
-    "action": "Initial routing: a live connection with slowness/browsing/intermittency and a steady DSL light goes to Logical. A full loss of sync or DSL/ADSL light off/blinking goes to Physical. If DSL is steady but there is no IP, route to Logical after checking line sync; do not classify from “no internet” alone.",
+    "action": "Working connection with slowness/browsing issue or steady DSL during drops → Logical. DSL off/blinking/no Sync → check the main socket, then Physical. DSL steady but no WAN IP → Logical > WAN IP. Do not classify from “internet is down” alone; match the light and line status.",
     "options": [
       {
-        "label": "Internet works, but it is slow or browsing/specific sites are affected (Logical)",
+        "label": "Internet works, but is slow or browsing/specific sites fail (Logical)",
         "next_step": "logical_verify_account"
       },
       {
-        "label": "Internet is fully down or DSL/ADSL is off/blinking (Physical)",
+        "label": "Internet is down and DSL is off/blinking or has no Sync (Physical)",
         "next_step": "connection_check"
       },
       {
-        "label": "Customer cannot tell the internet or DSL-light status",
+        "label": "DSL is steady but there is no WAN IP (Logical)",
+        "next_step": "logical_other_symptom"
+      },
+      {
+        "label": "Customer cannot identify internet/DSL status",
         "next_step": "dsl_status_unknown"
       }
-    ]
+    ],
+    "check_guidance": "Ask about the DSL/ADSL light while the fault is happening, not only after service returns. Light off/blinking means Physical checks for the main socket and wiring. If steady, review Session/Line status in CST360 > NST Session Logs; for TDM use Matrix > Get Online Service. Steady DSL with no WAN IP remains a Logical path after checking line status.",
+    "source_reference": "day 11.pdf p. 4; day 13.pdf pp. 10-14; day 14.pdf (Operational Status and DSL LED Status). Verify in the current tool."
   },
   "logical_instability_start": {
     "question": "Logical Instability: does internet drop and recover while the DSL/ADSL light stays steady?",
@@ -3253,6 +3298,14 @@
     "reference_guidance": "Give the customer the customer-facing request/SR reference and actual displayed timeframe. Do not share an internal IR or invent a number or duration.",
     "sla": "Depends on the change request and SLA shown by BSS; no fixed duration is provided here.",
     "source_reference": "Fixed-offer change guidance recorded in the support guide; verify the current BSS workflow before submission.",
+    "options": []
+  },
+  "tt_history_unavailable_terminal": {
+    "question": "Could not verify TTS History.",
+    "action": "Do not create a TT before confirming the service history, to avoid duplicating an existing complaint. Reopen TTS History and search by service number; if access still fails, follow the internal support procedure or ask a supervisor before registering a ticket.",
+    "customer_script": "I am checking the service history first to avoid duplicating a request, then I will follow the correct next step.",
+    "reference_guidance": "There is no new customer reference until a ticket is created or updated. Do not promise a timeframe before TTS displays it.",
+    "sla": "Do not state an SLA before verifying it in the system.",
     "options": []
   }
 }

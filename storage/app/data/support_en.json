@@ -5,7 +5,150 @@
     "record": "Before troubleshooting: search TTS History by service number for a TT for the same fault, then check Outage/Customer360, billing/suspension status, and package usage. Record any existing ticket reference and update that TT instead of duplicating it. For a technical escalation, update/create the correct TT and update/create IR when the case path requires it. SR is for a service request or a Major Fault path when instructed; it does not replace a fault TT. Attach a Major Fault message screenshot to its SR when that process requires it. Create DLAY only after SLA breach or when required; check for an automatic ticket, renew SLA, and record delay as instructed. After creating/updating a ticket, tell the customer its reference and the SLA shown in the system.",
     "codes_note": "These FCC codes come from a dated training PDF. Use a code only when it matches the actual cause and the current TTS choices; never select by number alone.",
     "closure_codes": [
-      {"code":"2","reason":"Line stable / no problem found"},{"code":"86","reason":"Problem solved after changing customer CPE"},{"code":"87","reason":"Problem solved after changing splitter"},{"code":"8","reason":"Problem solved after fixing internal wiring"},{"code":"9","reason":"Problem solved after fixing external wire"},{"code":"12","reason":"Problem solved after changing external wire"},{"code":"10","reason":"Problem solved after changing internal wiring"},{"code":"13","reason":"Problem solved after fixing from box side"},{"code":"11","reason":"Problem solved after fixing from cabin side"},{"code":"14","reason":"Problem solved after fixing from exchange"},{"code":"18","reason":"Problem solved after voice resplit"},{"code":"35","reason":"Split after contract change"},{"code":"6","reason":"New installation"},{"code":"59","reason":"Problem solved after changing new port"},{"code":"83","reason":"Internal wiring and cannot be solved"},{"code":"20","reason":"Major fault"},{"code":"84","reason":"Internal wiring; customer refuses to change it"},{"code":"81","reason":"Internal problem - cable maintenance needed"},{"code":"82","reason":"External problem - cable maintenance needed"},{"code":"75","reason":"Splitter problem - customer has no spare"},{"code":"74","reason":"Customer CPE problem"},{"code":"65","reason":"CPE configuration required; match the current TTS label"},{"code":"38","reason":"Stalagmite problem (label as shown in table)"},{"code":"17","reason":"Customer unavailable - schedule in comment"},{"code":"28","reason":"Customer refused visit / refused entry"},{"code":"96","reason":"Customer did not answer"},{"code":"26","reason":"Engineering inspection"},{"code":"19","reason":"Internal network - close compound"},{"code":"29","reason":"Customer phone device problem"},{"code":"23","reason":"Customer voice-service invoice problem"},{"code":"4","reason":"Work order not finished"},{"code":"30","reason":"Unavailable as per customer request"},{"code":"7","reason":"Installation failed"},{"code":"27","reason":"Address modification"},{"code":"73","reason":"Installation refused by customer"},{"code":"24","reason":"Line out of service"}
+      {
+        "code": "2",
+        "reason": "Line stable / no problem found"
+      },
+      {
+        "code": "86",
+        "reason": "Problem solved after changing customer CPE"
+      },
+      {
+        "code": "87",
+        "reason": "Problem solved after changing splitter"
+      },
+      {
+        "code": "8",
+        "reason": "Problem solved after fixing internal wiring"
+      },
+      {
+        "code": "9",
+        "reason": "Problem solved after fixing external wire"
+      },
+      {
+        "code": "12",
+        "reason": "Problem solved after changing external wire"
+      },
+      {
+        "code": "10",
+        "reason": "Problem solved after changing internal wiring"
+      },
+      {
+        "code": "13",
+        "reason": "Problem solved after fixing from box side"
+      },
+      {
+        "code": "11",
+        "reason": "Problem solved after fixing from cabin side"
+      },
+      {
+        "code": "14",
+        "reason": "Problem solved after fixing from exchange"
+      },
+      {
+        "code": "18",
+        "reason": "Problem solved after voice resplit"
+      },
+      {
+        "code": "35",
+        "reason": "Split after contract change"
+      },
+      {
+        "code": "6",
+        "reason": "New installation"
+      },
+      {
+        "code": "59",
+        "reason": "Problem solved after changing new port"
+      },
+      {
+        "code": "83",
+        "reason": "Internal wiring and cannot be solved"
+      },
+      {
+        "code": "20",
+        "reason": "Major fault"
+      },
+      {
+        "code": "84",
+        "reason": "Internal wiring; customer refuses to change it"
+      },
+      {
+        "code": "81",
+        "reason": "Internal problem - cable maintenance needed"
+      },
+      {
+        "code": "82",
+        "reason": "External problem - cable maintenance needed"
+      },
+      {
+        "code": "75",
+        "reason": "Splitter problem - customer has no spare"
+      },
+      {
+        "code": "74",
+        "reason": "Customer CPE problem"
+      },
+      {
+        "code": "65",
+        "reason": "CPE configuration required; match the current TTS label"
+      },
+      {
+        "code": "38",
+        "reason": "Stalagmite problem (label as shown in table)"
+      },
+      {
+        "code": "17",
+        "reason": "Customer unavailable - schedule in comment"
+      },
+      {
+        "code": "28",
+        "reason": "Customer refused visit / refused entry"
+      },
+      {
+        "code": "96",
+        "reason": "Customer did not answer"
+      },
+      {
+        "code": "26",
+        "reason": "Engineering inspection"
+      },
+      {
+        "code": "19",
+        "reason": "Internal network - close compound"
+      },
+      {
+        "code": "29",
+        "reason": "Customer phone device problem"
+      },
+      {
+        "code": "23",
+        "reason": "Customer voice-service invoice problem"
+      },
+      {
+        "code": "4",
+        "reason": "Work order not finished"
+      },
+      {
+        "code": "30",
+        "reason": "Unavailable as per customer request"
+      },
+      {
+        "code": "7",
+        "reason": "Installation failed"
+      },
+      {
+        "code": "27",
+        "reason": "Address modification"
+      },
+      {
+        "code": "73",
+        "reason": "Installation refused by customer"
+      },
+      {
+        "code": "24",
+        "reason": "Line out of service"
+      }
     ],
     "outage_fields": {
       "title": "How to read an Outage record in the system",
@@ -956,8 +1099,8 @@
     "question": "Choose the inquiry type.",
     "options": [
       {
-        "label": "WE Space fixed home internet package inquiry",
-        "next_step": "package_inquiry_terminal"
+        "label": "Home internet package inquiry (WE Space / OneHome)",
+        "next_step": "package_product_start"
       },
       {
         "label": "Router, light, or setting",
@@ -979,17 +1122,14 @@
   },
   "package_inquiry_terminal": {
     "question": "WE Space home internet packages only.",
-    "action": "Check the account type in BSS, then choose a package period and row below. The public WE Space catalog does not publish separate prices by Prepaid/Postpaid; use the account type shown in BSS to confirm eligibility and charging. If the customer asks for quarterly internet, explain that this catalog has monthly and yearly internet plans; quarterly cycles relate to WE Ardy fixed voice. For an existing-plan inquiry, use the current BSS view (training day_11.pdf mentions tool 855; verify it is still current). Do not record an inquiry as an order or fault.",
-    "customer_script": "I will check the account type and available speed, then explain the package quota, renewal period, and displayed price. I will confirm final price, tax, and line eligibility in BSS before submitting any change.",
+    "action": "Check the line speed and WE Space eligibility in BSS, then explain the plan period, quota, and listed price. The published catalog has no separate payment-type selector; confirm eligibility, final price, and tax in the system. If the customer means internet bundled with fixed voice, go back and choose OneHome. Do not record an inquiry as an order without consent.",
+    "customer_script": "I will check line speed and WE Space eligibility, then explain the quota, price, and term. I will confirm the final price and tax in the system before submitting any order.",
     "sla": "Immediate inquiry; fulfillment depends on the service",
     "options": [],
     "package_catalog": {
       "checked_on": "2026-10-31",
       "source_url": "https://www.te.eg/personal/home/we-internet/we-space",
       "title": "WE Space home internet package tables",
-      "payment_mode_title": "Select the account type shown in BSS",
-      "payment_mode_note": "The public catalog does not list separate prices by account type. Confirm eligibility and billing treatment in BSS.",
-      "quarterly_note": "WE Space home internet plans are monthly or yearly. Quarterly cycles belong to WE Ardy fixed voice, not this internet catalog.",
       "monthly_title": "Monthly plans",
       "yearly_title": "Yearly plans",
       "addons_title": "Quota add-ons",
@@ -1264,7 +1404,8 @@
         "If the customer means a mobile or WE Air plan, do not use this table; open the matching service catalog in the current system."
       ],
       "scope_note": "This table is for WE Space home internet only; do not use it for mobile or WE Air plans. Verify the technology and speed availability on the line."
-    }
+    },
+    "reference_guidance": "For an existing-plan inquiry, use the current account view in BSS; do not rely on a training slide to identify a tool. Do not record an inquiry as an order or fault."
   },
   "device_inquiry_terminal": {
     "question": "Technical inquiry about a CPE or one of its lights.",
@@ -1875,5 +2016,468 @@
     "reference_guidance": "Give the TT/complaint reference and displayed SLA. Distinguish the resolution SLA from the follow-up call after resolution. Do not share internal IR.",
     "sla": "Resolution SLA: read the TT. NOC follow-up: within two hours after the issue is resolved per the training guide.",
     "options": []
+  },
+  "package_product_start": {
+    "question": "Choose the product the customer is asking about.",
+    "options": [
+      {
+        "label": "WE Space — fixed internet only",
+        "next_step": "package_inquiry_terminal"
+      },
+      {
+        "label": "OneHome — home internet + fixed voice",
+        "next_step": "onehome_package_terminal"
+      },
+      {
+        "label": "WE Gold — mobile plans and home benefits",
+        "next_step": "we_gold_package_terminal"
+      },
+      {
+        "label": "Other product or offer (Sonic / MIX / Life / bundles...)",
+        "next_step": "other_package_terminal"
+      }
+    ]
+  },
+  "onehome_package_terminal": {
+    "question": "OneHome inquiry (home internet and fixed voice).",
+    "action": "Ask which voice-minute tier the customer means (600 or 3750), then match line speed and quota. Check address/service availability, eligibility, tax, and final price in BSS. Listed speed/quota rows do not replace system verification; check current price and quota for 500 Mbps in the system. Do not submit an order without customer consent.",
+    "customer_script": "I will check the right OneHome offer, which combines fixed internet and voice. I will confirm availability, final price, and tax in the system before submitting any order.",
+    "sla": "Immediate inquiry; fulfillment follows the order and system timeframe",
+    "reference_guidance": "After submitting an actual order, give the customer the system-generated customer-facing order reference; do not share internal IDs.",
+    "options": [],
+    "product_catalog": {
+      "title": "OneHome bundle table (home internet + fixed voice)",
+      "scope_note": "Bundles home internet with fixed voice. Choose the voice-minute tier, then match speed and quota. Confirm address availability, eligibility, final price, and tax in BSS; page prices may exclude VAT.",
+      "sections": [
+        {
+          "title": "600 minutes monthly",
+          "columns": [
+            "Speed",
+            "Quota",
+            "Monthly",
+            "Yearly"
+          ],
+          "rows": [
+            {
+              "quota": "150 GB",
+              "speed": "Up to 30 Mbps",
+              "monthly_price": "300 EGP/month",
+              "yearly_price": "3600 EGP/year",
+              "minutes": "600 minutes"
+            },
+            {
+              "quota": "200 GB",
+              "speed": "Up to 30 Mbps",
+              "monthly_price": "370 EGP/month",
+              "yearly_price": "4440 EGP/year",
+              "minutes": "600 minutes"
+            },
+            {
+              "quota": "250 GB",
+              "speed": "Up to 30 Mbps",
+              "monthly_price": "435 EGP/month",
+              "yearly_price": "4785 EGP/year",
+              "minutes": "600 minutes"
+            },
+            {
+              "quota": "300 GB",
+              "speed": "Up to 30 Mbps",
+              "monthly_price": "500 EGP/month",
+              "yearly_price": "5500 EGP/year",
+              "minutes": "600 minutes"
+            },
+            {
+              "quota": "400 GB",
+              "speed": "Up to 30 Mbps",
+              "monthly_price": "620 EGP/month",
+              "yearly_price": "6820 EGP/year",
+              "minutes": "600 minutes"
+            },
+            {
+              "quota": "500 GB",
+              "speed": "Up to 30 Mbps",
+              "monthly_price": "700 EGP/month",
+              "yearly_price": "7370 EGP/year",
+              "minutes": "600 minutes"
+            },
+            {
+              "quota": "750 GB",
+              "speed": "Up to 30 Mbps",
+              "monthly_price": "965 EGP/month",
+              "yearly_price": "10155 EGP/year",
+              "minutes": "600 minutes"
+            },
+            {
+              "quota": "1500 GB",
+              "speed": "Up to 30 Mbps",
+              "monthly_price": "1690 EGP/month",
+              "yearly_price": "16940 EGP/year",
+              "minutes": "600 minutes"
+            },
+            {
+              "quota": "250 GB",
+              "speed": "Up to 70 Mbps",
+              "monthly_price": "630 EGP/month",
+              "yearly_price": "6930 EGP/year",
+              "minutes": "600 minutes"
+            },
+            {
+              "quota": "500 GB",
+              "speed": "Up to 70 Mbps",
+              "monthly_price": "940 EGP/month",
+              "yearly_price": "9890 EGP/year",
+              "minutes": "600 minutes"
+            },
+            {
+              "quota": "750 GB",
+              "speed": "Up to 70 Mbps",
+              "monthly_price": "1215 EGP/month",
+              "yearly_price": "12780 EGP/year",
+              "minutes": "600 minutes"
+            },
+            {
+              "quota": "1500 GB",
+              "speed": "Up to 70 Mbps",
+              "monthly_price": "2040 EGP/month",
+              "yearly_price": "20440 EGP/year",
+              "minutes": "600 minutes"
+            },
+            {
+              "quota": "250 GB",
+              "speed": "Up to 100 Mbps",
+              "monthly_price": "825 EGP/month",
+              "yearly_price": "9075 EGP/year",
+              "minutes": "600 minutes"
+            },
+            {
+              "quota": "500 GB",
+              "speed": "Up to 100 Mbps",
+              "monthly_price": "1190 EGP/month",
+              "yearly_price": "12515 EGP/year",
+              "minutes": "600 minutes"
+            },
+            {
+              "quota": "750 GB",
+              "speed": "Up to 100 Mbps",
+              "monthly_price": "1465 EGP/month",
+              "yearly_price": "15405 EGP/year",
+              "minutes": "600 minutes"
+            },
+            {
+              "quota": "1500 GB",
+              "speed": "Up to 100 Mbps",
+              "monthly_price": "2390 EGP/month",
+              "yearly_price": "23940 EGP/year",
+              "minutes": "600 minutes"
+            },
+            {
+              "quota": "1500 GB",
+              "speed": "Up to 200 Mbps",
+              "monthly_price": "2740 EGP/month",
+              "yearly_price": "23940 EGP/year",
+              "minutes": "600 minutes"
+            },
+            {
+              "quota": "Check system",
+              "speed": "Up to 500 Mbps",
+              "monthly_price": "Check system",
+              "yearly_price": "Check system",
+              "minutes": "600 minutes"
+            }
+          ]
+        },
+        {
+          "title": "3750 minutes monthly",
+          "columns": [
+            "Speed",
+            "Quota",
+            "Monthly",
+            "Yearly"
+          ],
+          "rows": [
+            {
+              "quota": "150 GB",
+              "speed": "Up to 30 Mbps",
+              "monthly_price": "310 EGP/month",
+              "yearly_price": "3620 EGP/year",
+              "minutes": "3750 minutes"
+            },
+            {
+              "quota": "200 GB",
+              "speed": "Up to 30 Mbps",
+              "monthly_price": "380 EGP/month",
+              "yearly_price": "4460 EGP/year",
+              "minutes": "3750 minutes"
+            },
+            {
+              "quota": "250 GB",
+              "speed": "Up to 30 Mbps",
+              "monthly_price": "445 EGP/month",
+              "yearly_price": "4845 EGP/year",
+              "minutes": "3750 minutes"
+            },
+            {
+              "quota": "300 GB",
+              "speed": "Up to 30 Mbps",
+              "monthly_price": "510 EGP/month",
+              "yearly_price": "5560 EGP/year",
+              "minutes": "3750 minutes"
+            },
+            {
+              "quota": "400 GB",
+              "speed": "Up to 30 Mbps",
+              "monthly_price": "630 EGP/month",
+              "yearly_price": "6880 EGP/year",
+              "minutes": "3750 minutes"
+            },
+            {
+              "quota": "500 GB",
+              "speed": "Up to 30 Mbps",
+              "monthly_price": "710 EGP/month",
+              "yearly_price": "7430 EGP/year",
+              "minutes": "3750 minutes"
+            },
+            {
+              "quota": "750 GB",
+              "speed": "Up to 30 Mbps",
+              "monthly_price": "975 EGP/month",
+              "yearly_price": "10215 EGP/year",
+              "minutes": "3750 minutes"
+            },
+            {
+              "quota": "1500 GB",
+              "speed": "Up to 30 Mbps",
+              "monthly_price": "1700 EGP/month",
+              "yearly_price": "17000 EGP/year",
+              "minutes": "3750 minutes"
+            },
+            {
+              "quota": "250 GB",
+              "speed": "Up to 70 Mbps",
+              "monthly_price": "640 EGP/month",
+              "yearly_price": "6990 EGP/year",
+              "minutes": "3750 minutes"
+            },
+            {
+              "quota": "500 GB",
+              "speed": "Up to 70 Mbps",
+              "monthly_price": "950 EGP/month",
+              "yearly_price": "9950 EGP/year",
+              "minutes": "3750 minutes"
+            },
+            {
+              "quota": "750 GB",
+              "speed": "Up to 70 Mbps",
+              "monthly_price": "1225 EGP/month",
+              "yearly_price": "12840 EGP/year",
+              "minutes": "3750 minutes"
+            },
+            {
+              "quota": "1500 GB",
+              "speed": "Up to 70 Mbps",
+              "monthly_price": "2050 EGP/month",
+              "yearly_price": "20500 EGP/year",
+              "minutes": "3750 minutes"
+            },
+            {
+              "quota": "250 GB",
+              "speed": "Up to 100 Mbps",
+              "monthly_price": "835 EGP/month",
+              "yearly_price": "9135 EGP/year",
+              "minutes": "3750 minutes"
+            },
+            {
+              "quota": "500 GB",
+              "speed": "Up to 100 Mbps",
+              "monthly_price": "1200 EGP/month",
+              "yearly_price": "12575 EGP/year",
+              "minutes": "3750 minutes"
+            },
+            {
+              "quota": "750 GB",
+              "speed": "Up to 100 Mbps",
+              "monthly_price": "1475 EGP/month",
+              "yearly_price": "15465 EGP/year",
+              "minutes": "3750 minutes"
+            },
+            {
+              "quota": "1500 GB",
+              "speed": "Up to 100 Mbps",
+              "monthly_price": "2400 EGP/month",
+              "yearly_price": "24000 EGP/year",
+              "minutes": "3750 minutes"
+            },
+            {
+              "quota": "1500 GB",
+              "speed": "Up to 200 Mbps",
+              "monthly_price": "2750 EGP/month",
+              "yearly_price": "24000 EGP/year",
+              "minutes": "3750 minutes"
+            },
+            {
+              "quota": "Check system",
+              "speed": "Up to 500 Mbps",
+              "monthly_price": "Check system",
+              "yearly_price": "Check system",
+              "minutes": "3750 minutes"
+            }
+          ]
+        }
+      ],
+      "notes": [
+        "Check availability and line eligibility in the system before quoting. Verify final price, tax, and current offers in BSS.",
+        "For 500 Mbps, check current quota and price in the system; do not estimate."
+      ],
+      "source_url": "https://www.te.eg/en/web/guest/personal/home/one-home-monthly-600mins-200mbps",
+      "source_label": "Official WE OneHome page — reviewed 31 Oct 2026",
+      "select_prompt": "Select an offer to prepare customer wording",
+      "customer_prefix": "OneHome bundles fixed internet and voice. Selected offer: ",
+      "customer_suffix": ". I will confirm availability, final price, and tax in the system before submitting an order."
+    }
+  },
+  "we_gold_package_terminal": {
+    "question": "Inquiry about WE Gold tiers and benefits.",
+    "action": "Select the tier the customer asks about and explain the listed data, minutes, lines, and home option. Confirm line status, eligibility, final price, and tax in BSS. Fixed internet and WE Air are alternatives and cannot be combined. Do not change the plan without customer consent.",
+    "customer_script": "I will explain the requested WE Gold tier, then check eligibility, the available fixed-internet or WE Air option, and final price in the system.",
+    "sla": "Immediate inquiry; changes follow system processing",
+    "options": [],
+    "product_catalog": {
+      "title": "WE Gold tiers",
+      "scope_note": "Monthly mobile tiers with family and fixed internet/WE Air benefits by tier. Choose fixed internet or WE Air; they cannot be combined. Confirm eligibility, price, and tax in BSS. Listed prices exclude VAT.",
+      "sections": [
+        {
+          "title": "Monthly tiers",
+          "columns": [
+            "Plan",
+            "Mobile data",
+            "Minutes/SMS",
+            "Lines",
+            "Home internet choice",
+            "Monthly price"
+          ],
+          "rows": [
+            {
+              "plan": "WE Gold 300",
+              "mobile_data": "5.5 GB",
+              "minutes": "1,200 minutes/SMS",
+              "family_lines": "1 line",
+              "home_choice": "150 GB fixed internet or 50% off WE Air 150",
+              "monthly_price": "300 EGP/month excl. VAT"
+            },
+            {
+              "plan": "WE Gold 600",
+              "mobile_data": "20 GB",
+              "minutes": "3,700 minutes/SMS",
+              "family_lines": "2 lines",
+              "home_choice": "150 GB fixed internet or WE Air 150",
+              "monthly_price": "600 EGP/month excl. VAT"
+            },
+            {
+              "plan": "WE Gold 890",
+              "mobile_data": "30 GB",
+              "minutes": "6,000 minutes/SMS",
+              "family_lines": "3 lines",
+              "home_choice": "250 GB fixed internet or WE Air 150",
+              "monthly_price": "890 EGP/month excl. VAT"
+            },
+            {
+              "plan": "WE Gold 1200",
+              "mobile_data": "65 GB",
+              "minutes": "8,000 minutes/SMS",
+              "family_lines": "4 lines",
+              "home_choice": "250 GB fixed internet or WE Air 250; includes WE Ardy 20",
+              "monthly_price": "1200 EGP/month excl. VAT"
+            },
+            {
+              "plan": "WE Gold 1500",
+              "mobile_data": "70 GB",
+              "minutes": "9,000 minutes/SMS",
+              "family_lines": "5 lines",
+              "home_choice": "400 GB fixed internet or WE Air 250",
+              "monthly_price": "1500 EGP/month excl. VAT"
+            },
+            {
+              "plan": "WE Gold 2300",
+              "mobile_data": "130 GB",
+              "minutes": "10,000 minutes/SMS",
+              "family_lines": "6 lines",
+              "home_choice": "750 GB fixed internet or WE Air 650",
+              "monthly_price": "2300 EGP/month excl. VAT"
+            }
+          ]
+        }
+      ],
+      "notes": [
+        "Fixed home internet and WE Air are alternatives under the offer, not simultaneous benefits.",
+        "Check account eligibility, availability, and final terms in BSS before a change.",
+        "Prices exclude VAT."
+      ],
+      "source_url": "https://www.te.eg/personal/mobile/we-gold",
+      "source_label": "Official WE Gold page — reviewed 31 Oct 2026",
+      "select_prompt": "Select a tier to prepare customer wording",
+      "customer_prefix": "The selected tier is ",
+      "customer_suffix": ". Benefits/prices exclude VAT; I will confirm eligibility and the available home internet option in the system."
+    }
+  },
+  "other_package_terminal": {
+    "question": "Inquiry about an offer or plan other than WE Space / OneHome / WE Gold.",
+    "action": "Identify the exact offer in BSS and verify current price, benefits, and eligibility. Training files contain historical offers; do not rely on an old price or condition, and do not confuse Silver/Golden Bundles with WE Gold.",
+    "customer_script": "I will check the current offer name, benefits, and eligibility in the system, then explain the approved details and price.",
+    "sla": "Immediate inquiry; no fulfillment promise before system verification",
+    "options": [],
+    "product_catalog": {
+      "title": "Other products and offers — verify current offer",
+      "scope_note": "Training files list WE Sonic, WE MIX, WE Life, WE MAX Plus, Elite, Grandfathered plans, Silver/Golden Bundles, and Indigo. Prices and terms in those slides may be historical or unverified. Do not quote benefits or prices until matched to the current BSS offer. Silver/Golden Bundles are distinct from WE Gold.",
+      "sections": [
+        {
+          "title": "Product / topic",
+          "columns": [
+            "Product / topic",
+            "Staff action"
+          ],
+          "rows": [
+            {
+              "name": "WE Sonic",
+              "guidance": "Find the current offer, eligibility, and price in BSS before explaining or submitting."
+            },
+            {
+              "name": "WE MIX",
+              "guidance": "Find the current offer, eligibility, and price in BSS before explaining or submitting."
+            },
+            {
+              "name": "WE Life",
+              "guidance": "Find the current offer, eligibility, and price in BSS before explaining or submitting."
+            },
+            {
+              "name": "WE MAX Plus",
+              "guidance": "Find the current offer, eligibility, and price in BSS before explaining or submitting."
+            },
+            {
+              "name": "WE Space/Elite",
+              "guidance": "Find the current offer, eligibility, and price in BSS before explaining or submitting."
+            },
+            {
+              "name": "Grandfathered plans",
+              "guidance": "Find the current offer, eligibility, and price in BSS before explaining or submitting."
+            },
+            {
+              "name": "Silver / Golden Bundles",
+              "guidance": "Find the current offer, eligibility, and price in BSS before explaining or submitting."
+            },
+            {
+              "name": "Indigo / retention",
+              "guidance": "Find the current offer, eligibility, and price in BSS before explaining or submitting."
+            }
+          ]
+        }
+      ],
+      "notes": [
+        "Do not use historical training prices as a current price list.",
+        "If the offer is not visible in BSS, do not promise a price or eligibility; follow the approved internal inquiry path."
+      ],
+      "source_url": "https://www.te.eg/en/personal/mobile",
+      "source_label": "Official WE current offers page",
+      "selectable": false
+    }
   }
 }

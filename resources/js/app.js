@@ -169,6 +169,7 @@ const App = {
         const packagePeriod = ref('monthly');
         const packageAccountMode = ref('');
         const selectedPackage = ref(null);
+        const selectedProduct = ref(null);
         const commentDetails = ref('');
         const commentRefType = ref('none');
         const commentRefNumber = ref('');
@@ -180,41 +181,41 @@ const App = {
         });
         const isFinished = computed(() => currentStep.value?.options?.length === 0);
         const isPackageInquiry = computed(() => currentStepId.value === 'package_inquiry_terminal');
+        const productCustomerScript = computed(() => {
+            const catalog = currentStep.value?.product_catalog;
+            if (!catalog || !selectedProduct.value) return '';
+            const { row } = selectedProduct.value;
+            if (!row) return '';
+            const details = Object.values(row).filter(Boolean).join('، ');
+            return `${catalog.customer_prefix || ''}${details}${catalog.customer_suffix || ''}`;
+        });
         const packageCustomerScript = computed(() => {
             if (!currentStep.value?.package_catalog) return '';
-            if (packagePeriod.value === 'quarterly') {
-                return language.value === 'ar'
-                    ? 'كتالوج WE Space للإنترنت المنزلي شهري أو سنوي. الربع سنوي يخص باقات WE Ardy للخط الأرضي الصوتي؛ تحب أراجع لحضرتك باقات الخط الأرضي؟'
-                    : 'WE Space home internet is offered monthly or yearly. Quarterly plans are for WE Ardy fixed voice; would you like me to check the fixed-line plans for you?';
-            }
             if (!selectedPackage.value) return '';
             const { period, row } = selectedPackage.value;
-            const account = packageAccountMode.value === 'prepaid'
-                ? (language.value === 'ar' ? 'مسبق الدفع' : 'prepaid')
-                : (language.value === 'ar' ? 'على الفاتورة' : 'postpaid');
             const plan = row.plan || row.speed;
             if (language.value === 'ar') {
                 const renewal = period === 'yearly'
                     ? 'الحصة السنوية بتكون متاحة للعميل كاملة على مدار السنة.'
-                    : packageAccountMode.value === 'prepaid'
-                        ? 'التجديد كل 30 يومًا عند توفر الرصيد الكافي.'
-                        : 'هراجع طريقة احتسابها على الفاتورة قبل تأكيد الاشتراك.';
-                return `حضرتك على نظام ${account}، باقة WE Space ${plan} بسعة ${row.quota}، والسعر الظاهر ${row.price}. ${renewal} هأكد السعر النهائي والضريبة وأهلية الخط على BSS قبل تسجيل أي تغيير.`;
+                    : 'تجدد شهريًا حسب شروط الباقة.';
+                return `باقة WE Space ${plan} بسعة ${row.quota}، والسعر الظاهر ${row.price}. ${renewal} هأكد السعر النهائي والضريبة وأهلية الخط على BSS قبل تسجيل أي تغيير.`;
             }
             const renewal = period === 'yearly'
                 ? 'The yearly quota is available as a full annual allowance.'
-                : packageAccountMode.value === 'prepaid'
-                    ? 'It renews every 30 days when sufficient balance is available.'
-                    : 'I will confirm how it is charged on the bill before confirming the subscription.';
-            return `Your account is ${account}. WE Space ${plan} includes ${row.quota}; the listed price is ${row.price}. ${renewal} I will confirm the final price, tax, and line eligibility in BSS before submitting any change.`;
+                : 'It renews monthly under the package terms.';
+            return `WE Space ${plan} includes ${row.quota}; the listed price is ${row.price}. ${renewal} I will confirm the final price, tax, and line eligibility in BSS before submitting any change.`;
         });
         function resetPackageControls() {
             packagePeriod.value = 'monthly';
             packageAccountMode.value = '';
             selectedPackage.value = null;
+            selectedProduct.value = null;
         }
         function selectPackage(row, index) {
             selectedPackage.value = { period: packagePeriod.value, row, index };
+        }
+        function selectProduct(row, sectionIndex, rowIndex) {
+            selectedProduct.value = { row, sectionIndex, rowIndex };
         }
 
         const quickSearchResults = computed(() => {
@@ -226,7 +227,9 @@ const App = {
                 if (id === 'start' || id === 'operations_guide' || !step || typeof step !== 'object') continue;
                 const catalog = step.package_catalog;
                 const catalogText = catalog ? [catalog.title, ...catalog.monthly_rows.map((row) => `${row.speed} ${row.quota} ${row.price}`), ...catalog.yearly_rows.map((row) => `${row.plan} ${row.quota} ${row.price}`), ...catalog.addon_rows.map((row) => `${row.kind} ${row.quota} ${row.price} ${row.term}`)].join(' ') : '';
-                const content = [step.question, step.customer_prompt, step.action, step.customer_script, step.reference_guidance, step.clear_description, step.sla, catalogText,
+                const productCatalog = step.product_catalog;
+                const productCatalogText = productCatalog ? [productCatalog.title, productCatalog.scope_note, ...productCatalog.sections.flatMap((section) => [section.title, ...section.rows.flatMap((row) => Object.values(row))]), ...productCatalog.notes].join(' ') : '';
+                const content = [step.question, step.customer_prompt, step.action, step.customer_script, step.reference_guidance, step.clear_description, step.sla, catalogText, productCatalogText,
                     ...(step.options ?? []).map((option) => option.label)].filter(Boolean).join(' ');
                 entries.push({ kind: 'step', id, title: step.question, body: content, source: language.value === 'ar' ? 'شجرة الدعم' : 'Support tree' });
             }
@@ -408,9 +411,8 @@ const App = {
         }
 
         async function copyCustomerScript() {
-            const script = isPackageInquiry.value && packageCustomerScript.value
-                ? packageCustomerScript.value
-                : currentStep.value?.customer_script;
+            const script = productCustomerScript.value || (isPackageInquiry.value && packageCustomerScript.value)
+                || currentStep.value?.customer_script;
             if (typeof script !== 'string' || script.length === 0) {
                 notice.value = t('noScript');
                 return;
@@ -531,6 +533,40 @@ const App = {
                                     h('h3', { class: 'mb-1 flex items-center gap-2 text-xs font-bold text-emerald-800' }, [icon('chat', 'size-4'), t('askCustomer')]),
                                     h('p', { class: 'leading-7 text-emerald-950' }, currentStep.value.customer_prompt),
                                 ]) : null,
+                                currentStep.value.product_catalog ? (() => {
+                                    const catalog = currentStep.value.product_catalog;
+                                    const selectable = catalog.selectable !== false;
+                                    return h('section', { class: 'product-catalog mb-5 rounded-2xl border border-indigo-200 bg-indigo-50/70 p-4 sm:p-5' }, [
+                                        h('h3', { class: 'flex items-center gap-2 text-lg font-bold text-indigo-950' }, [icon('ticket', 'size-5'), catalog.title]),
+                                        h('p', { class: 'mt-2 text-sm leading-6 text-indigo-950' }, catalog.scope_note),
+                                        ...catalog.sections.map((section, sectionIndex) => {
+                                            const rows = section.rows || [];
+                                            const keys = rows.length ? Object.keys(rows[0]) : [];
+                                            return h('section', { class: 'mt-4', key: `${section.title}-${sectionIndex}` }, [
+                                                h('h4', { class: 'mb-2 text-sm font-bold text-slate-900' }, section.title),
+                                                h('div', { class: 'grid gap-2' }, rows.map((row, rowIndex) => {
+                                                    const chosen = selectedProduct.value?.sectionIndex === sectionIndex && selectedProduct.value?.rowIndex === rowIndex;
+                                                    return h('article', {
+                                                        class: `rounded-xl border p-3 ${chosen ? 'border-blue-500 bg-blue-50' : 'border-slate-200 bg-white'}`,
+                                                        key: `${sectionIndex}-${rowIndex}`,
+                                                    }, [
+                                                        h('dl', { class: 'grid grid-cols-[minmax(6rem,auto)_1fr] gap-x-3 gap-y-1.5 text-sm' }, keys.map((key, fieldIndex) => [
+                                                            h('dt', { class: 'font-medium text-slate-500', key: `label-${key}` }, section.columns?.[fieldIndex] || key),
+                                                            h('dd', { class: 'm-0 text-end font-semibold text-slate-900', key: `value-${key}` }, row[key]),
+                                                        ]).flat()),
+                                                        selectable ? h('button', {
+                                                            class: 'mt-3 min-h-10 w-full rounded-lg bg-blue-700 px-3 py-2 text-sm font-bold text-white transition hover:bg-blue-800 active:scale-[0.99]',
+                                                            type: 'button', 'aria-pressed': chosen,
+                                                            onClick: () => selectProduct(row, sectionIndex, rowIndex),
+                                                        }, catalog.select_prompt || t('packageSelect')) : null,
+                                                    ]);
+                                                })),
+                                            ]);
+                                        }),
+                                        h('ul', { class: 'mt-4 list-disc space-y-1 rounded-xl bg-white p-3 ps-8 text-sm leading-6 text-slate-700' }, catalog.notes.map((note) => h('li', note))),
+                                        h('a', { class: 'mt-3 inline-flex text-xs font-semibold text-blue-800 underline', href: catalog.source_url, target: '_blank', rel: 'noopener noreferrer' }, catalog.source_label),
+                                    ]);
+                                })() : null,
                                 currentStep.value.package_catalog ? (() => {
                                     const catalog = currentStep.value.package_catalog;
                                     const renderTable = (columns, rows, keys, tableTitle, selectable = true) => h('section', { class: 'mt-4' }, [
@@ -569,27 +605,15 @@ const App = {
                                     return h('section', { class: 'package-catalog mb-5 rounded-2xl border border-indigo-200 bg-indigo-50/70 p-4 sm:p-5' }, [
                                         h('h3', { class: 'flex items-center gap-2 text-lg font-bold text-indigo-950' }, [icon('ticket', 'size-5'), catalog.title]),
                                         h('p', { class: 'mt-2 text-sm leading-6 text-indigo-950' }, catalog.scope_note),
-                                        h('div', { class: 'mt-4 grid grid-cols-3 gap-2 rounded-xl bg-white p-1.5' }, [
-                                            ...[['monthly', t('packageMonthly')], ['yearly', t('packageYearly')], ['quarterly', t('packageQuarterly')]].map(([period, label]) => h('button', {
+                                        h('div', { class: 'mt-4 grid grid-cols-2 gap-2 rounded-xl bg-white p-1.5' }, [
+                                            ...[['monthly', t('packageMonthly')], ['yearly', t('packageYearly')]].map(([period, label]) => h('button', {
                                                 class: `min-h-10 rounded-lg px-2 py-2 text-xs font-bold transition sm:text-sm ${packagePeriod.value === period ? 'bg-indigo-700 text-white' : 'text-slate-700 hover:bg-indigo-50'}`,
                                                 type: 'button', 'aria-pressed': packagePeriod.value === period,
                                                 onClick: () => { packagePeriod.value = period; selectedPackage.value = null; },
                                             }, label)),
                                         ]),
-                                        packagePeriod.value === 'quarterly' ? h('p', { class: 'mt-3 rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm leading-6 text-amber-950' }, catalog.quarterly_note) : h('div', { class: 'mt-4 rounded-xl border border-indigo-100 bg-white p-3' }, [
-                                            h('p', { class: 'mb-2 text-sm font-bold text-slate-900' }, catalog.payment_mode_title),
-                                            h('div', { class: 'grid grid-cols-2 gap-2' }, [
-                                                ...[['prepaid', t('packagePrepaid')], ['postpaid', t('packagePostpaid')]].map(([mode, label]) => h('button', {
-                                                    class: `min-h-10 rounded-lg border px-3 py-2 text-sm font-semibold ${packageAccountMode.value === mode ? 'border-indigo-700 bg-indigo-50 text-indigo-900' : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'}`,
-                                                    type: 'button', 'aria-pressed': packageAccountMode.value === mode,
-                                                    onClick: () => { packageAccountMode.value = mode; selectedPackage.value = null; },
-                                                }, label)),
-                                            ]),
-                                            h('p', { class: 'mt-2 text-xs leading-5 text-slate-600' }, catalog.payment_mode_note),
-                                        ]),
-                                        packagePeriod.value === 'monthly' && packageAccountMode.value ? renderTable(catalog.monthly_columns, catalog.monthly_rows, ['speed', 'quota', 'price'], catalog.monthly_title) : null,
-                                        packagePeriod.value === 'yearly' && packageAccountMode.value ? renderTable(catalog.yearly_columns, catalog.yearly_rows, ['plan', 'quota', 'price'], catalog.yearly_title) : null,
-                                        packagePeriod.value !== 'quarterly' && !packageAccountMode.value ? h('p', { class: 'mt-3 rounded-xl bg-white p-3 text-sm text-slate-600' }, t('packageNeedAccount')) : null,
+                                        packagePeriod.value === 'monthly' ? renderTable(catalog.monthly_columns, catalog.monthly_rows, ['speed', 'quota', 'price'], catalog.monthly_title) : null,
+                                        packagePeriod.value === 'yearly' ? renderTable(catalog.yearly_columns, catalog.yearly_rows, ['plan', 'quota', 'price'], catalog.yearly_title) : null,
                                         packageCustomerScript.value ? h('section', { class: 'mt-4 rounded-xl border border-green-200 bg-green-50 p-3 sm:p-4' }, [
                                             h('h4', { class: 'font-bold text-green-950' }, t('packagePlanScript')),
                                             h('p', { class: 'mt-2 text-sm leading-6 text-green-950' }, packageCustomerScript.value),
@@ -638,7 +662,7 @@ const App = {
                                             h('h3', { class: 'mb-2 flex items-center gap-2 font-bold text-green-950' }, [
                                                 icon('chat', 'size-5'), t('customerScript'),
                                             ]),
-                                            h('p', { class: 'leading-7 text-green-950' }, packageCustomerScript.value || currentStep.value.customer_script || '—'),
+                                            h('p', { class: 'leading-7 text-green-950' }, productCustomerScript.value || packageCustomerScript.value || currentStep.value.customer_script || '—'),
                                         ]) : null,
                                         !isPackageInquiry.value ? h('details', { class: 'comment-generator overflow-hidden rounded-2xl border border-slate-200 bg-slate-50' }, [
                                             h('summary', { class: 'flex cursor-pointer list-none items-center gap-2 px-4 py-3 font-bold text-slate-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-blue-500' }, [icon('copy', 'size-5 text-blue-700'), t('commentGenerator')]),

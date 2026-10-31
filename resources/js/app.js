@@ -128,6 +128,29 @@ function normalizeSearch(value = '', language = 'ar') {
         .replace(/\s+/g, ' ');
 }
 
+function slaMinutes(value = '') {
+    const text = normalizeSearch(value, 'ar');
+    if (/فوري|فورا|immediate|instantly/.test(text)) return 0;
+    if (/ساعتين/.test(text)) return 120;
+    if (/ثلاث ساعات|ثلاثه ساعات/.test(text)) return 180;
+    if (/يومين/.test(text)) return 2 * 24 * 60;
+    if (/ثلاثه ايام|ثلاث ايام/.test(text)) return 3 * 24 * 60;
+    const match = text.match(/(\d+(?:\.\d+)?)\s*(دقيقه|دقائق|min(?:ute)?s?|ساعه|ساعات|hour|hours|h\b|يوم|ايام|day|days|d\b|اسبوع|اسابيع|week|weeks|w\b|شهر|شهور|month|months)/);
+    if (!match) {
+        if (/ساعه|ساعات|hour/.test(text)) return 60;
+        if (/يوم|ايام|day/.test(text)) return 24 * 60;
+        if (/اسبوع|اسابيع|week/.test(text)) return 7 * 24 * 60;
+        return Number.POSITIVE_INFINITY;
+    }
+    const amount = Number(match[1]);
+    const unit = match[2];
+    if (/دقيقه|دقائق|min/.test(unit)) return amount;
+    if (/ساعه|ساعات|hour|\bh\b/.test(unit)) return amount * 60;
+    if (/يوم|ايام|day|\bd\b/.test(unit)) return amount * 24 * 60;
+    if (/اسبوع|اسابيع|week|\bw\b/.test(unit)) return amount * 7 * 24 * 60;
+    return amount * 30 * 24 * 60;
+}
+
 const SEARCH_ALIASES = {
     ar: {
         'نت': ['انترنت', 'اتصال', 'dsl', 'adsl'], 'النت': ['انترنت', 'اتصال', 'dsl'],
@@ -190,6 +213,7 @@ const COPY = {
         sourceReference: 'مصدر الإجراء وحدود الاعتماد',
         howToCheck: 'أعرف منين وأعمل إيه؟', checkGuidance: 'أتحقق إزاي؟', whatToDo: 'أعمل إيه حسب النتيجة؟', generalCheckHint: 'اقرأ السؤال للعميل أو راجع الأداة المذكورة، ثم اختَر النتيجة المطابقة. لو النتيجة مش واضحة أو مش موجودة ضمن الاختيارات، ما تخمّنش وارجع للإجراء الحالي.',
         quickSla: 'مواعيد الـSLA', quickCodes: 'أكواد الإغلاق', quickPackages: 'الباقات', quickToolSearch: 'ابحث بالاسم أو الحالة أو الرقم أو المدة…',
+        slaSortBy: 'ترتيب حسب', slaSortDuration: 'مدة المهلة', slaSortCase: 'اسم الحالة', slaAscending: 'تصاعدي', slaDescending: 'تنازلي', slaCaseColumn: 'الحالة', slaDurationColumn: 'المهلة',
         quickChangePackage: 'تغيير باقة',
         quickAccess: 'الوصول السريع', closeDrawer: 'إغلاق',
         quickProblem: 'تشخيص مشكلة', quickInquiry: 'استفسار خدمة', quickRequest: 'طلب أو متابعة تركيب', quickBilling: 'فاتورة أو سداد', quickComplaint: 'شكوى أو تصعيد',
@@ -220,6 +244,7 @@ const COPY = {
         sourceReference: 'Procedure source and verification note',
         howToCheck: 'How do I verify this and what should I do?', checkGuidance: 'How to check', whatToDo: 'What to do with the result', generalCheckHint: 'Ask the question shown or check the named tool, then choose the matching result. If the result is unclear or not listed, do not guess; check the current procedure.',
         quickSla: 'SLA lookup', quickCodes: 'Close codes', quickPackages: 'Packages', quickToolSearch: 'Search by name, case, code, or timeframe…',
+        slaSortBy: 'Sort by', slaSortDuration: 'SLA duration', slaSortCase: 'Case name', slaAscending: 'Ascending', slaDescending: 'Descending', slaCaseColumn: 'Case', slaDurationColumn: 'SLA',
         quickChangePackage: 'Change package',
         quickAccess: 'Quick access', closeDrawer: 'Close',
         quickProblem: 'Troubleshoot a problem', quickInquiry: 'Service inquiry', quickRequest: 'Installation request or follow-up', quickBilling: 'Bill or payment', quickComplaint: 'Complaint or escalation',
@@ -256,6 +281,8 @@ const App = {
         const quickSearch = ref('');
         const quickToolsOpen = ref('');
         const slaSearch = ref('');
+        const slaSortBy = ref('duration');
+        const slaSortDirection = ref('asc');
         const packageSearch = ref('');
         const quickDrawerOpen = ref(false);
         const workspaceMode = ref('guided');
@@ -362,11 +389,19 @@ const App = {
                     id,
                     title: step.question || id,
                     duration: step.sla,
+                    durationSort: slaMinutes(step.sla),
                     source: step.source_reference || (language.value === 'ar' ? 'راجع SLA التذكرة الحالية' : 'Check the current ticket SLA'),
                     searchText: normalizeSearch(`${id} ${step.question} ${step.sla} ${step.action || ''} ${step.source_reference || ''}`, language.value),
                 }))
                 .filter((row) => !query || query.split(' ').every((token) => row.searchText.includes(token)))
-                .sort((a, b) => a.title.localeCompare(b.title, language.value));
+                .sort((a, b) => {
+                    const direction = slaSortDirection.value === 'asc' ? 1 : -1;
+                    if (slaSortBy.value === 'duration') {
+                        if (Number.isFinite(a.durationSort) !== Number.isFinite(b.durationSort)) return Number.isFinite(a.durationSort) ? -1 : 1;
+                        if (a.durationSort !== b.durationSort) return (a.durationSort - b.durationSort) * direction;
+                    }
+                    return a.title.localeCompare(b.title, language.value) * direction;
+                });
         });
 
         const quickPackageRows = computed(() => {
@@ -646,11 +681,26 @@ const App = {
                         h('button', { class: 'app-control rounded-lg px-3 py-2 text-xs font-semibold', type: 'button', onClick: () => { quickToolsOpen.value = ''; } }, t('closeDrawer')),
                     ]),
                     h('input', { class: 'app-control mb-3 w-full rounded-xl border px-3 py-2.5 text-sm', type: 'search', value: slaSearch.value, placeholder: t('slaSearchPlaceholder'), onInput: (event) => { slaSearch.value = event.target.value; } }),
-                    h('div', { class: 'max-h-96 space-y-2 overflow-y-auto pe-1', 'aria-live': 'polite' }, quickSlaRows.value.length ? quickSlaRows.value.map((row) => h('article', { class: 'rounded-xl border border-slate-200 bg-slate-50 p-3', key: row.id }, [
-                        h('h3', { class: 'text-sm font-bold leading-6 text-slate-900' }, row.title),
-                        h('p', { class: 'mt-1 text-sm font-semibold text-blue-900' }, `${t('sla') || 'SLA'} ${row.duration}`),
-                        h('p', { class: 'mt-1 text-[11px] leading-5 text-slate-500' }, `${t('sourceReference')}: ${row.source}`),
-                        h('button', { class: 'mt-2 inline-flex min-h-9 items-center gap-1 rounded-lg px-2 py-1 text-xs font-bold text-blue-800 hover:bg-blue-100', type: 'button', onClick: () => jumpToStep(row.id) }, [icon('arrow', 'size-4'), t('openStep')]),
+                    h('div', { class: 'mb-2 flex flex-wrap items-center gap-2' }, [
+                        h('label', { class: 'text-xs font-semibold text-slate-600', for: 'sla-sort-by' }, t('slaSortBy')),
+                        h('select', { id: 'sla-sort-by', class: 'app-control min-h-9 rounded-lg border px-2 text-xs', value: slaSortBy.value, onChange: (event) => { slaSortBy.value = event.target.value; } }, [
+                            h('option', { value: 'duration' }, t('slaSortDuration')),
+                            h('option', { value: 'case' }, t('slaSortCase')),
+                        ]),
+                        h('button', { class: 'app-control min-h-9 rounded-lg border px-3 text-xs font-semibold', type: 'button', onClick: () => { slaSortDirection.value = slaSortDirection.value === 'asc' ? 'desc' : 'asc'; }, 'aria-label': slaSortDirection.value === 'asc' ? t('slaDescending') : t('slaAscending') }, `${slaSortDirection.value === 'asc' ? '↑' : '↓'} ${slaSortDirection.value === 'asc' ? t('slaAscending') : t('slaDescending')}`),
+                    ]),
+                    h('div', { class: 'grid grid-cols-[minmax(0,1fr)_auto] gap-2 border-b border-slate-200 px-2 py-1.5 text-[10px] font-bold text-slate-500 sm:grid-cols-[minmax(0,1fr)_minmax(9rem,auto)_auto]' }, [
+                        h('span', t('slaCaseColumn')),
+                        h('span', { class: 'text-end' }, t('slaDurationColumn')),
+                        h('span', { class: 'hidden sm:block' }, ''),
+                    ]),
+                    h('div', { class: 'max-h-96 divide-y divide-slate-200 overflow-y-auto pe-1', 'aria-live': 'polite' }, quickSlaRows.value.length ? quickSlaRows.value.map((row) => h('article', { class: 'grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2 px-2 py-2.5 sm:grid-cols-[minmax(0,1fr)_minmax(9rem,auto)_auto]', key: row.id }, [
+                        h('div', { class: 'min-w-0' }, [
+                            h('h3', { class: 'm-0 line-clamp-2 text-xs font-bold leading-5 text-slate-900 sm:text-sm' }, row.title),
+                            h('p', { class: 'mt-0.5 truncate text-[10px] leading-4 text-slate-500', title: `${t('sourceReference')}: ${row.source}` }, row.source),
+                        ]),
+                        h('span', { class: 'max-w-40 rounded-lg bg-blue-50 px-2 py-1 text-end text-[11px] font-bold leading-4 text-blue-900' }, row.duration),
+                        h('button', { class: 'col-span-2 inline-flex min-h-8 items-center gap-1 justify-self-start rounded-lg px-2 py-1 text-[11px] font-bold text-blue-800 hover:bg-blue-100 sm:col-span-1', type: 'button', onClick: () => jumpToStep(row.id) }, [icon('arrow', 'size-4'), t('openStep')]),
                     ])) : h('p', { class: 'rounded-lg bg-slate-50 p-3 text-sm text-slate-600' }, t('noQuickMatches'))),
                 ]) : null,
                 quickToolsOpen.value === 'codes' ? h('section', { class: 'mb-4 rounded-2xl border border-blue-100 bg-white p-3 sm:p-4' }, [

@@ -13,7 +13,7 @@
 /.zed
 /auth.json
 /node_modules
-/public/build
+# Production host has limited memory, so ship the prebuilt Vite assets.
 /public/hot
 /public/storage
 /storage/*.key

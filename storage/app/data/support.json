@@ -6,18 +6,318 @@
     "codes_note": "أكواد FCC التالية من جدول تدريبي في PDF مؤرخ/قديم؛ استخدم الكود فقط إذا طابق السبب الفعلي وخيارات TTS الحالية. لا تختَر الكود اعتمادًا على الرقم وحده.",
     "closure_codes": [
       {"code":"2","reason":"الخط مستقر / لم تُكتشف مشكلة"},{"code":"86","reason":"حُلّت المشكلة بعد تغيير راوتر العميل"},{"code":"87","reason":"حُلّت المشكلة بعد تغيير الـSplitter"},{"code":"8","reason":"حُلّت المشكلة بعد إصلاح التوصيلات الداخلية"},{"code":"9","reason":"حُلّت المشكلة بعد إصلاح السلك الخارجي"},{"code":"12","reason":"حُلّت المشكلة بعد تغيير السلك الخارجي"},{"code":"10","reason":"حُلّت المشكلة بعد تغيير التوصيلات الداخلية"},{"code":"13","reason":"حُلّت المشكلة بعد إصلاحها من البوكس"},{"code":"11","reason":"حُلّت المشكلة بعد إصلاحها من الكابينة"},{"code":"14","reason":"حُلّت المشكلة بعد إصلاحها من السنترال"},{"code":"18","reason":"حُلّت المشكلة بعد إعادة تحميل الصوت"},{"code":"35","reason":"تركيب بعد تغيير التعاقد"},{"code":"6","reason":"تركيب جديد"},{"code":"59","reason":"حُلّت المشكلة بعد تغيير بورت جديد"},{"code":"83","reason":"توصيلات داخلية لا يمكن حلها"},{"code":"20","reason":"عطل جسيم"},{"code":"84","reason":"توصيلات داخلية والعميل يرفض تعديلها"},{"code":"81","reason":"مشكلة داخلية تحتاج صيانة كابل"},{"code":"82","reason":"مشكلة خارجية تحتاج صيانة كابل"},{"code":"75","reason":"مشكلة Splitter والعميل لا يملك بديلًا"},{"code":"74","reason":"مشكلة راوتر العميل"},{"code":"65","reason":"إعداد CPE مطلوب؛ طابق المسمى الحالي في TTS"},{"code":"38","reason":"Stalagmite problem (المسمى كما في الجدول)"},{"code":"17","reason":"العميل غير متاح؛ يُحدد موعد في التعليق"},{"code":"28","reason":"العميل رفض الزيارة / رفض الدخول"},{"code":"96","reason":"العميل لا يرد"},{"code":"26","reason":"معاينة هندسية"},{"code":"19","reason":"شبكة داخلية - إغلاق مجمع"},{"code":"29","reason":"مشكلة في جهاز هاتف العميل"},{"code":"23","reason":"مشكلة فاتورة خدمة الصوت"},{"code":"4","reason":"أمر العمل لم يكتمل"},{"code":"30","reason":"غير متاح حسب طلب العميل"},{"code":"7","reason":"فشل التركيب"},{"code":"27","reason":"تعديل عنوان"},{"code":"73","reason":"العميل رفض التركيب"},{"code":"24","reason":"الخط خارج الخدمة"}
+    ],
+    "outage_fields": {
+      "title": "كيف تقرأ سجل Outage في النظام",
+      "note": "افتح سجل الأعطال/Outage في الأداة المعتمدة وابحث برقم الخدمة أو المنطقة حسب ما تسمح به الشاشة. اعتبر السجل مؤكدًا فقط إذا كانت الحالة والخدمة والمنطقة مطابقة؛ لا تعتمد على رقم منفرد أو تنشئ بيانات يدويًا.",
+      "rows": [
+        {
+          "field": "الحالة (Status)",
+          "meaning": "نشط / تحت المتابعة / تم الحل، كما تظهر في النظام"
+        },
+        {
+          "field": "النطاق والخدمات المتأثرة",
+          "meaning": "المنطقة/السنترال أو النطاق، ونوع الخدمة المتأثرة؛ طابقها مع خط العميل"
+        },
+        {
+          "field": "وقت البداية وآخر تحديث",
+          "meaning": "تحقق من حداثة الإعلان وآخر تحديث قبل إبلاغ العميل"
+        },
+        {
+          "field": "موعد الإصلاح أو التحديث المتوقع",
+          "meaning": "انقل الموعد الرسمي الظاهر فقط؛ إذا لم يظهر، لا تخمّن SLA"
+        },
+        {
+          "field": "رقم المرجع والإجراء المطلوب",
+          "meaning": "سجل المرجع المطلوب داخليًا واتبع تعليمات النظام بشأن SR/TT أو لقطة الشاشة"
+        }
+      ],
+      "terms": "outage outagemajor fault general fault المنطقة عطل عام"
+    }
+  },
+  "aggregator_payment_terminal": {
+    "question": "سداد إلكتروني عبر فوري/مجمّع ولم يظهر.",
+    "finding": "مرجع التدريب يذكر 48 ساعة عمل لشكاوى Aggregators Payment Not Clear؛ تحقق من القناة والمهلة الحالية.",
+    "action": "راجع الإيصال ورقم العملية والقناة والرقم المسدد له. سجل الشكوى بتصنيف القناة الصحيح في TTS، واستخدم SLA الحالي. لا تطلب بيانات بطاقة كاملة أو OTP.",
+    "customer_script": "هراجع الإيصال والعملية وهسجل الشكوى المناسبة. مرجع التدريب يذكر 48 ساعة عمل لهذه القناة؛ هأكد لحضرتك المهلة المسجلة عند إنشاء الطلب.",
+    "sla": "تدريب: 48 ساعة عمل لقناة Aggregators؛ أكّد في TTS",
+    "reference_guidance": "أبلغ العميل برقم الشكوى الفعلي والمهلة الظاهرة. لا تذكر رقم IR الداخلي.",
+    "options": []
+  },
+  "balance_fraction_terminal": {
+    "question": "الخدمة متوقفة بسبب رصيد بسيط؛ تحقق من أهلية Balance Fraction.",
+    "finding": "مرجع التدريب يذكر أن Balance Fraction قد تكون فورية للعملاء المؤهلين؛ الرقم المستخرج عن حد الإضافة غير واضح، لذلك لا تعتمد حدًا رقميًا منه.",
+    "action": "تحقق من أهلية العميل والحد المتاح في النظام الحالي. نفذ الإجراء من النظام المعتمد فقط.",
+    "customer_script": "هتحقق من أهلية الخط لإضافة الرصيد الجزئي والحد المتاح، وبعدها أبلغ حضرتك إذا أمكن إعادة الخدمة فورًا.",
+    "sla": "فوري للعملاء المؤهلين وفق مرجع التدريب؛ أكّد في النظام",
+    "options": []
+  },
+  "promise_to_pay_start": {
+    "question": "ما نوع الحساب الظاهر في النظام؟",
+    "options": [
+      {
+        "label": "Consumer Postpaid",
+        "next_step": "promise_to_pay_consumer_terminal"
+      },
+      {
+        "label": "Non-Consumer",
+        "next_step": "promise_to_pay_nonconsumer_terminal"
+      },
+      {
+        "label": "نوع الحساب غير واضح",
+        "next_step": "promise_to_pay_unknown_terminal"
+      }
     ]
   },
-  "start_menu": {
-    "question": "حدد سبب الاتصال، ثم اختَر المسار المناسب.",
-    "customer_prompt": "ممكن أعرف سبب اتصال حضرتك: عطل في الإنترنت، الخط الأرضي، تركيب أو متابعة طلب، استفسار عن خدمة، ولا شكوى؟",
+  "promise_to_pay_consumer_terminal": {
+    "question": "Promise to Pay — الحساب Consumer Postpaid.",
+    "finding": "دليل التدريب (day 10) يذكر إعادة مؤقتة لمدة 24 ساعة لعملاء Consumer المؤهلين، مرة واحدة خلال دورة حياة الخدمة وبسبب المتأخرات. تحقق من الشروط الحالية.",
+    "action": "تحقق من الأهلية ومن عدم استخدام الخدمة سابقًا خلال دورة الحياة. لا تفعّلها إلا عند ظهور الخيار في النظام الحالي ووفق سبب To Arrears.",
+    "customer_script": "هراجع أهلية الحساب لاستخدام إعادة الخدمة المؤقتة، وإذا كانت متاحة هأكد لحضرتك مدتها وشروطها قبل التنفيذ.",
+    "sla": "مرجع التدريب: 24 ساعة للمؤهلين؛ أكّد المدة الحالية",
+    "reference_guidance": "التفاصيل من day_10.pdf (مادة تدريبية قديمة): مرة واحدة خلال Life Cycle وسبب To Arrears. راجع الإجراء الحالي.",
+    "options": []
+  },
+  "promise_to_pay_nonconsumer_terminal": {
+    "question": "Promise to Pay — الحساب Non-Consumer.",
+    "finding": "دليل التدريب (day 10) يذكر إعادة مؤقتة لمدة 48 ساعة لعملاء Non-Consumer المؤهلين، مرة واحدة خلال دورة حياة الخدمة وبسبب المتأخرات. تحقق من الشروط الحالية.",
+    "action": "تحقق من نوع الحساب والأهلية وعدم استخدام الخدمة سابقًا خلال دورة الحياة. لا تفعّلها إلا عند ظهور الخيار في النظام الحالي ووفق سبب To Arrears.",
+    "customer_script": "هتحقق من أهلية الحساب لإعادة الخدمة مؤقتًا ومدتها، ولو متاحة هبلغ حضرتك بالشروط قبل تنفيذها.",
+    "sla": "مرجع التدريب: 48 ساعة للمؤهلين؛ أكّد المدة الحالية",
+    "reference_guidance": "التفاصيل من day_10.pdf (مادة تدريبية قديمة): مرة واحدة خلال Life Cycle وسبب To Arrears. راجع الإجراء الحالي.",
+    "options": []
+  },
+  "promise_to_pay_unknown_terminal": {
+    "question": "نوع الحساب غير واضح.",
+    "finding": "لم يتم التحقق من تصنيف الحساب، لذلك لا يمكن تحديد أهلية Promise to Pay.",
+    "action": "افحص نوع الحساب في النظام قبل متابعة الاستفسار. لا تفترض أن حساب العميل Consumer أو Non-Consumer.",
+    "customer_script": "هتأكد من نوع الحساب والشروط المتاحة وبعدها أوضح لحضرتك الاختيار المناسب.",
+    "sla": "لا تعد بمدة قبل التحقق",
+    "options": []
+  },
+  "tools_hub": {
+    "question": "اختَر الدليل السريع الذي تحتاجه. لو المشكلة تحتاج تشخيصًا، ارجع للبداية واختر أعطال الإنترنت.",
     "options": [
-      { "label": "انقطاع/ضعف الإنترنت أو مشكلة DSL", "next_step": "preflight_start" },
-      { "label": "الخط الأرضي أو الصوت", "next_step": "preflight_start" },
-      { "label": "طلب جديد أو متابعة تركيب", "next_step": "request_start" },
-      { "label": "باقة أو خدمة أو استفسار عام", "next_step": "inquiry_start" },
-      { "label": "شكوى أو تصعيد", "next_step": "complaint_start" },
-      { "label": "استثناء أو كود إغلاق ظاهر في TTS History", "next_step": "exceptions_start" }
+      {
+        "label": "ASSIA ونتيجة Clear View",
+        "next_step": "assia_start"
+      },
+      {
+        "label": "مساعد اختيار Close Code",
+        "next_step": "close_code_start"
+      },
+      {
+        "label": "ضعف تغطية Wi-Fi والأجهزة",
+        "next_step": "wifi_devices_terminal"
+      },
+      {
+        "label": "خدمات الشركات وCNAM والأرقام المختصرة",
+        "next_step": "enterprise_terminal"
+      },
+      {
+        "label": "استثناء أو كود ظاهر في TTS History",
+        "next_step": "exceptions_start"
+      }
+    ]
+  },
+  "assia_start": {
+    "question": "في ASSIA: هل الخط Supported، وهل Collection Date اليوم؟",
+    "customer_prompt": "هراجع نتيجة فحص الخط في ASSIA الأول، وبعدها أقول لحضرتك الخطوة المناسبة.",
+    "options": [
+      {
+        "label": "Supported وCollection Date اليوم؛ راجع Clear View",
+        "next_step": "assia_result"
+      },
+      {
+        "label": "Supported لكن Collection Date ليست اليوم؛ شغّل Clear View وتأكد Last fix within 24 hours",
+        "next_step": "assia_result"
+      },
+      {
+        "label": "Not Supported by ASSIA",
+        "next_step": "assia_not_supported"
+      }
+    ]
+  },
+  "assia_result": {
+    "question": "ما النتيجة الظاهرة في Clear View؟",
+    "options": [
+      {
+        "label": "ظهر Physical Layer issue أو Faults مناسبة للمشكلة",
+        "next_step": "assia_physical_terminal"
+      },
+      {
+        "label": "No DSL Physical-Layer issue is detected",
+        "next_step": "assia_logical_terminal"
+      },
+      {
+        "label": "نتيجة أخرى أو لا أستطيع تأكيدها",
+        "next_step": "assia_unknown_terminal"
+      }
+    ]
+  },
+  "assia_physical_terminal": {
+    "question": "النتيجة: Clear View أظهر مؤشر Physical Layer.",
+    "finding": "يوجد مؤشر Physical Layer؛ طابق الـFault الظاهر مع وصف العميل قبل تحديد نوع الشكوى.",
+    "action": "اتبع Advice المطابق للـFault. لمسار Physical Instability: نفّذ Run ASSIA Clear View وتأكد أن Last fix within 24 hours قبل التصعيد. سجّل الشكوى الصحيحة وأرفق Screenshot إذا طلب الإجراء ذلك.",
+    "customer_script": "ظهر عندي مؤشر على الخط، هجرب مع حضرتك الخطوات المناسبة. لو احتجنا تسجيل متابعة هبلغك برقمها والمهلة الظاهرة في النظام.",
+    "sla": "حسب نوع الشكوى في TTS؛ تحقق قبل الوعد",
+    "reference_guidance": "أعطِ العميل رقم TT/SR الفعلي إذا أنشأه النظام وكان مطلوبًا؛ IR داخلي.",
+    "options": []
+  },
+  "assia_logical_terminal": {
+    "question": "نتيجة Clear View: No DSL Physical-Layer issue is detected. كيف تظهر لمبة ADSL وقت الانقطاع؟",
+    "finding": "النتيجة لا ترصد عطل Physical Layer وحدها ولا تثبت سببًا منطقيًا؛ استخدم حالة اللمبة لتحديد المسار.",
+    "customer_prompt": "وقت ما الإنترنت يفصل، هل لمبة ADSL تفضل ثابتة ولا تفصل؟",
+    "options": [
+      {
+        "label": "لمبة ADSL ثابتة وقت الانقطاع",
+        "next_step": "logical_start"
+      },
+      {
+        "label": "لمبة ADSL تفصل أو تنطفئ",
+        "next_step": "physical_start"
+      },
+      {
+        "label": "غير قادر على تحديد الحالة",
+        "next_step": "dsl_status_unknown"
+      }
+    ]
+  },
+  "assia_not_supported": {
+    "question": "النتيجة: الخط Not Supported by ASSIA.",
+    "finding": "ASSIA لا يدعم الخط؛ لا تستنتج نوع العطل من هذه النتيجة وحدها.",
+    "action": "اسأل العميل هل لمبة ADSL تظل منورة وثابتة أم تفصل وقت انقطاع الإنترنت. ثابتة: تابع Logical Instability. تفصل: تابع Physical Instability. استخدم أدوات الفحص البديلة المعتمدة.",
+    "customer_script": "الأداة لا تدعم هذا الخط، فهحدد نوع الفصل من حالة لمبة ADSL وأكمل الفحص المناسب.",
+    "sla": "حسب التذكرة التي قد يتطلبها التشخيص",
+    "options": [
+      {
+        "label": "لمبة ADSL ثابتة وقت الانقطاع",
+        "next_step": "logical_start"
+      },
+      {
+        "label": "لمبة ADSL تفصل أو تنطفئ",
+        "next_step": "physical_start"
+      },
+      {
+        "label": "غير قادر على تحديد الحالة",
+        "next_step": "dsl_status_unknown"
+      }
+    ]
+  },
+  "assia_unknown_terminal": {
+    "question": "نتيجة Clear View غير واضحة أو لا تطابق الحالات المعروفة.",
+    "finding": "لم يتم تأكيد نوع Physical/Logical من البيانات المتاحة.",
+    "action": "لا تختَر تصنيفًا بالتخمين. راجع مخرجات Clear View والأدوات الحالية، ثم استخدم مسار الدعم المعتمد إذا استمر الغموض.",
+    "customer_script": "النتيجة محتاجة مراجعة إضافية؛ هتحقق من تفاصيل الخط وأكمل لحضرتك بالخطوة المؤكدة.",
+    "sla": "لا تعد بمهلة قبل إنشاء تذكرة والتحقق من SLA",
+    "options": []
+  },
+  "close_code_start": {
+    "question": "هل تبحث عن كود حل لحالة انتهت بالفعل أم تراجع كودًا ظاهرًا على تذكرة قائمة؟",
+    "options": [
+      {
+        "label": "تم إصلاح التوصيلات الداخلية؛ أبحث عن كود الحل",
+        "next_step": "close_code_8_terminal"
+      },
+      {
+        "label": "كود 67 ظاهر على TT سابقة: Data Ports",
+        "next_step": "exception_67"
+      },
+      {
+        "label": "كود 81 أو 82 ظاهر على TT سابقة: كابل",
+        "next_step": "close_code_cable"
+      },
+      {
+        "label": "سبب آخر أو غير متأكد؛ أراجع جدول الأكواد",
+        "next_step": "exceptions_start"
+      }
+    ]
+  },
+  "close_code_cable": {
+    "question": "كود 81 أو 82 موجود على تذكرة قائمة؟ افحص مسارها في TTS قبل اتخاذ إجراء.",
+    "options": [
+      {
+        "label": "81: كابل داخلي",
+        "next_step": "close_code_81_terminal"
+      },
+      {
+        "label": "82: كابل خارجي",
+        "next_step": "close_code_82_terminal"
+      },
+      {
+        "label": "الكود أو السبب غير مؤكد",
+        "next_step": "close_code_unknown_terminal"
+      }
+    ]
+  },
+  "close_code_8_terminal": {
+    "question": "كود الإغلاق المقترح: 8 — إصلاح التوصيلات الداخلية.",
+    "finding": "سبب الإغلاق: تم إصلاح التوصيلات الداخلية.",
+    "action": "استخدم كود 8 فقط إذا تم الإصلاح فعلًا وكان الخيار مطابقًا في TTS الحالي.",
+    "customer_script": "تم إصلاح التوصيلات الداخلية. هل تسمح لي أتأكد مع حضرتك أن الخدمة مستقرة؟",
+    "sla": "اتبع إجراء الإغلاق الحالي",
+    "options": []
+  },
+  "close_code_81_terminal": {
+    "question": "كود 81 ظاهر على تذكرة قائمة: مشكلة كابل داخلي تحتاج صيانة.",
+    "finding": "جدول التدريب يصف 81 بأنه مشكلة كابل داخلي تحتاج صيانة؛ والمسار يتعامل مع كود موجود على تذكرة قائمة.",
+    "action": "تحقق من عدم وجود Major Fault وأكمل الفحص المعتاد، ثم حدّث/أعد تصعيد التذكرة القائمة. دليل day_8.pdf يذكر تخطي اختبار السلك الرئيسي في هذا المسار. لا تنشئ تذكرة مكررة.",
+    "customer_script": "هراجع التذكرة والفحوصات، وأتابع نفس الطلب مع الفريق المختص وأبلغ حضرتك بالمهلة المسجلة.",
+    "sla": "جدول التدريب يذكر يومًا لـ81/82؛ تحقق من SLA الحالي",
+    "reference_guidance": "مرجع day_8.pdf وSLA.pdf؛ استخدم رقم TT القائمة للمتابعة.",
+    "options": []
+  },
+  "close_code_82_terminal": {
+    "question": "كود 82 ظاهر على تذكرة قائمة: مشكلة كابل خارجي تحتاج صيانة.",
+    "finding": "جدول التدريب يصف 82 بأنه مشكلة كابل خارجي تحتاج صيانة؛ والمسار يتعامل مع كود موجود على تذكرة قائمة.",
+    "action": "تحقق من عدم وجود Major Fault وأكمل الفحص المعتاد، ثم حدّث/أعد تصعيد التذكرة القائمة. دليل day_8.pdf يذكر تخطي اختبار السلك الرئيسي في هذا المسار. لا تنشئ تذكرة مكررة.",
+    "customer_script": "هراجع التذكرة والفحوصات، وأتابع نفس الطلب مع الفريق المختص وأبلغ حضرتك بالمهلة المسجلة.",
+    "sla": "جدول التدريب يذكر يومًا لـ81/82؛ تحقق من SLA الحالي",
+    "reference_guidance": "مرجع day_8.pdf وSLA.pdf؛ استخدم رقم TT القائمة للمتابعة.",
+    "options": []
+  },
+  "close_code_unknown_terminal": {
+    "question": "لم يتم تأكيد موضع مشكلة الكابل.",
+    "finding": "لا يوجد دليل كافٍ لاختيار 81 أو 82.",
+    "action": "حدد هل العطل في الكابل الداخلي أم الخارجي. لا تختَر كودًا بالتخمين؛ ارجع لجدول TTS الحالي.",
+    "customer_script": "محتاج أتأكد من موضع العطل قبل تسجيل التصنيف الصحيح.",
+    "sla": "لا تعد بمهلة قبل تحديد المسار",
+    "options": []
+  },
+  "wifi_devices_terminal": {
+    "question": "مساعدة سريعة لضعف تغطية Wi-Fi والأجهزة.",
+    "finding": "ضعف التغطية داخل المنزل قد يحتاج تحسين مكان الراوتر أو مقويًا؛ لا يعني وحده عطلًا في الخط.",
+    "action": "اختبر السرعة قرب الراوتر وميّز ضعف التغطية عن بطء الخط. مواصفات RE200 (AC750) تصل إلى 300Mbps على 2.4GHz، وDeco M5 به 4 هوائيات داخلية وميزة Self-Healing. تحقق من التوافق والتوفر والسعر في النظام الحالي قبل العرض. سياسة الاسترجاع: 14 يومًا من استلام السلعة دون سبب مع استثناءات، أو 30 يومًا للسلعة المعيبة؛ راجع الشروط الرسمية وحالة السلعة.",
+    "customer_script": "لو السرعة جيدة بجوار الراوتر وضعفت في غرفة بعيدة، نراجع حل تغطية مناسبًا. هأكد التوافق والسعر وشروط الاسترجاع المنطبقة قبل أي طلب.",
+    "reference_guidance": "مواصفات الشركة: tp-link.com/us/home-networking/range-extender/re200/v3/ وtp-link.com/us/deco-mesh-wifi/product-family/deco-m5/. سياسة الاسترجاع: جهاز حماية المستهلك https://cpa.gov.eg/ar-eg/بيانات-اعلامية/ArtMID/654/ArticleID/6773",
+    "sla": "استفسار فوري؛ السعر والتوفر حسب النظام الحالي",
+    "options": []
+  },
+  "enterprise_terminal": {
+    "question": "دليل استفسارات خدمات الشركات.",
+    "finding": "يشمل الأرقام المختصرة وCNAM وخدمات الأعمال.",
+    "action": "تحقق من الأهلية والقواعد في نظام الشركات الحالي. مرجع day_14.pdf يؤكد أن الرقم المختصر 5 أرقام، لكنه لا يكفي لتأكيد البادئات والأسعار الحالية. ويذكر أن اسم CNAM بحد أقصى 50 حرفًا باللغة الإنجليزية. استخدم الوصف والسعر الحاليين لخدمات Smart Parking وWE FinTech وBeIN التجارية.",
+    "customer_script": "هراجع شروط الخدمة المناسبة لنشاط حضرتك والسعر والتغطية الحاليين، وأوضح خطوات التفعيل ورقم الطلب إذا سجلناه.",
+    "reference_guidance": "مرجع المعلومات: day_14.pdf (تدريب)؛ تأكد من تفاصيل البادئات والأسعار وسياسة الخدمة من نظام الشركات الحالي.",
+    "sla": "حسب خدمة الأعمال؛ راجع SLA الحالي",
+    "options": []
+  },
+  "start_menu": {
+    "question": "ما سبب تواصل العميل؟",
+    "customer_prompt": "هل تتواصل بخصوص مشكلة في الخدمة، أم استفسار، أم طلب جديد أو متابعة؟",
+    "options": [
+      {
+        "label": "مشكلة في الخدمة",
+        "next_step": "preflight_start"
+      },
+      {
+        "label": "استفسار عن خدمة أو باقة أو فاتورة",
+        "next_step": "inquiry_start"
+      },
+      {
+        "label": "طلب جديد أو متابعة طلب/تركيب",
+        "next_step": "request_start"
+      }
     ]
   },
   "preflight_start": {
@@ -89,15 +389,23 @@
     ]
   },
   "technical_type": {
-    "question": "ما نوع العطل بعد استبعاد التذكرة المكررة والعطل العام والفاتورة والباقة؟",
+    "question": "بعد مراجعة السجل والعطل العام والحساب والباقة، ما الحالة؟",
     "options": [
       {
-        "label": "إنترنت أو DSL",
-        "next_step": "physical_start"
+        "label": "مشكلة انقطاع أو ضعف إنترنت/DSL",
+        "next_step": "voice_verification"
       },
       {
-        "label": "خط أرضي أو صوت",
+        "label": "مشكلة في الخط الأرضي/الصوت",
         "next_step": "voice_start"
+      },
+      {
+        "label": "متابعة مشكلة لها TT قائمة",
+        "next_step": "existing_tt_terminal"
+      },
+      {
+        "label": "شكوى عن زيارة/تعامل أو طلب تصعيد",
+        "next_step": "complaint_start"
       }
     ]
   },
@@ -149,18 +457,36 @@
     "question": "حدد حالة لمبة DSL/ADSL وقت العطل.",
     "customer_prompt": "ممكن تبص على الراوتر وتقول لي لمبة DSL أو ADSL مطفية، ثابتة، ولا بتنور وتطفي؟",
     "options": [
-      { "label": "مطفأة", "next_step": "power_check" },
-      { "label": "بتفصل أو بتنور وتطفي", "next_step": "instability_visit" },
-      { "label": "ثابتة، لكن مفيش IP أو التصفح/السرعة فيها مشكلة", "next_step": "logical_start" },
-      { "label": "مش قادر يحدد حالة اللمبة", "next_step": "dsl_status_unknown" }
+      {
+        "label": "مطفأة",
+        "next_step": "power_check"
+      },
+      {
+        "label": "بتفصل أو بتنور وتطفي",
+        "next_step": "instability_visit"
+      },
+      {
+        "label": "ثابتة، لكن مفيش IP أو التصفح/السرعة فيها مشكلة",
+        "next_step": "logical_start"
+      },
+      {
+        "label": "مش قادر يحدد حالة اللمبة",
+        "next_step": "dsl_status_unknown"
+      }
     ]
   },
   "power_check": {
     "question": "تحقق من مصدر كهرباء الراوتر وحالة لمبة Power.",
     "customer_prompt": "وقت انقطاع الخدمة، لمبة Power منورة وثابتة ولا مطفية/بتفصل؟",
     "options": [
-      { "label": "لا، مطفأة أو غير ثابتة", "next_step": "power_terminal" },
-      { "label": "نعم، ثابتة", "next_step": "data_down_logs" }
+      {
+        "label": "لا، مطفأة أو غير ثابتة",
+        "next_step": "power_terminal"
+      },
+      {
+        "label": "نعم، ثابتة",
+        "next_step": "data_down_logs"
+      }
     ]
   },
   "dsl_status_unknown": {
@@ -181,58 +507,109 @@
   "data_down_logs": {
     "question": "من أدوات التشخيص الداخلية فقط (من غير مشاركة تفاصيلها مع العميل)، ماذا يظهر في سجلات النظام خلال آخر 12 ساعة؟",
     "options": [
-      { "label": "3 سجلات أو أكثر، بينها سجل خلال آخر 3 ساعات", "next_step": "instability_visit" },
-      { "label": "لا تنطبق قاعدة السجلات؛ صنّفها Data Down", "next_step": "wiring_check" }
+      {
+        "label": "3 سجلات أو أكثر، بينها سجل خلال آخر 3 ساعات",
+        "next_step": "instability_visit"
+      },
+      {
+        "label": "لا تنطبق قاعدة السجلات؛ صنّفها Data Down",
+        "next_step": "wiring_check"
+      }
     ]
   },
   "wiring_check": {
     "question": "حدد طريقة توصيل الراوتر بخط الهاتف.",
     "customer_prompt": "الراوتر متوصل بالسلك الرئيسي مباشرة، ولا من فيشة الحائط/الفلتر؟",
     "options": [
-      { "label": "السلك الرئيسي متصل مباشرة بالراوتر", "next_step": "main_wire_check" },
-      { "label": "من فيشة الحائط أو عبر Splitter/فلتر", "next_step": "wall_wiring_check" },
-      { "label": "لا يستطيع العميل تحديد التوصيل", "next_step": "physical_escalation" }
+      {
+        "label": "السلك الرئيسي متصل مباشرة بالراوتر",
+        "next_step": "main_wire_check"
+      },
+      {
+        "label": "من فيشة الحائط أو عبر Splitter/فلتر",
+        "next_step": "wall_wiring_check"
+      },
+      {
+        "label": "لا يستطيع العميل تحديد التوصيل",
+        "next_step": "physical_escalation"
+      }
     ]
   },
   "main_wire_check": {
     "question": "بعد التوصيل المباشر، تحقق هل رجعت لمبة DSL.",
     "customer_prompt": "بعد توصيل الراوتر بالسلك الرئيسي، لمبة DSL رجعت ثابتة ولا لسه؟",
     "options": [
-      { "label": "نعم، عادت الخدمة", "next_step": "resolved_terminal" },
-      { "label": "لا، لم تعد", "next_step": "physical_escalation" }
+      {
+        "label": "نعم، عادت الخدمة",
+        "next_step": "resolved_terminal"
+      },
+      {
+        "label": "لا، لم تعد",
+        "next_step": "physical_escalation"
+      }
     ]
   },
   "wall_wiring_check": {
     "question": "تحقق من سلامة الفلتر والتوصيلات الداخلية.",
     "customer_prompt": "ممكن نتأكد إن الفلتر والتوصيلات راكبة كويس؟ وهل جربنا التوصيل من غير الفلتر؟",
     "options": [
-      { "label": "صححنا التوصيل وعادت الخدمة", "next_step": "resolved_terminal" },
-      { "label": "جربنا فصل الـ Splitter وما زالت المشكلة", "next_step": "physical_escalation" },
-      { "label": "التوصيل سليم والخط ما زال Down", "next_step": "physical_escalation" }
+      {
+        "label": "صححنا التوصيل وعادت الخدمة",
+        "next_step": "resolved_terminal"
+      },
+      {
+        "label": "جربنا فصل الـ Splitter وما زالت المشكلة",
+        "next_step": "physical_escalation"
+      },
+      {
+        "label": "التوصيل سليم والخط ما زال Down",
+        "next_step": "physical_escalation"
+      }
     ]
   },
   "instability_visit": {
     "question": "تحقق من وجود زيارة فني أو تغيير توصيلات قبل بداية عدم الاستقرار.",
     "customer_prompt": "هل زاركم فني أو حصل تغيير في السلك/التوصيلات قبل ما المشكلة تبدأ؟",
     "options": [
-      { "label": "نعم، تمت زيارة أو تغيير", "next_step": "after_visit_check" },
-      { "label": "لا، لم تتم زيارة", "next_step": "physical_escalation" },
-      { "label": "الخط عاد للعمل أثناء المكالمة", "next_step": "stable_after_recheck" }
+      {
+        "label": "نعم، تمت زيارة أو تغيير",
+        "next_step": "after_visit_check"
+      },
+      {
+        "label": "لا، لم تتم زيارة",
+        "next_step": "physical_escalation"
+      },
+      {
+        "label": "الخط عاد للعمل أثناء المكالمة",
+        "next_step": "stable_after_recheck"
+      }
     ]
   },
   "after_visit_check": {
     "question": "تحقق من نتيجة الزيارة/التغيير وهل ما زال العطل قائمًا.",
     "customer_prompt": "بعد زيارة الفني أو التغيير اللي حصل، هل الخدمة بقت مستقرة ولا المشكلة لسه موجودة؟",
     "options": [
-      { "label": "نعم، المشكلة ما زالت موجودة", "next_step": "physical_escalation" },
-      { "label": "لا، الخدمة مستقرة بعد الفحص", "next_step": "resolved_terminal" }
+      {
+        "label": "نعم، المشكلة ما زالت موجودة",
+        "next_step": "physical_escalation"
+      },
+      {
+        "label": "لا، الخدمة مستقرة بعد الفحص",
+        "next_step": "resolved_terminal"
+      }
     ]
   },
   "stable_after_recheck": {
     "question": "هل أكد فحص ASSIA/Clear View عدم وجود مشكلة فيزيائية؟",
     "options": [
-      { "label": "نعم، لا توجد مشكلة فيزيائية والخط مستقر", "next_step": "resolved_terminal" },
-      { "label": "لا أو النتيجة غير متاحة", "next_step": "physical_escalation" }
+      {
+        "label": "نعم، لا توجد مشكلة فيزيائية والخط مستقر",
+        "next_step": "resolved_terminal"
+      },
+      {
+        "label": "لا أو النتيجة غير متاحة",
+        "next_step": "physical_escalation"
+      }
     ]
   },
   "physical_escalation": {
@@ -247,57 +624,108 @@
     "question": "صنّف وصف المشكلة قبل اختيار فحوصات الإنترنت المنطقية.",
     "customer_prompt": "المشكلة عند حضرتك إن الإنترنت مش شغال، ولا مواقع معينة مش بتفتح، ولا السرعة بطيئة، ولا الخط بيفصل؟",
     "options": [
-      { "label": "الراوتر لا يحصل على WAN IP أو لا يوجد إنترنت", "next_step": "no_ip_check" },
-      { "label": "الإنترنت يعمل لكن مواقع لا تفتح", "next_step": "browsing_check" },
-      { "label": "بطء في السرعة", "next_step": "slowness_check" },
-      { "label": "السرعة المسجلة مختلفة بين أدوات النظام", "next_step": "speed_variance_terminal" },
-      { "label": "الخط يفصل رغم أن لمبة DSL ثابتة", "next_step": "logical_logs" }
+      {
+        "label": "الراوتر لا يحصل على WAN IP أو لا يوجد إنترنت",
+        "next_step": "no_ip_check"
+      },
+      {
+        "label": "الإنترنت يعمل لكن مواقع لا تفتح",
+        "next_step": "browsing_check"
+      },
+      {
+        "label": "بطء في السرعة",
+        "next_step": "slowness_check"
+      },
+      {
+        "label": "السرعة المسجلة مختلفة بين أدوات النظام",
+        "next_step": "speed_variance_terminal"
+      },
+      {
+        "label": "الخط يفصل رغم أن لمبة DSL ثابتة",
+        "next_step": "logical_logs"
+      }
     ]
   },
   "no_ip_check": {
     "question": "باستخدام أداة العمل المعتمدة ومن غير طلب كلمة مرور العميل، هل راجعت حالة MAC وإعدادات CPE وبيانات الاتصال؟",
     "options": [
-      { "label": "MAC غير متعلم أو الإعدادات غير صحيحة", "next_step": "cpe_reconfigure" },
-      { "label": "الإعدادات سليمة وما زال لا يوجد IP", "next_step": "noc_escalation" }
+      {
+        "label": "MAC غير متعلم أو الإعدادات غير صحيحة",
+        "next_step": "cpe_reconfigure"
+      },
+      {
+        "label": "الإعدادات سليمة وما زال لا يوجد IP",
+        "next_step": "noc_escalation"
+      }
     ]
   },
   "cpe_reconfigure": {
     "question": "بعد إعداد CPE، تحقق هل حصل الراوتر على IP وعادت الخدمة.",
     "customer_prompt": "بعد ضبط الراوتر، لمبة الإنترنت اشتغلت والخدمة رجعت؟",
     "options": [
-      { "label": "نعم، عادت الخدمة", "next_step": "resolved_terminal" },
-      { "label": "لا، ما زال لا يوجد IP", "next_step": "noc_escalation" }
+      {
+        "label": "نعم، عادت الخدمة",
+        "next_step": "resolved_terminal"
+      },
+      {
+        "label": "لا، ما زال لا يوجد IP",
+        "next_step": "noc_escalation"
+      }
     ]
   },
   "browsing_check": {
     "question": "حدد نطاق مشكلة التصفح: كل الأجهزة أم جهاز/موقع محدد.",
     "customer_prompt": "المواقع مش بتفتح على كل الأجهزة، ولا على جهاز/موقع معين بس؟",
     "options": [
-      { "label": "كل المواقع أو أكثر من جهاز", "next_step": "browsing_network_steps" },
-      { "label": "موقع أو جهاز واحد فقط", "next_step": "browsing_device_steps" }
+      {
+        "label": "كل المواقع أو أكثر من جهاز",
+        "next_step": "browsing_network_steps"
+      },
+      {
+        "label": "موقع أو جهاز واحد فقط",
+        "next_step": "browsing_device_steps"
+      }
     ]
   },
   "browsing_network_steps": {
     "question": "بعد فحص الشبكة وتجربة جهاز/راوتر آخر، أكد هل استمر العطل.",
     "customer_prompt": "بعد ما جرّبنا جهازًا/راوترًا تانيًا، المشكلة لسه موجودة؟",
     "options": [
-      { "label": "لا، التصفح عاد", "next_step": "resolved_terminal" },
-      { "label": "نعم، أرفق Trace للموقع حسب الإجراء", "next_step": "noc_escalation" }
+      {
+        "label": "لا، التصفح عاد",
+        "next_step": "resolved_terminal"
+      },
+      {
+        "label": "نعم، أرفق Trace للموقع حسب الإجراء",
+        "next_step": "noc_escalation"
+      }
     ]
   },
   "browsing_device_steps": {
     "question": "اختبر التصفح على جهاز أو متصفح آخر.",
     "customer_prompt": "هل التصفح بيشتغل لو جربنا جهازًا أو متصفحًا تانيًا؟",
     "options": [
-      { "label": "نعم، المشكلة من الجهاز أو المتصفح المحدد", "next_step": "device_terminal" },
-      { "label": "لا، المشكلة مستمرة على أكثر من جهاز", "next_step": "browsing_network_steps" }
+      {
+        "label": "نعم، المشكلة من الجهاز أو المتصفح المحدد",
+        "next_step": "device_terminal"
+      },
+      {
+        "label": "لا، المشكلة مستمرة على أكثر من جهاز",
+        "next_step": "browsing_network_steps"
+      }
     ]
   },
   "slowness_check": {
     "question": "بعد التأكد من استهلاك الباقة والسرعة المتوقعة، هل السرعة الحالية أقل من المسجل للخط؟",
     "options": [
-      { "label": "لا، ضمن المتوقع أو ما زالت فترة تحسين السرعة", "next_step": "speed_within_range" },
-      { "label": "نعم، أقل من المتوقع أو انتهت فترة التحسين", "next_step": "slowness_troubleshoot" }
+      {
+        "label": "لا، ضمن المتوقع أو ما زالت فترة تحسين السرعة",
+        "next_step": "speed_within_range"
+      },
+      {
+        "label": "نعم، أقل من المتوقع أو انتهت فترة التحسين",
+        "next_step": "slowness_troubleshoot"
+      }
     ]
   },
   "speed_within_range": {
@@ -311,24 +739,45 @@
     "question": "نفّذ اختبار السرعة المعتمد ثم أكد استمرار البطء.",
     "customer_prompt": "بعد تجربة السرعة بتوصيل مباشر وعلى جهاز واحد، السرعة لسه بطيئة؟",
     "options": [
-      { "label": "لا، السرعة أصبحت مناسبة", "next_step": "resolved_terminal" },
-      { "label": "نعم، ما زال البطء موجودًا", "next_step": "noc_escalation" }
+      {
+        "label": "لا، السرعة أصبحت مناسبة",
+        "next_step": "resolved_terminal"
+      },
+      {
+        "label": "نعم، ما زال البطء موجودًا",
+        "next_step": "noc_escalation"
+      }
     ]
   },
   "logical_logs": {
     "question": "هل تظهر سجلات متكررة أو مؤشرات عطل في النظام، وهل جُرّب CPE آخر؟",
     "options": [
-      { "label": "نعم، توجد سجلات أو استمر العطل مع CPE آخر", "next_step": "noc_escalation" },
-      { "label": "لا توجد سجلات؛ اطلب تجربة CPE آخر وتحقق من Outage", "next_step": "logical_recheck" }
+      {
+        "label": "نعم، توجد سجلات أو استمر العطل مع CPE آخر",
+        "next_step": "noc_escalation"
+      },
+      {
+        "label": "لا توجد سجلات؛ اطلب تجربة CPE آخر وتحقق من Outage",
+        "next_step": "logical_recheck"
+      }
     ]
   },
   "logical_recheck": {
     "question": "بعد فحص Outage وتجربة CPE آخر، حدّد هل استمرت المشكلة.",
     "customer_prompt": "بعد تجربة راوتر تاني ومراجعة حالة الشبكة، المشكلة لسه موجودة؟",
     "options": [
-      { "label": "نعم، استمرت", "next_step": "noc_escalation" },
-      { "label": "لا، الخدمة تعمل", "next_step": "resolved_terminal" },
-      { "label": "يوجد Outage محتمل", "next_step": "outage_terminal" }
+      {
+        "label": "نعم، استمرت",
+        "next_step": "noc_escalation"
+      },
+      {
+        "label": "لا، الخدمة تعمل",
+        "next_step": "resolved_terminal"
+      },
+      {
+        "label": "يوجد Outage محتمل",
+        "next_step": "outage_terminal"
+      }
     ]
   },
   "noc_escalation": {
@@ -359,9 +808,18 @@
     "question": "حدد هل المشكلة صوت أرضي فقط أم صوت وإنترنت معًا.",
     "customer_prompt": "المشكلة في حرارة الخط الأرضي بس، ولا في الحرارة والإنترنت مع بعض؟",
     "options": [
-      { "label": "الحرارة/الصوت فقط", "next_step": "voice_down_terminal" },
-      { "label": "الصوت والإنترنت متأثران", "next_step": "data_down_logs" },
-      { "label": "الصوت متداخل أو غير مستقر", "next_step": "voice_down_terminal" }
+      {
+        "label": "الحرارة/الصوت فقط",
+        "next_step": "voice_down_terminal"
+      },
+      {
+        "label": "الصوت والإنترنت متأثران",
+        "next_step": "data_down_logs"
+      },
+      {
+        "label": "الصوت متداخل أو غير مستقر",
+        "next_step": "voice_down_terminal"
+      }
     ]
   },
   "voice_down_terminal": {
@@ -375,17 +833,35 @@
   "request_start": {
     "question": "ما نوع طلب التركيب أو المتابعة؟",
     "options": [
-      { "label": "استعلام عن إتاحة خط أو طلب جديد", "next_step": "availability_check" },
-      { "label": "متابعة طلب تركيب قائم", "next_step": "order_followup" },
-      { "label": "تأخير أو فشل في التركيب", "next_step": "installation_delay" }
+      {
+        "label": "استعلام عن إتاحة خط أو طلب جديد",
+        "next_step": "availability_check"
+      },
+      {
+        "label": "متابعة طلب تركيب قائم",
+        "next_step": "order_followup"
+      },
+      {
+        "label": "تأخير أو فشل في التركيب",
+        "next_step": "installation_delay"
+      }
     ]
   },
   "availability_check": {
     "question": "ما التقنية المطلوبة أو المتاحة للعنوان؟",
     "options": [
-      { "label": "خط MSAN أو TDM", "next_step": "copper_install_terminal" },
-      { "label": "ألياف FTTH", "next_step": "fiber_install_terminal" },
-      { "label": "الإتاحة غير واضحة", "next_step": "availability_terminal" }
+      {
+        "label": "خط MSAN أو TDM",
+        "next_step": "copper_install_terminal"
+      },
+      {
+        "label": "ألياف FTTH",
+        "next_step": "fiber_install_terminal"
+      },
+      {
+        "label": "الإتاحة غير واضحة",
+        "next_step": "availability_terminal"
+      }
     ]
   },
   "copper_install_terminal": {
@@ -416,16 +892,31 @@
     "question": "تحقق من وجود رقم طلب أو تذكرة للتركيب.",
     "customer_prompt": "هل مع حضرتك رقم طلب التركيب أو رقم المتابعة؟",
     "options": [
-      { "label": "نعم، ابحث عن حالة الطلب والمرحلة الحالية", "next_step": "order_status_check" },
-      { "label": "لا، تحقق من الطلبات المسجلة على الحساب", "next_step": "order_status_check" }
+      {
+        "label": "نعم، ابحث عن حالة الطلب والمرحلة الحالية",
+        "next_step": "order_status_check"
+      },
+      {
+        "label": "لا، تحقق من الطلبات المسجلة على الحساب",
+        "next_step": "order_status_check"
+      }
     ]
   },
   "order_status_check": {
     "question": "ما حالة الطلب مقارنة بالـ SLA الظاهر في النظام؟",
     "options": [
-      { "label": "داخل SLA ولا يوجد خطأ ظاهر", "next_step": "order_within_sla" },
-      { "label": "تجاوز SLA أو الحالة Failed/Abnormal", "next_step": "installation_delay" },
-      { "label": "الطلب مكتمل والخدمة لم تعمل", "next_step": "installation_delay" }
+      {
+        "label": "داخل SLA ولا يوجد خطأ ظاهر",
+        "next_step": "order_within_sla"
+      },
+      {
+        "label": "تجاوز SLA أو الحالة Failed/Abnormal",
+        "next_step": "installation_delay"
+      },
+      {
+        "label": "الطلب مكتمل والخدمة لم تعمل",
+        "next_step": "installation_delay"
+      }
     ]
   },
   "order_within_sla": {
@@ -448,20 +939,310 @@
     "question": "صنّف نوع استفسار العميل.",
     "customer_prompt": "حضرتك بتستفسر عن باقة، خدمة، فاتورة/استهلاك، أو تغيير في الخدمة؟",
     "options": [
-      { "label": "سعر أو تفاصيل باقة", "next_step": "package_inquiry_terminal" },
-      { "label": "سؤال عن الراوتر أو لمبة/إعداد", "next_step": "device_inquiry_terminal" },
-      { "label": "تفعيل أو إلغاء خدمة/باقة إضافية", "next_step": "service_request_terminal" },
-      { "label": "فاتورة أو رصيد أو سداد", "next_step": "billing_inquiry_start" },
-      { "label": "إلغاء أو تغيير نظام/رقم", "next_step": "account_change_terminal" }
+      {
+        "label": "سعر أو تفاصيل باقات الإنترنت الأرضي WE Space",
+        "next_step": "package_inquiry_terminal"
+      },
+      {
+        "label": "سؤال عن الراوتر أو لمبة/إعداد",
+        "next_step": "device_inquiry_terminal"
+      },
+      {
+        "label": "تفعيل أو إلغاء خدمة/باقة إضافية",
+        "next_step": "service_request_terminal"
+      },
+      {
+        "label": "فاتورة أو رصيد أو سداد",
+        "next_step": "billing_inquiry_start"
+      },
+      {
+        "label": "إلغاء أو تغيير نظام/رقم",
+        "next_step": "account_change_terminal"
+      }
     ]
   },
   "package_inquiry_terminal": {
     "question": "استفسار عن باقة أو عرض.",
-    "action": "تحقق من أحدث الباقات والأسعار والضرائب والأهلية في النظام/قناة البيع المعتمدة. لا تستخدم الأسعار أو أرقام العروض الظاهرة في ملفات التدريب لأنها قد تتغير. اشرح المزايا والسرعة المتوقعة للخط، ثم وثّق اختيار العميل.",
+    "action": "اعرض جدول الباقات الشهرية والسنوية والإضافات أدناه. لو العميل يسأل عن باقته الحالية، راجعها في أداة 855 حسب مرجع التدريب day_11.pdf. تحقق من استهلاك الباقة، التقنية والسرعة المتاحة، الأهلية والسعر النهائي والضريبة في النظام الحالي. لا تسجل استفسارًا فقط كطلب أو عطل.",
     "customer_script": "هراجع لحضرتك أحدث الباقات المتاحة وأهليتك لها، وأوضح السعر شامل الضريبة والسرعة المتوقعة قبل تسجيل أي طلب.",
     "reference_guidance": "لو اختار العميل باقة وتم تسجيل طلب، أعطه رقم الطلب الذي أصدره النظام. لو كان استفسارًا فقط، لا تنشئ تذكرة ولا تقل إن طلبًا اتعمل.",
     "sla": "فوري للاستعلام؛ تنفيذ الطلب حسب الخدمة",
-    "options": []
+    "options": [],
+    "package_catalog": {
+      "checked_on": "2026-10-31",
+      "source_url": "https://www.te.eg/personal/home/we-internet/we-space",
+      "title": "جدول باقات WE Space للإنترنت المنزلي",
+      "monthly_title": "الباقات الشهرية",
+      "yearly_title": "الباقات السنوية",
+      "addons_title": "السعات والإضافات",
+      "monthly_columns": [
+        "السرعة المعروضة",
+        "السعة",
+        "السعر الشهري"
+      ],
+      "yearly_columns": [
+        "اسم/سرعة الباقة",
+        "السعة السنوية",
+        "السعر السنوي"
+      ],
+      "addon_columns": [
+        "الإضافة",
+        "السعة",
+        "السعر",
+        "المدة/التجديد"
+      ],
+      "monthly_rows": [
+        {
+          "speed": "حتى 30 ميجابت/ث",
+          "quota": "50 جيجابايت",
+          "price": "150 جنيه / شهر"
+        },
+        {
+          "speed": "حتى 30 ميجابت/ث",
+          "quota": "150 جيجابايت",
+          "price": "260 جنيه / شهر"
+        },
+        {
+          "speed": "حتى 30 ميجابت/ث",
+          "quota": "200 جيجابايت",
+          "price": "330 جنيه / شهر"
+        },
+        {
+          "speed": "حتى 30 ميجابت/ث",
+          "quota": "250 جيجابايت",
+          "price": "395 جنيه / شهر"
+        },
+        {
+          "speed": "حتى 30 ميجابت/ث",
+          "quota": "300 جيجابايت",
+          "price": "460 جنيه / شهر"
+        },
+        {
+          "speed": "حتى 30 ميجابت/ث",
+          "quota": "400 جيجابايت",
+          "price": "580 جنيه / شهر"
+        },
+        {
+          "speed": "حتى 30 ميجابت/ث",
+          "quota": "500 جيجابايت",
+          "price": "660 جنيه / شهر"
+        },
+        {
+          "speed": "حتى 30 ميجابت/ث",
+          "quota": "750 جيجابايت",
+          "price": "925 جنيه / شهر"
+        },
+        {
+          "speed": "حتى 30 ميجابت/ث",
+          "quota": "1500 جيجابايت",
+          "price": "1650 جنيه / شهر"
+        },
+        {
+          "speed": "حتى 70 ميجابت/ث",
+          "quota": "250 جيجابايت",
+          "price": "785 جنيه / شهر"
+        },
+        {
+          "speed": "حتى 70 ميجابت/ث",
+          "quota": "500 جيجابايت",
+          "price": "900 جنيه / شهر"
+        },
+        {
+          "speed": "حتى 70 ميجابت/ث",
+          "quota": "750 جيجابايت",
+          "price": "1175 جنيه / شهر"
+        },
+        {
+          "speed": "حتى 70 ميجابت/ث",
+          "quota": "1500 جيجابايت",
+          "price": "2000 جنيه / شهر"
+        },
+        {
+          "speed": "حتى 100 ميجابت/ث",
+          "quota": "500 جيجابايت",
+          "price": "1150 جنيه / شهر"
+        },
+        {
+          "speed": "حتى 100 ميجابت/ث",
+          "quota": "750 جيجابايت",
+          "price": "1425 جنيه / شهر"
+        },
+        {
+          "speed": "حتى 100 ميجابت/ث",
+          "quota": "1500 جيجابايت",
+          "price": "2350 جنيه / شهر"
+        },
+        {
+          "speed": "حتى 200 ميجابت/ث",
+          "quota": "1500 جيجابايت",
+          "price": "2700 جنيه / شهر"
+        },
+        {
+          "speed": "حتى 500 ميجابت/ث",
+          "quota": "3 تيرابايت",
+          "price": "3500 جنيه / شهر"
+        },
+        {
+          "speed": "حتى 1 جيجابت/ث",
+          "quota": "غير معروض",
+          "price": "تحقق من النظام"
+        }
+      ],
+      "yearly_rows": [
+        {
+          "plan": "Super، حتى 30 ميجابت/ث",
+          "quota": "1800 جيجابايت",
+          "price": "3120 جنيه / سنة"
+        },
+        {
+          "plan": "Super، حتى 30 ميجابت/ث",
+          "quota": "2400 جيجابايت",
+          "price": "3960 جنيه / سنة"
+        },
+        {
+          "plan": "Super، حتى 30 ميجابت/ث",
+          "quota": "3000 جيجابايت",
+          "price": "4345 جنيه / سنة"
+        },
+        {
+          "plan": "Super، حتى 30 ميجابت/ث",
+          "quota": "3600 جيجابايت",
+          "price": "5060 جنيه / سنة"
+        },
+        {
+          "plan": "Super، حتى 30 ميجابت/ث",
+          "quota": "4800 جيجابايت",
+          "price": "6380 جنيه / سنة"
+        },
+        {
+          "plan": "Super، حتى 30 ميجابت/ث",
+          "quota": "6000 جيجابايت",
+          "price": "6930 جنيه / سنة"
+        },
+        {
+          "plan": "Super، حتى 30 ميجابت/ث",
+          "quota": "9000 جيجابايت",
+          "price": "9715 جنيه / سنة"
+        },
+        {
+          "plan": "Super، حتى 30 ميجابت/ث",
+          "quota": "18 تيرابايت",
+          "price": "16500 جنيه / سنة"
+        },
+        {
+          "plan": "Mega، حتى 70 ميجابت/ث",
+          "quota": "3000 جيجابايت",
+          "price": "6490 جنيه / سنة"
+        },
+        {
+          "plan": "Mega، حتى 70 ميجابت/ث",
+          "quota": "6000 جيجابايت",
+          "price": "9450 جنيه / سنة"
+        },
+        {
+          "plan": "Mega، حتى 70 ميجابت/ث",
+          "quota": "9000 جيجابايت",
+          "price": "12340 جنيه / سنة"
+        },
+        {
+          "plan": "Mega، حتى 70 ميجابت/ث",
+          "quota": "18 تيرابايت",
+          "price": "20000 جنيه / سنة"
+        },
+        {
+          "plan": "Ultra، حتى 100 ميجابت/ث",
+          "quota": "3000 جيجابايت",
+          "price": "8635 جنيه / سنة"
+        },
+        {
+          "plan": "Ultra، حتى 100 ميجابت/ث",
+          "quota": "6000 جيجابايت",
+          "price": "12075 جنيه / سنة"
+        },
+        {
+          "plan": "Ultra، حتى 100 ميجابت/ث",
+          "quota": "9000 جيجابايت",
+          "price": "14965 جنيه / سنة"
+        },
+        {
+          "plan": "Max، حتى 200 ميجابت/ث",
+          "quota": "18 تيرابايت",
+          "price": "23500 جنيه / سنة"
+        }
+      ],
+      "addon_rows": [
+        {
+          "kind": "سعة إضافية",
+          "quota": "20 جيجابايت",
+          "price": "60 جنيه",
+          "term": "مرة واحدة أو تجدد تلقائيًا كل 30 يومًا"
+        },
+        {
+          "kind": "سعة إضافية",
+          "quota": "50 جيجابايت",
+          "price": "120 جنيه",
+          "term": "مرة واحدة أو تجدد تلقائيًا كل 30 يومًا"
+        },
+        {
+          "kind": "سعة إضافية",
+          "quota": "100 جيجابايت",
+          "price": "190 جنيه",
+          "term": "مرة واحدة أو تجدد تلقائيًا كل 30 يومًا"
+        },
+        {
+          "kind": "Giga Tank",
+          "quota": "400 جيجابايت",
+          "price": "500 جنيه",
+          "term": "مرة واحدة"
+        },
+        {
+          "kind": "Giga Tank",
+          "quota": "2000 جيجابايت",
+          "price": "2000 جنيه",
+          "term": "مرة واحدة"
+        },
+        {
+          "kind": "إضافة PlayStation",
+          "quota": "150 جيجابايت",
+          "price": "120 جنيه",
+          "term": "30 يومًا؛ السعر لا يشمل الضريبة"
+        },
+        {
+          "kind": "إضافة PlayStation",
+          "quota": "300 جيجابايت",
+          "price": "240 جنيه",
+          "term": "30 يومًا؛ السعر لا يشمل الضريبة"
+        },
+        {
+          "kind": "GAME ON",
+          "quota": "40 جيجابايت",
+          "price": "40 جنيه",
+          "term": "30 يومًا؛ السعر لا يشمل الضريبة"
+        },
+        {
+          "kind": "Salefny",
+          "quota": "5 جيجابايت",
+          "price": "10 جنيه",
+          "term": "يومان؛ بعد التحقق من الأهلية"
+        }
+      ],
+      "notes": [
+        "الأسعار الظاهرة في صفحة WE الرسمية عند المراجعة؛ الأسعار والتوفر قد يتغيران. طابق سرعة الخط وأهلية العميل، وأكد السعر النهائي والضريبة من النظام قبل إبلاغ العميل.",
+        "صفحة الأسعار لا توضح الضريبة بجوار جدول الباقات الشهرية. الصفحة تذكر صراحة أن أسعار الإضافات والسنوي غير شاملة ضريبة القيمة المضافة.",
+        "بعد استهلاك السعة الأساسية يستمر التصفح بسرعة منخفضة؛ التجديد المبكر متاح حسب شروط الصفحة."
+      ],
+      "source_label": "صفحة WE الرسمية — تمت المراجعة 31 أكتوبر 2026",
+      "check_title": "تحقّق قبل ما تعرض السعر",
+      "staff_checks": [
+        "لو العميل بيسأل عن الباقة المشترك فيها حاليًا، راجعها من أداة 855 حسب مرجع التدريب day_11.pdf، وتأكد أن الأداة والإجراء ما زالا مستخدمين.",
+        "لو سؤاله عن السرعة، طابق Contracted Speed من Matrix لخط TOM أو CST 360 للأنواع الأخرى حسب مرجع التدريب؛ لا تستخدم SLA قديمًا من PDF.",
+        "راجع استهلاك الباقة؛ الصفحة الرسمية تذكر استمرار التصفح بسرعة منخفضة بعد نفاد السعة الأساسية، فلا تصنف انخفاض السرعة كعطل قبل فحص الاستهلاك.",
+        "قبل عرض أو تنفيذ التغيير، تحقق من التغطية/التقنية وأهلية الخط والسعر النهائي والضريبة في النظام الحالي.",
+        "لو العميل يقصد باقة موبايل أو WE Air، لا تعرض هذا الجدول؛ افتح الكتالوج المطابق للخدمة في النظام الحالي."
+      ],
+      "scope_note": "هذا الجدول لباقات WE Space للإنترنت المنزلي فقط؛ لا تستخدمه لباقات الموبايل أو WE Air. تحقق من نوع التكنولوجيا وتوفر السرعة على الخط."
+    },
+    "customer_prompt": "هل تقصد الباقة الحالية على الخط، ولا بتدور على باقة جديدة؟ وإيه الأهم لحضرتك: سرعة أعلى ولا سعة أكبر؟"
   },
   "device_inquiry_terminal": {
     "question": "استفسار تقني عن CPE أو إحدى لمباته.",
@@ -482,17 +1263,44 @@
     "question": "حدد هل الطلب استفسار فاتورة، سداد غير ظاهر، أم سداد على رقم آخر بالخطأ.",
     "customer_prompt": "استفسار حضرتك عن الفاتورة، ولا دفعة ما ظهرتش، ولا دفعت على رقم WE تاني بالغلط؟",
     "options": [
-      { "label": "الفاتورة أو الرصيد أو الاستهلاك", "next_step": "billing_inquiry_terminal" },
-      { "label": "عملية سداد غير واضحة أو غير مضافة", "next_step": "payment_not_clear_terminal" },
-      { "label": "سداد على رقم آخر بالخطأ", "next_step": "wrong_number_payment_check" }
+      {
+        "label": "الفاتورة أو الرصيد أو الاستهلاك",
+        "next_step": "billing_inquiry_terminal"
+      },
+      {
+        "label": "عملية سداد غير واضحة أو غير مضافة",
+        "next_step": "payment_not_clear_terminal"
+      },
+      {
+        "label": "سداد عبر فوري/مجمّع ولم يظهر",
+        "next_step": "aggregator_payment_terminal"
+      },
+      {
+        "label": "الخدمة موقوفة بسبب رصيد بسيط (Balance Fraction)",
+        "next_step": "balance_fraction_terminal"
+      },
+      {
+        "label": "استفسار عن إعادة الخدمة مؤقتًا / Promise to Pay",
+        "next_step": "promise_to_pay_start"
+      },
+      {
+        "label": "سداد على رقم آخر بالخطأ",
+        "next_step": "wrong_number_payment_check"
+      }
     ]
   },
   "wrong_number_payment_check": {
     "question": "راجع رقم العملية والإيصال، ثم حدّد موافقة العميل على Balance Transfer.",
     "customer_prompt": "هل حضرتك موافق نراجع طلب نقل المبلغ للرقم الصحيح، ولا عايز نتحقق من إمكانية الاسترداد؟",
     "options": [
-      { "label": "العميل موافق على Balance Transfer", "next_step": "wrong_number_transfer_terminal" },
-      { "label": "العميل لا يوافق أو يطلب Refund", "next_step": "wrong_number_refund_terminal" }
+      {
+        "label": "العميل موافق على Balance Transfer",
+        "next_step": "wrong_number_transfer_terminal"
+      },
+      {
+        "label": "العميل لا يوافق أو يطلب Refund",
+        "next_step": "wrong_number_refund_terminal"
+      }
     ]
   },
   "wrong_number_transfer_terminal": {
@@ -540,9 +1348,18 @@
     "question": "صنّف موضوع الشكوى قبل اختيار مسارها.",
     "customer_prompt": "ممكن توضح لي الشكوى عن عطل فني، زيارة/تعامل، ولا طلب تواصل مع مسؤول؟",
     "options": [
-      { "label": "شكوى فنية عن الخدمة", "next_step": "technical_complaint_terminal" },
-      { "label": "شكوى من زيارة فني أو موظف", "next_step": "conduct_complaint_terminal" },
-      { "label": "العميل غير راضٍ ويطلب مسؤولًا", "next_step": "escalation_request_terminal" }
+      {
+        "label": "شكوى فنية عن الخدمة",
+        "next_step": "technical_complaint_terminal"
+      },
+      {
+        "label": "شكوى من زيارة فني أو موظف",
+        "next_step": "conduct_complaint_terminal"
+      },
+      {
+        "label": "العميل غير راضٍ ويطلب مسؤولًا",
+        "next_step": "escalation_request_terminal"
+      }
     ]
   },
   "technical_complaint_terminal": {
@@ -586,38 +1403,83 @@
   "exceptions_start": {
     "question": "هل ظهر في TTS History كود أو تحديث من الحالات الخاصة؟ راجع السجل المفتوح والمغلق قبل التشخيص.",
     "options": [
-      {"label":"Close Code 74: مشكلة CPE خلال آخر 30 يومًا","next_step":"exception_74"},
-      {"label":"Close Code 81 أو 82: صيانة كابل","next_step":"exception_8182"},
-      {"label":"Close Code 67: مشكلة Data Ports","next_step":"exception_67"},
-      {"label":"Close Code 27: تعديل عنوان","next_step":"exception_27"},
-      {"label":"Close Code 24: الخط الأرضي خارج الخدمة","next_step":"exception_24"},
-      {"label":"Outside TEData: FCC في إدارة أخرى على نفس الخط","next_step":"exception_outside"},
-      {"label":"Major Fault: عودة الصوت وبقاء الإنترنت متأثرًا","next_step":"exception_major"},
-      {"label":"Close Code 28: رفض الزيارة/الدخول","next_step":"exception_28"},
-      {"label":"Physical Instability Contradiction: العميل يصف فصلًا وASSIA لا ترصد Physical Layer","next_step":"exception_contradiction"}
+      {
+        "label": "Close Code 74: مشكلة CPE خلال آخر 30 يومًا",
+        "next_step": "exception_74"
+      },
+      {
+        "label": "Close Code 81 أو 82: صيانة كابل",
+        "next_step": "exception_8182"
+      },
+      {
+        "label": "Close Code 67: مشكلة Data Ports",
+        "next_step": "exception_67"
+      },
+      {
+        "label": "Close Code 27: تعديل عنوان",
+        "next_step": "exception_27"
+      },
+      {
+        "label": "Close Code 24: الخط الأرضي خارج الخدمة",
+        "next_step": "exception_24"
+      },
+      {
+        "label": "Outside TEData: FCC في إدارة أخرى على نفس الخط",
+        "next_step": "exception_outside"
+      },
+      {
+        "label": "Major Fault: عودة الصوت وبقاء الإنترنت متأثرًا",
+        "next_step": "exception_major"
+      },
+      {
+        "label": "Close Code 28: رفض الزيارة/الدخول",
+        "next_step": "exception_28"
+      },
+      {
+        "label": "Physical Instability Contradiction: العميل يصف فصلًا وASSIA لا ترصد Physical Layer",
+        "next_step": "exception_contradiction"
+      }
     ]
   },
   "exception_74": {
     "question": "هل العميل من القاهرة/الإسكندرية، أم من محافظة أخرى؟",
     "options": [
-      {"label":"القاهرة أو الإسكندرية: فحص الراوتر بالفرع","next_step":"exception_74_cairo"},
-      {"label":"محافظة أخرى: تجربة راوتر بديل","next_step":"exception_74_other"}
+      {
+        "label": "القاهرة أو الإسكندرية: فحص الراوتر بالفرع",
+        "next_step": "exception_74_cairo"
+      },
+      {
+        "label": "محافظة أخرى: تجربة راوتر بديل",
+        "next_step": "exception_74_other"
+      }
     ]
   },
   "exception_74_cairo": {
     "question": "تحقق من نتيجة فحص الراوتر في الفرع.",
     "customer_prompt": "بعد فحص الراوتر في الفرع، هل المشكلة لسه موجودة؟",
     "options": [
-      {"label":"نعم، الفحص والتاريخ مستوفيان","next_step":"exception_74_escalate"},
-      {"label":"لا، الفحص لم يتم أو شرط ناقص","next_step":"exception_74_branch"}
+      {
+        "label": "نعم، الفحص والتاريخ مستوفيان",
+        "next_step": "exception_74_escalate"
+      },
+      {
+        "label": "لا، الفحص لم يتم أو شرط ناقص",
+        "next_step": "exception_74_branch"
+      }
     ]
   },
   "exception_74_other": {
     "question": "تحقق من نتيجة تجربة راوتر بديل.",
     "customer_prompt": "بعد تجربة راوتر بديل، هل المشكلة لسه موجودة؟",
     "options": [
-      {"label":"نعم، التجربة والتاريخ مستوفيان","next_step":"exception_74_escalate"},
-      {"label":"لا، التجربة لم تتم أو شرط ناقص","next_step":"exception_74_test"}
+      {
+        "label": "نعم، التجربة والتاريخ مستوفيان",
+        "next_step": "exception_74_escalate"
+      },
+      {
+        "label": "لا، التجربة لم تتم أو شرط ناقص",
+        "next_step": "exception_74_test"
+      }
     ]
   },
   "exception_74_branch": {
@@ -645,8 +1507,14 @@
   "exception_8182": {
     "question": "هل Close Code 81/82 موجود في TTS History وتحققت من عدم وجود Major Fault؟",
     "options": [
-      {"label":"نعم، الكود موجود ولا يوجد Major Fault","next_step":"exception_8182_action"},
-      {"label":"يوجد Major Fault أو لم أتحقق","next_step":"exception_major_check"}
+      {
+        "label": "نعم، الكود موجود ولا يوجد Major Fault",
+        "next_step": "exception_8182_action"
+      },
+      {
+        "label": "يوجد Major Fault أو لم أتحقق",
+        "next_step": "exception_major_check"
+      }
     ]
   },
   "exception_8182_action": {
@@ -660,8 +1528,14 @@
   "exception_67": {
     "question": "هل Close Code 67 ظاهر في تذكرة سابقة، وتحققت من عدم وجود Outage عام؟",
     "options": [
-      {"label":"نعم، الكود موجود ولا يوجد Outage","next_step":"exception_67_action"},
-      {"label":"الكود غير موجود أو لم أتحقق من Outage","next_step":"exception_major_check"}
+      {
+        "label": "نعم، الكود موجود ولا يوجد Outage",
+        "next_step": "exception_67_action"
+      },
+      {
+        "label": "الكود غير موجود أو لم أتحقق من Outage",
+        "next_step": "exception_major_check"
+      }
     ]
   },
   "exception_67_action": {
@@ -675,8 +1549,14 @@
   "exception_27": {
     "question": "هل يوجد FTTH Migration Order مرتبط بتحديث Address Modification / Close Code 27؟",
     "options": [
-      {"label":"نعم، يوجد طلب نقل ألياف","next_step":"exception_27_migration"},
-      {"label":"لا يوجد طلب","next_step":"exception_27_branch"}
+      {
+        "label": "نعم، يوجد طلب نقل ألياف",
+        "next_step": "exception_27_migration"
+      },
+      {
+        "label": "لا يوجد طلب",
+        "next_step": "exception_27_branch"
+      }
     ]
   },
   "exception_27_migration": {
@@ -698,8 +1578,14 @@
     "question": "تحقق من وجود حرارة للخط الأرضي.",
     "customer_prompt": "لما ترفع سماعة التليفون، هل تسمع حرارة ولا الخط صامت؟",
     "options": [
-      {"label":"نعم، الحرارة تعمل","next_step":"exception_24_on"},
-      {"label":"لا، لا توجد حرارة","next_step":"exception_24_off"}
+      {
+        "label": "نعم، الحرارة تعمل",
+        "next_step": "exception_24_on"
+      },
+      {
+        "label": "لا، لا توجد حرارة",
+        "next_step": "exception_24_off"
+      }
     ]
   },
   "exception_24_on": {
@@ -720,8 +1606,14 @@
   "exception_outside": {
     "question": "هل توجد FCC أخرى على نفس الخط في إدارة مختلفة، مثل خدمة الهاتف الأرضي؟",
     "options": [
-      {"label":"نعم، يوجد Update باسم Outside TEData","next_step":"exception_outside_action"},
-      {"label":"لا أو النتيجة غير واضحة","next_step":"exception_major_check"}
+      {
+        "label": "نعم، يوجد Update باسم Outside TEData",
+        "next_step": "exception_outside_action"
+      },
+      {
+        "label": "لا أو النتيجة غير واضحة",
+        "next_step": "exception_major_check"
+      }
     ]
   },
   "exception_outside_action": {
@@ -735,16 +1627,28 @@
   "exception_major_check": {
     "question": "هل تأكد Major Fault من Outage/ADF أو تحديث فريق الأعطال؟",
     "options": [
-      {"label":"نعم، Major Fault مؤكد","next_step":"exception_major_action"},
-      {"label":"لا، لم يتأكد أو غير موجود","next_step":"exception_no_major"}
+      {
+        "label": "نعم، Major Fault مؤكد",
+        "next_step": "exception_major_action"
+      },
+      {
+        "label": "لا، لم يتأكد أو غير موجود",
+        "next_step": "exception_no_major"
+      }
     ]
   },
   "exception_major": {
     "question": "تحقق هل عادت حرارة الخط وبقي الإنترنت متأثرًا.",
     "customer_prompt": "هل حرارة الخط الأرضي رجعت، بينما الإنترنت لسه مش شغال؟",
     "options": [
-      {"label":"نعم، الصوت عاد والإنترنت ما زال متأثرًا","next_step":"exception_major_data"},
-      {"label":"لا، الصوت ما زال متأثرًا أيضًا","next_step":"exception_major_action"}
+      {
+        "label": "نعم، الصوت عاد والإنترنت ما زال متأثرًا",
+        "next_step": "exception_major_data"
+      },
+      {
+        "label": "لا، الصوت ما زال متأثرًا أيضًا",
+        "next_step": "exception_major_action"
+      }
     ]
   },
   "exception_major_action": {
@@ -774,8 +1678,14 @@
     "question": "تحقق هل رفض العميل الزيارة/الدخول بالفعل.",
     "customer_prompt": "هل حضرتك رفضت دخول الفني أو تعذّر إتمام الزيارة؟",
     "options": [
-      {"label":"نعم، رفض العميل الزيارة/الدخول","next_step":"exception_28_action"},
-      {"label":"لا، لم يرفض أو سبب الفشل مختلف","next_step":"exception_no_major"}
+      {
+        "label": "نعم، رفض العميل الزيارة/الدخول",
+        "next_step": "exception_28_action"
+      },
+      {
+        "label": "لا، لم يرفض أو سبب الفشل مختلف",
+        "next_step": "exception_no_major"
+      }
     ]
   },
   "exception_28_action": {
@@ -789,23 +1699,41 @@
     "question": "وثّق وقت الفصل وحالة لمبة DSL كما يصفها العميل.",
     "customer_prompt": "من فضلك احكي لي إمتى الخط بيفصل، وهل لمبة DSL بتطفي وقتها؟",
     "options": [
-      {"label":"نعم، كلام العميل يناقض نتيجة ASSIA","next_step":"exception_contradiction_hdm"},
-      {"label":"لا، النتيجة والأعراض متوافقة","next_step":"exception_no_major"}
+      {
+        "label": "نعم، كلام العميل يناقض نتيجة ASSIA",
+        "next_step": "exception_contradiction_hdm"
+      },
+      {
+        "label": "لا، النتيجة والأعراض متوافقة",
+        "next_step": "exception_no_major"
+      }
     ]
   },
   "exception_contradiction_hdm": {
     "question": "هل راجعت HDM: DSL Physical Uptime وSystem Uptime، مع تاريخ Clear View وFix Mode؟",
     "options": [
-      {"label":"نعم، نتيجة HDM/ASSIA تؤكد الاستقرار رغم شكوى العميل","next_step":"exception_contradiction_cpe"},
-      {"label":"لا، الأداة غير متاحة أو توجد نتيجة Physical/Dispatch","next_step":"exception_contradiction_tools"}
+      {
+        "label": "نعم، نتيجة HDM/ASSIA تؤكد الاستقرار رغم شكوى العميل",
+        "next_step": "exception_contradiction_cpe"
+      },
+      {
+        "label": "لا، الأداة غير متاحة أو توجد نتيجة Physical/Dispatch",
+        "next_step": "exception_contradiction_tools"
+      }
     ]
   },
   "exception_contradiction_cpe": {
     "question": "تحقق من نتيجة تجربة الراوتر البديل ليوم كامل من السلك الرئيسي.",
     "customer_prompt": "بعد تجربة الراوتر البديل من السلك الرئيسي لمدة يوم، هل الفصل ما زال بيحصل؟",
     "options": [
-      {"label":"نعم، التجربة تمت والمشكلة مستمرة","next_step":"exception_contradiction_escalate"},
-      {"label":"لا، لم تتم التجربة أو العميل لا يملك راوترًا بديلًا","next_step":"exception_contradiction_test"}
+      {
+        "label": "نعم، التجربة تمت والمشكلة مستمرة",
+        "next_step": "exception_contradiction_escalate"
+      },
+      {
+        "label": "لا، لم تتم التجربة أو العميل لا يملك راوترًا بديلًا",
+        "next_step": "exception_contradiction_test"
+      }
     ]
   },
   "exception_contradiction_test": {
@@ -828,6 +1756,56 @@
     "customer_script": "بعد مراجعة نتيجة الخط وتجربة الراوتر، سجلت الحالة للمراجعة الفنية. هنتابع مع حضرتك حسب المهلة المسجلة في النظام.",
     "reference_guidance": "بعد تسجيل شكوى Physical Instability Contradiction، أعطِ العميل رقم الشكوى/TT الذي يصدر كمرجع له والـSLA الحالي. IR/Delay داخلي؛ لا تشارك أرقامه إلا لو النظام أصدر مرجع متابعة للعميل.",
     "sla": "24 ساعة في دليل التدريب؛ تحقق من SLA الحالي",
+    "options": []
+  },
+  "voice_verification": {
+    "question": "تحقق من خدمة الصوت: هل يوجد Tone على الخط الأرضي؟",
+    "customer_prompt": "افصل جهاز التليفون وأعد توصيله بمقبس الخط، ثم ارفع السماعة. هل تسمع نغمة؟",
+    "options": [
+      {
+        "label": "يوجد Tone",
+        "next_step": "connection_check"
+      },
+      {
+        "label": "لا يوجد Tone أو الصوت متأثر",
+        "next_step": "voice_start"
+      },
+      {
+        "label": "تعذر الاختبار",
+        "next_step": "voice_verify_unknown"
+      }
+    ]
+  },
+  "voice_verify_unknown": {
+    "question": "تعذر تأكيد حالة خدمة الصوت.",
+    "action": "سجل نتيجة الاختبار التي ظهرت فعلًا في النظام. لا تصنف الحالة اعتمادًا على تخمين؛ أكمل فحص DSL/ADSL إذا كانت المشكلة إنترنت فقط، أو راجع الإجراء الحالي للخط الأرضي.",
+    "customer_script": "تعذر تأكيد نغمة الخط الآن؛ هراجع الحالة على النظام وأكمل الفحص المناسب.",
+    "sla": "حسب نتيجة الفحص والنظام الحالي",
+    "options": []
+  },
+  "connection_check": {
+    "question": "تأكد من توصيل الراوتر مباشرة بمقبس الخط الرئيسي، من غير وصلات/تفرعات داخلية أو Splitter إضافي. هل تم الاختبار؟",
+    "customer_prompt": "افصل أي وصلة داخلية أو مشترك، ووصل الراوتر مباشرة بمقبس الخط الرئيسي ثم راقب لمبة DSL/ADSL.",
+    "options": [
+      {
+        "label": "نعم، مباشر على المقبس الرئيسي ولا توجد وصلات داخلية",
+        "next_step": "physical_start"
+      },
+      {
+        "label": "كانت هناك وصلة داخلية؛ اختبرت من المقبس الرئيسي",
+        "next_step": "physical_start"
+      },
+      {
+        "label": "لا أستطيع الاختبار أو لا يوجد مقبس رئيسي واضح",
+        "next_step": "connection_unknown_terminal"
+      }
+    ]
+  },
+  "connection_unknown_terminal": {
+    "question": "لم يتم استبعاد تأثير التوصيلات الداخلية.",
+    "action": "دوّن أن الاختبار المباشر لم يتم. لا تسجل إصلاح توصيلات أو سببًا فيزيائيًا مؤكدًا بدون نتيجة فعلية. ارجع لإجراء فحص التوصيلات المعتمد أو تابع بعد اختبار المقبس الرئيسي.",
+    "customer_script": "قبل ما أحدد سبب العطل، محتاجين نختبر الراوتر مباشرة على المقبس الرئيسي ونتأكد من التوصيلات.",
+    "sla": "لا تحدد تصنيفًا قبل استكمال الفحص",
     "options": []
   }
 }

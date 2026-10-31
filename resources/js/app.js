@@ -1,5 +1,5 @@
 import './bootstrap';
-import { computed, createApp, h, onBeforeUnmount, onMounted, nextTick, ref, Transition } from 'vue';
+import { computed, createApp, h, onMounted, nextTick, ref, Transition } from 'vue';
 
 const MAX_STEPS_PER_CALL = 100;
 const DEFAULT_TREE = 'support';
@@ -45,10 +45,6 @@ function icon(name, className = 'size-5') {
         ticket: [h('path', { d: 'M4 6h16v4a2 2 0 0 0 0 4v4H4v-4a2 2 0 0 0 0-4V6Z' }), h('path', { d: 'M13 6v2m0 4v2m0 4v2' })],
         sun: [h('circle', { cx: '12', cy: '12', r: '4' }), h('path', { d: 'M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42' })],
         moon: [h('path', { d: 'M20.9 13A8.5 8.5 0 0 1 11 3.1 8.5 8.5 0 1 0 20.9 13Z' })],
-        stop: [h('rect', { x: '5', y: '5', width: '14', height: '14', rx: '2' })],
-        speak: [h('path', { d: 'M11 5 6 9H3v6h3l5 4V5Z' }), h('path', { d: 'M15.5 8.5a5 5 0 0 1 0 7m3-10a9 9 0 0 1 0 13' })],
-        mic: [h('rect', { x: '9', y: '2', width: '6', height: '12', rx: '3' }), h('path', { d: 'M5 10v2a7 7 0 0 0 14 0v-2M12 19v3m-4 0h8' })],
-        trash: [h('path', { d: 'M3 6h18m-2 0-.9 14H5.9L5 6m3 0V4h8v2m-7 4v6m4-6v6' })],
     };
 
     return h('svg', {
@@ -96,7 +92,7 @@ function optionIcon(label = '') {
     return 'question';
 }
 
-function normalizeSpeech(value = '', language = 'ar') {
+function normalizeSearch(value = '', language = 'ar') {
     let normalized = value
         .normalize('NFKC')
         .toLocaleLowerCase(language === 'ar' ? 'ar-EG' : 'en-US');
@@ -116,11 +112,6 @@ function normalizeSpeech(value = '', language = 'ar') {
         .replace(/\s+/g, ' ');
 }
 
-function localDateTimeInput(date = new Date()) {
-    const local = new Date(date.getTime() - date.getTimezoneOffset() * 60_000);
-    return local.toISOString().slice(0, 16);
-}
-
 const COPY = {
     ar: {
         brand: 'مساعد الدعم الفني', title: 'دليل الدعم الفني', fresh: 'جديد', loading: 'جاري تحميل شجرة القرارات…', retry: 'إعادة المحاولة',
@@ -129,29 +120,17 @@ const COPY = {
         copied: 'تم نسخ نص العميل.', noScript: 'لا يوجد نص عميل لنسخه في هذه الخطوة.', copyError: 'تعذر النسخ تلقائيًا. يمكنك تحديد النص ونسخه يدويًا.',
         invalidStep: 'هذا الاختيار مرتبط بخطوة غير موجودة. أبلغ المسؤول عن الشجرة.', stepLimit: 'وصل المسار إلى الحد الآمن للتنقل. أعد البدء أو راجع الشجرة.',
         incomplete: 'بيانات الخطوة التالية غير مكتملة. أبلغ المسؤول عن الشجرة.', loadError: 'تعذر تحميل شجرة القرارات.', invalidTree: 'ملف شجرة القرارات غير مكتمل.',
-        voiceUnsupported: 'التعرف على الصوت غير مدعوم في هذا المتصفح. استخدم الأزرار للاختيار.', micDenied: 'اسمح للمتصفح باستخدام الميكروفون، ثم حاول مرة أخرى.',
-        voiceUnavailable: 'خدمة التعرف على الصوت غير متاحة. استخدم الأزرار للاختيار.', noSpeech: 'لم أسمع صوتًا. اضغط الميكروفون وحاول مرة أخرى.',
-        micError: 'تعذر الوصول إلى الميكروفون.', listen: 'استمع الآن… قل اختيارًا ظاهرًا على الشاشة.', matched: 'تم التعرف على الاختيار.',
-        ambiguous: 'لم يتطابق الكلام مع اختيار واحد. قل كلمة أقصر من الاختيار أو اضغطه؛ سأواصل الاستماع.', voiceError: 'تعذر التعرف على الصوت. اسمح للميكروفون أو استخدم الأزرار.',
-        startMic: 'اختيار صوتي', stopMic: 'إيقاف الاستماع', stopAudio: 'إيقاف الصوت', readResult: 'قراءة النتيجة',
-        autoRead: 'قراءة السؤال تلقائيًا', voice: 'الصوت', language: 'اللغة', dark: 'الوضع الداكن', light: 'الوضع الفاتح',
-        testVoice: 'اختبار الصوت', rateUnit: '×', voiceNotInstalled: 'لو مش ظاهر صوت عربي هنا، جودة القراءة تعتمد على الأصوات المثبتة في الجهاز والمتصفح.',
         askCustomer: 'اسأل العميل', referenceGuidance: 'رقم المتابعة الذي تقوله للعميل',
         descriptionCopied: 'تم نسخ Clear Description. راجع التصنيف قبل اللصق.',
         clearDescription: 'Clear Description المقترح',
-        quickSearch: 'بحث سريع', quickSearchPlaceholder: 'ابحث عن كود، مهلة، إجراء أو منطقة…', searchByVoice: 'ابحث بالصوت', noSearchResults: 'لا توجد نتيجة مؤكدة. راجع TTS/المصدر الحالي قبل اعتماد المعلومة.',
-        searchSource: 'المصدر', openStep: 'فتح المسار', copyDescription: 'نسخ Clear Description', oldReference: 'مرجع تدريبي قديم؛ راجع التصنيف والمهلة الحاليين قبل الاستخدام.',
+        searchSource: 'المصدر', openStep: 'فتح المسار', openGuide: 'عرض دليل Outage', copyDescription: 'نسخ Clear Description', oldReference: 'مرجع تدريبي قديم؛ راجع التصنيف والمهلة الحاليين قبل الاستخدام.',
         commentGenerator: 'تعليق جاهز للتيكت / SR', commentHelp: 'مبني على اختيارات المسار. راجع النص وأضف ما نفذته فعلًا قبل اللصق؛ لا تضف بيانات شخصية أو كلمة مرور.',
         commentDetails: 'الإجراء أو نتيجة النظام (بدون بيانات العميل)', commentDetailsPlaceholder: 'اكتب ما نفذته فعلًا أو نتيجة مختصرة من النظام…',
         commentRefType: 'نوع المرجع', commentRefNumber: 'رقم المرجع من النظام', commentRefPlaceholder: 'أدخل الرقم بعد إنشائه (اختياري)',
         refNone: 'لم تُنشأ تذكرة', refTT: 'TT', refSR: 'SR', refOrder: 'رقم الطلب', refIR: 'IR داخلي',
         copyComment: 'نسخ التعليق', commentCopied: 'تم نسخ التعليق. راجعه قبل لصقه في النظام.',
-        nocUpdates: 'تحديثات NOC / أعطال اليوم', nocUpdatesHint: 'التحديثات النشطة التي أدخلها المسؤول تظهر هنا وتدخل في البحث عن كود المنطقة.',
-        noNocUpdates: 'لا توجد تحديثات NOC نشطة مضافة حاليًا.', nocAdmin: 'إدارة تحديثات NOC (للمسؤول)', nocAdminHint: 'أدخل التحديث من Outage Tool / Customer360 الحالي. يظهر لكل الموظفين على هذا السيرفر؛ لا تضع بيانات عميل هنا.',
-        nocAdminKey: 'مفتاح المسؤول', nocTitle: 'عنوان التحديث', nocAreaCodes: 'أكواد/أسماء المناطق (افصل بينها بفاصلة)', nocType: 'نوع العطل', nocReference: 'رقم Outage/الإعلان', nocSla: 'المهلة أو موعد التحديث الرسمي', nocExpiry: 'ينتهي التحديث في', nocAgentAction: 'ما الإجراء على الموظف؟', nocCustomerScript: 'الرسالة الرسمية للعميل', nocSrRequired: 'يتطلب SR حسب الإجراء', nocScreenshotRequired: 'أرفق Screenshot حسب الإجراء', nocStatus: 'الحالة', nocActive: 'نشط', nocMonitoring: 'متابعة', nocResolved: 'تم الحل', nocSave: 'حفظ التحديث', nocSaving: 'جاري الحفظ…', nocDelete: 'حذف', nocEdit: 'تعديل', nocSaved: 'تم حفظ التحديث ومشاركته على السيرفر.', nocDeleted: 'تم حذف التحديث.', nocLoadFailed: 'تعذر تحميل تحديثات NOC.', nocKeyMissing: 'إدارة التحديثات غير مفعلة على السيرفر بعد؛ يلزم إعداد مفتاح المسؤول.', nocKeyDenied: 'مفتاح المسؤول غير صحيح.', nocSaveFailed: 'تعذر حفظ التحديث. راجع الحقول واتصال السيرفر.', nocMatch: 'تحديث يطابق المنطقة/الكود الذي بحثت عنه', nocEnteredAt: 'أُدخل في', nocCodeMatch: 'تطابق الكود',
-        voicePrivacy: 'قد يعالج المتصفح الصوت عبر خدمة خارجية وبحاجة إلى الإنترنت؛ هذا الموقع لا يحفظ تسجيل الميكروفون.',
-        operations: 'رقم البحث والتسجيل في النظام', searchTitle: 'أبحث بأي رقم؟', recordTitle: 'أسجل إيه؟', codesTitle: 'أكواد الإغلاق الظاهرة في دليل التدريب', codesSearch: 'ابحث برقم الكود أو الوصف', codeLabel: 'الكود', reasonLabel: 'الوصف',
-        toolLabel: 'الأداة:', supportIssue: 'حدث خطأ أثناء التحميل.', retryMic: 'تعذر تشغيل الميكروفون. راجع إذن الميكروفون أو استخدم الأزرار.', micEnded: 'انتهى الاستماع بعد عدة محاولات. اضغط الميكروفون للمحاولة مجددًا.',
+        quickSearch: 'بحث سريع', quickSearchPlaceholder: 'ابحث عن إجراء أو كود أو مهلة…', noSearchResults: 'لا توجد نتيجة مطابقة مؤكدة؛ راجع النظام الحالي قبل الاعتماد عليها.', dark: 'الوضع الداكن', light: 'الوضع الفاتح',
+        checkBeforeQuote: 'تحقّق قبل ما تعرض السعر', toolsHub: 'أدلة مساعدة', operations: 'رقم البحث والتسجيل في النظام', searchTitle: 'أبحث بأي رقم؟', recordTitle: 'أسجل إيه؟', codesTitle: 'أكواد الإغلاق الظاهرة في دليل التدريب', codesSearch: 'ابحث برقم الكود أو الوصف', codeLabel: 'الكود', reasonLabel: 'الوصف',
     },
     en: {
         brand: 'Technical Support Assistant', title: 'Support Guide', fresh: 'New', loading: 'Loading decision tree…', retry: 'Try again',
@@ -160,29 +139,17 @@ const COPY = {
         copied: 'Customer script copied.', noScript: 'There is no customer script to copy at this step.', copyError: 'Automatic copy failed. Select and copy the text manually.',
         invalidStep: 'This option points to a missing step. Notify the tree administrator.', stepLimit: 'The safe step limit was reached. Restart or review the tree.',
         incomplete: 'The next step data is incomplete. Notify the tree administrator.', loadError: 'Could not load the decision tree.', invalidTree: 'The decision tree file is incomplete.',
-        voiceUnsupported: 'Speech recognition is not supported in this browser. Use the buttons instead.', micDenied: 'Allow microphone access in your browser, then try again.',
-        voiceUnavailable: 'Speech recognition is unavailable. Use the buttons instead.', noSpeech: 'No speech was detected. Tap the microphone and try again.',
-        micError: 'The microphone could not be accessed.', listen: 'Listening… say one of the visible options.', matched: 'Option recognized.',
-        ambiguous: 'No single option matched. Say a shorter phrase from the button or tap it; listening will continue.', voiceError: 'Speech recognition failed. Allow microphone access or use the buttons.',
-        startMic: 'Voice choice', stopMic: 'Stop listening', stopAudio: 'Stop audio', readResult: 'Read result',
-        autoRead: 'Read each question automatically', voice: 'Voice', language: 'Language', dark: 'Dark mode', light: 'Light mode',
-        testVoice: 'Test voice', rateUnit: '×', voiceNotInstalled: 'If no Arabic voice appears here, speech quality depends on voices installed on the device and browser.',
         askCustomer: 'Ask the customer', referenceGuidance: 'Reference number to give the customer',
         descriptionCopied: 'Clear Description copied. Verify the category before pasting.',
         clearDescription: 'Suggested Clear Description',
-        quickSearch: 'Quick search', quickSearchPlaceholder: 'Search a code, SLA, procedure, or area…', searchByVoice: 'Search by voice', noSearchResults: 'No confirmed result. Check current TTS/official source before relying on it.',
-        searchSource: 'Source', openStep: 'Open path', copyDescription: 'Copy Clear Description', oldReference: 'Training reference may be outdated; verify the current category and SLA.',
+        searchSource: 'Source', openStep: 'Open path', openGuide: 'View Outage guide', copyDescription: 'Copy Clear Description', oldReference: 'Training reference may be outdated; verify the current category and SLA.',
         commentGenerator: 'Ready ticket / SR comment', commentHelp: 'Built from your path selections. Review it and add what you actually did before pasting; do not add personal data or passwords.',
         commentDetails: 'Action taken or system result (no customer data)', commentDetailsPlaceholder: 'Enter the actual action or a brief system finding…',
         commentRefType: 'Reference type', commentRefNumber: 'System reference number', commentRefPlaceholder: 'Enter after creation (optional)',
         refNone: 'No ticket created', refTT: 'TT', refSR: 'SR', refOrder: 'Order number', refIR: 'Internal IR',
         copyComment: 'Copy comment', commentCopied: 'Comment copied. Review it before pasting into the system.',
-        nocUpdates: 'NOC updates / today’s outages', nocUpdatesHint: 'Active updates entered by a manager appear here and match area codes in search.',
-        noNocUpdates: 'No active NOC updates have been added.', nocAdmin: 'Manage NOC updates (manager)', nocAdminHint: 'Enter updates from the current Outage Tool / Customer360. They appear to all agents on this server; never add customer data here.',
-        nocAdminKey: 'Manager key', nocTitle: 'Update title', nocAreaCodes: 'Area codes/names (comma-separated)', nocType: 'Outage type', nocReference: 'Outage/announcement ID', nocSla: 'Official SLA or next update time', nocExpiry: 'Update expires at', nocAgentAction: 'What should the agent do?', nocCustomerScript: 'Official customer script', nocSrRequired: 'SR required by the procedure', nocScreenshotRequired: 'Attach screenshot when required', nocStatus: 'Status', nocActive: 'Active', nocMonitoring: 'Monitoring', nocResolved: 'Resolved', nocSave: 'Save update', nocSaving: 'Saving…', nocDelete: 'Delete', nocEdit: 'Edit', nocSaved: 'Update saved and shared on the server.', nocDeleted: 'Update deleted.', nocLoadFailed: 'Could not load NOC updates.', nocKeyMissing: 'NOC update management is not enabled on the server; configure the manager key.', nocKeyDenied: 'The manager key is incorrect.', nocSaveFailed: 'Could not save the update. Check the fields and server connection.', nocMatch: 'Update matches the searched area/code', nocEnteredAt: 'Entered', nocCodeMatch: 'Code match',
-        voicePrivacy: 'The browser may process audio through an online service; this site does not save microphone recordings.',
-        operations: 'Which ID and record should I use?', searchTitle: 'What should I search by?', recordTitle: 'What should I record?', codesTitle: 'Close codes listed in training guide', codesSearch: 'Search by code or reason', codeLabel: 'Code', reasonLabel: 'Reason',
-        toolLabel: 'Tool:', supportIssue: 'An error occurred while loading.', retryMic: 'Could not start the microphone. Check its permission or use the buttons.', micEnded: 'Listening ended after several attempts. Tap the microphone to try again.',
+        quickSearch: 'Quick search', quickSearchPlaceholder: 'Search a procedure, code, or SLA…', noSearchResults: 'No confirmed matching result. Check the current system before relying on it.', dark: 'Dark mode', light: 'Light mode',
+        checkBeforeQuote: 'Check before quoting', toolsHub: 'Quick guides', operations: 'Which ID and record should I use?', searchTitle: 'What should I search by?', recordTitle: 'What should I record?', codesTitle: 'Close codes listed in training guide', codesSearch: 'Search by code or reason', codeLabel: 'Code', reasonLabel: 'Reason',
     },
 };
 
@@ -195,83 +162,47 @@ const App = {
         const loading = ref(true);
         const loadError = ref('');
         const notice = ref('');
-        const isListening = ref(false);
-        const isSpeaking = ref(false);
         const language = ref('ar');
         const theme = ref('light');
-        const voices = ref([]);
-        const selectedVoice = ref('');
-        const autoRead = ref(true);
-        const speechRate = ref(0.9);
         const codeSearch = ref('');
         const quickSearch = ref('');
         const commentDetails = ref('');
         const commentRefType = ref('none');
         const commentRefNumber = ref('');
-        const nocUpdates = ref([]);
-        const nocAdminKey = ref('');
-        const nocBusy = ref(false);
-        const nocNotice = ref('');
-        const editingNocId = ref('');
-        const nocForm = ref({
-            title: '', area_codes: '', type: 'Major Fault', reference: '', sla: '',
-            valid_until: localDateTimeInput(new Date(Date.now() + 24 * 60 * 60 * 1000)),
-            agent_action: '', customer_script: '', sr_required: false,
-            screenshot_required: false, status: 'active',
-        });
-        const voiceStatus = ref('');
-        let activeRecognition = null;
-        let nocRefreshTimer = null;
         const t = (key) => COPY[language.value][key] ?? key;
-        let micWasStopped = false;
-        let micRetryCount = 0;
-        let micRetryTimer = null;
 
         const currentStep = computed(() => {
             if (!tree.value || !currentStepId.value) return null;
             return tree.value[currentStepId.value] ?? null;
         });
         const isFinished = computed(() => currentStep.value?.options?.length === 0);
-        const activeNocUpdates = computed(() => nocUpdates.value.filter((entry) => entry.status !== 'resolved'
-            && (!entry.valid_until || Date.parse(entry.valid_until) >= Date.now())));
-
-        const activeNocMatches = computed(() => {
-            const query = normalizeSpeech(quickSearch.value, language.value).replace(/\s/g, '');
-            if (!query) return [];
-            return activeNocUpdates.value.filter((entry) => {
-                const values = [entry.title, entry.reference, ...(entry.area_codes ?? [])]
-                    .map((value) => normalizeSpeech(value ?? '', language.value).replace(/\s/g, ''))
-                    .filter(Boolean);
-                return values.some((value) => query.includes(value) || value.includes(query));
-            });
-        });
-
         const quickSearchResults = computed(() => {
-            const query = normalizeSpeech(quickSearch.value, language.value);
+            const query = normalizeSearch(quickSearch.value, language.value);
             if (!query || !tree.value) return [];
             const terms = query.split(' ').filter(Boolean);
             const entries = [];
             for (const [id, step] of Object.entries(tree.value)) {
                 if (id === 'start' || id === 'operations_guide' || !step || typeof step !== 'object') continue;
-                const content = [step.question, step.customer_prompt, step.action, step.customer_script, step.reference_guidance, step.clear_description, step.sla,
+                const catalog = step.package_catalog;
+                const catalogText = catalog ? [catalog.title, ...catalog.monthly_rows.map((row) => `${row.speed} ${row.quota} ${row.price}`), ...catalog.yearly_rows.map((row) => `${row.plan} ${row.quota} ${row.price}`), ...catalog.addon_rows.map((row) => `${row.kind} ${row.quota} ${row.price} ${row.term}`)].join(' ') : '';
+                const content = [step.question, step.customer_prompt, step.action, step.customer_script, step.reference_guidance, step.clear_description, step.sla, catalogText,
                     ...(step.options ?? []).map((option) => option.label)].filter(Boolean).join(' ');
                 entries.push({ kind: 'step', id, title: step.question, body: content, source: language.value === 'ar' ? 'شجرة الدعم' : 'Support tree' });
             }
+            const outageGuide = tree.value.operations_guide?.outage_fields;
+            if (outageGuide) entries.push({
+                kind: 'guide', id: 'outage-fields', title: outageGuide.title,
+                body: `${outageGuide.note} ${outageGuide.rows.map((row) => `${row.field}: ${row.meaning}`).join(' ')}`,
+                terms: outageGuide.terms, source: language.value === 'ar' ? 'دليل قراءة سجل الأعطال' : 'Outage record guide',
+            });
             for (const row of tree.value.operations_guide?.closure_codes ?? []) {
                 entries.push({ kind: 'code', id: row.code, title: `${t('codeLabel')} ${row.code}`, body: row.reason, source: language.value === 'ar' ? 'جدول تدريب الإغلاق' : 'Training close-code table' });
             }
             for (const fact of QUICK_FACTS[language.value]) {
                 entries.push({ kind: 'fact', id: fact.id, title: fact.title, body: fact.body, terms: fact.terms, template: fact.template, source: fact.source });
             }
-            for (const update of activeNocUpdates.value) {
-                entries.push({
-                    kind: 'noc', id: update.id, title: update.title,
-                    body: [update.type, ...(update.area_codes ?? []), update.reference, update.sla, update.agent_action, update.customer_script].filter(Boolean).join(' '),
-                    source: t('nocUpdates'), update,
-                });
-            }
             return entries.map((entry) => {
-                const searchable = normalizeSpeech(`${entry.title} ${entry.body} ${entry.terms ?? ''}`, language.value);
+                const searchable = normalizeSearch(`${entry.title} ${entry.body} ${entry.terms ?? ''}`, language.value);
                 const matched = terms.filter((term) => searchable.includes(term)).length;
                 return { ...entry, score: matched, snippet: entry.body.length > 220 ? `${entry.body.slice(0, 217)}…` : entry.body };
             }).filter((entry) => entry.score === terms.length)
@@ -304,74 +235,19 @@ const App = {
             ].join('\n');
         });
 
-        function refreshVoices() {
-            if (!window.speechSynthesis) return;
-            voices.value = window.speechSynthesis.getVoices().filter((voice) => voice.lang?.toLowerCase().startsWith(language.value));
-            if (!voices.value.some((voice) => voice.voiceURI === selectedVoice.value)) {
-                selectedVoice.value = voices.value.find((voice) => voice.lang?.toLowerCase() === (language.value === 'ar' ? 'ar-eg' : 'en-us'))?.voiceURI ?? voices.value[0]?.voiceURI ?? '';
-            }
-        }
-        function stopAudio() { window.speechSynthesis?.cancel(); isSpeaking.value = false; }
-        function stopListening() {
-            micWasStopped = true;
-            if (micRetryTimer) clearTimeout(micRetryTimer);
-            micRetryTimer = null;
-            activeRecognition?.abort();
-            activeRecognition = null;
-            isListening.value = false;
-        }
-        function stopAll() { stopListening(); stopAudio(); }
-        function speak(text) {
-            if (!window.speechSynthesis || !text) return;
-            stopAudio();
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = language.value === 'ar' ? 'ar-EG' : 'en-US';
-            utterance.rate = Number(speechRate.value);
-            utterance.voice = voices.value.find((voice) => voice.voiceURI === selectedVoice.value) ?? null;
-            utterance.onstart = () => { isSpeaking.value = true; };
-            utterance.onend = utterance.onerror = () => { isSpeaking.value = false; };
-            window.speechSynthesis.speak(utterance);
-        }
-        function speakCurrentStep() {
-            if (autoRead.value && currentStep.value) speak(currentStep.value.customer_prompt || currentStep.value.question);
-        }
-        function readResult() { speak([currentStep.value?.action, currentStep.value?.sla, currentStep.value?.customer_script].filter(Boolean).join('. ')); }
-        function testVoice() {
-            speak(language.value === 'ar'
-                ? 'هذا اختبار للصوت. تقدر توقف القراءة من زر إيقاف الصوت.'
-                : 'This is a voice test. You can stop playback with the stop audio button.');
+        function openOutageGuide() {
+            const guide = document.querySelector('.operations-guide');
+            if (!guide) return;
+            guide.open = true;
+            guide.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
         function afterStepChange() {
-            voiceStatus.value = '';
-            nextTick(() => {
-                speakCurrentStep();
-            });
-        }
-
-        function findSpokenOption(transcript) {
-            const spoken = normalizeSpeech(transcript, language.value);
-            if (!spoken) return null;
-
-            const buttons = [...document.querySelectorAll('.option-button')];
-            const exactMatches = buttons.filter((button) => normalizeSpeech(button.innerText, language.value) === spoken);
-            if (exactMatches.length === 1) return exactMatches[0];
-            if (exactMatches.length > 1) return null;
-
-            const words = spoken.split(' ').filter((word) => word.length > 2);
-            const matches = buttons.filter((button) => {
-                const label = normalizeSpeech(button.innerText, language.value);
-                if (!label) return false;
-                if (spoken.includes(label) || label.includes(spoken)) return true;
-                const common = words.filter((word) => label.split(' ').includes(word));
-                return words.length > 0 && common.length >= 1;
-            });
-            return matches.length === 1 ? matches[0] : null;
+            nextTick(() => window.scrollTo({ top: 0, behavior: 'smooth' }));
         }
 
         function jumpToStep(stepId) {
             if (!tree.value?.[stepId]) return;
-            stopAll();
             currentStepId.value = stepId;
             history.value = [];
             pathSelections.value = [];
@@ -379,151 +255,6 @@ const App = {
             commentRefNumber.value = '';
             quickSearch.value = '';
             afterStepChange();
-        }
-
-        function startSearchListening() {
-            if (isListening.value) {
-                stopListening();
-                return;
-            }
-            const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (!Recognition) {
-                voiceStatus.value = t('voiceUnsupported');
-                return;
-            }
-            stopAudio();
-            micWasStopped = true;
-            const recognition = new Recognition();
-            activeRecognition = recognition;
-            recognition.lang = language.value === 'ar' ? 'ar-EG' : 'en-US';
-            recognition.interimResults = false;
-            recognition.maxAlternatives = 3;
-            recognition.continuous = false;
-            recognition.onstart = () => {
-                isListening.value = true;
-                voiceStatus.value = t('searchByVoice');
-            };
-            recognition.onresult = (event) => {
-                const result = event.results?.[event.resultIndex]?.[0];
-                if (result?.transcript?.trim()) {
-                    quickSearch.value = result.transcript.trim();
-                    voiceStatus.value = t('searchByVoice') + ': ' + quickSearch.value;
-                }
-                recognition.stop();
-            };
-            recognition.onerror = (event) => {
-                voiceStatus.value = event.error === 'not-allowed' ? t('micDenied')
-                    : event.error === 'no-speech' ? t('noSpeech') : t('voiceUnavailable');
-            };
-            recognition.onend = () => {
-                isListening.value = false;
-                if (activeRecognition === recognition) activeRecognition = null;
-            };
-            try {
-                recognition.start();
-            } catch {
-                isListening.value = false;
-                activeRecognition = null;
-                voiceStatus.value = t('retryMic');
-            }
-        }
-
-        async function loadNocUpdates() {
-            try {
-                const response = await fetch('/api/noc-updates', { headers: { Accept: 'application/json' } });
-                if (!response.ok) throw new Error('load');
-                const data = await response.json();
-                nocUpdates.value = Array.isArray(data.updates) ? data.updates : [];
-            } catch {
-                nocNotice.value = t('nocLoadFailed');
-            }
-        }
-
-        function updateNocField(field, event) {
-            nocForm.value[field] = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
-        }
-
-        function clearNocForm() {
-            editingNocId.value = '';
-            nocForm.value = {
-                title: '', area_codes: '', type: 'Major Fault', reference: '', sla: '',
-                valid_until: localDateTimeInput(new Date(Date.now() + 24 * 60 * 60 * 1000)),
-                agent_action: '', customer_script: '', sr_required: false,
-                screenshot_required: false, status: 'active',
-            };
-        }
-
-        function editNocUpdate(update) {
-            editingNocId.value = update.id;
-            nocForm.value = {
-                ...update,
-                area_codes: (update.area_codes ?? []).join(', '),
-                valid_until: update.valid_until ? localDateTimeInput(new Date(update.valid_until)) : '',
-            };
-            nocNotice.value = '';
-        }
-
-        async function saveNocUpdate() {
-            if (nocBusy.value) return;
-            nocBusy.value = true;
-            nocNotice.value = '';
-            const validUntil = new Date(nocForm.value.valid_until);
-            if (!nocForm.value.title.trim() || !nocForm.value.area_codes.trim()
-                || !nocForm.value.agent_action.trim() || !nocForm.value.customer_script.trim()
-                || Number.isNaN(validUntil.getTime())) {
-                nocNotice.value = t('nocSaveFailed');
-                nocBusy.value = false;
-                return;
-            }
-            const payload = {
-                ...nocForm.value,
-                area_codes: nocForm.value.area_codes.split(',').map((value) => value.trim()).filter(Boolean),
-                valid_until: validUntil.toISOString(),
-            };
-            const url = editingNocId.value ? `/api/noc-updates/${encodeURIComponent(editingNocId.value)}` : '/api/noc-updates';
-            try {
-                const response = await fetch(url, {
-                    method: editingNocId.value ? 'PUT' : 'POST',
-                    headers: { Accept: 'application/json', 'Content-Type': 'application/json', 'X-NOC-Admin-Key': nocAdminKey.value },
-                    body: JSON.stringify(payload),
-                });
-                if (!response.ok) {
-                    nocNotice.value = response.status === 503 ? t('nocKeyMissing')
-                        : response.status === 403 ? t('nocKeyDenied') : t('nocSaveFailed');
-                    return;
-                }
-                nocNotice.value = t('nocSaved');
-                clearNocForm();
-                await loadNocUpdates();
-            } catch {
-                nocNotice.value = t('nocSaveFailed');
-            } finally {
-                nocBusy.value = false;
-            }
-        }
-
-        async function deleteNocUpdate(update) {
-            if (nocBusy.value) return;
-            nocBusy.value = true;
-            nocNotice.value = '';
-            try {
-                const response = await fetch(`/api/noc-updates/${encodeURIComponent(update.id)}`, {
-                    method: 'DELETE',
-                    headers: { Accept: 'application/json', 'X-NOC-Admin-Key': nocAdminKey.value },
-                });
-                if (!response.ok) {
-                    nocNotice.value = response.status === 503 ? t('nocKeyMissing')
-                        : response.status === 403 ? t('nocKeyDenied') : t('nocSaveFailed');
-                    return;
-                }
-                nocNotice.value = t('nocDeleted');
-                if (editingNocId.value === update.id) clearNocForm();
-                await loadNocUpdates();
-            } catch {
-                nocNotice.value = t('nocSaveFailed');
-            } finally {
-                nocBusy.value = false;
-            }
         }
 
         async function copyText(value, success, failure = t('copyError')) {
@@ -536,87 +267,6 @@ const App = {
         }
 
         function copyComment() { copyText(generatedComment.value, t('commentCopied')); }
-
-        function startListening() {
-            if (isListening.value) {
-                stopListening();
-                return;
-            }
-            const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (!Recognition) {
-                voiceStatus.value = t('voiceUnsupported');
-                return;
-            }
-            stopAudio();
-            micWasStopped = false;
-            micRetryCount = 0;
-            listenSession(Recognition);
-        }
-
-        function listenSession(Recognition) {
-            if (micWasStopped) return;
-            const recognition = new Recognition();
-            activeRecognition = recognition;
-            recognition.lang = language.value === 'ar' ? 'ar-EG' : 'en-US';
-            recognition.interimResults = false;
-            recognition.maxAlternatives = 3;
-            recognition.continuous = true;
-            isListening.value = true;
-
-            recognition.onstart = () => {
-                isListening.value = true;
-                voiceStatus.value = t('listen');
-            };
-            recognition.onresult = (event) => {
-                const result = event.results?.[event.resultIndex];
-                const alternatives = result
-                    ? Array.from({ length: result.length }, (_, index) => result[index])
-                    : [];
-                const matched = alternatives
-                    .map((result) => findSpokenOption(result.transcript))
-                    .filter(Boolean);
-                const uniqueMatches = [...new Set(matched)];
-
-                if (uniqueMatches.length === 1) {
-                    voiceStatus.value = t('matched');
-                    stopListening();
-                    uniqueMatches[0].click();
-                } else {
-                    voiceStatus.value = t('ambiguous');
-                }
-            };
-            recognition.onerror = (event) => {
-                const messages = {
-                    'not-allowed': t('micDenied'),
-                    'service-not-allowed': t('voiceUnavailable'),
-                    'no-speech': t('noSpeech'),
-                    'audio-capture': t('micError'),
-                    'network': t('voiceUnavailable'),
-                };
-                voiceStatus.value = messages[event.error] || t('voiceError');
-                if (event.error !== 'no-speech') micWasStopped = true;
-            };
-            recognition.onend = () => {
-                isListening.value = false;
-                if (activeRecognition === recognition) activeRecognition = null;
-                if (!micWasStopped && micRetryCount < 3) {
-                    micRetryCount += 1;
-                    micRetryTimer = setTimeout(() => listenSession(Recognition), 500);
-                } else if (!micWasStopped) {
-                    micWasStopped = true;
-                    voiceStatus.value = t('micEnded');
-                }
-            };
-
-            try {
-                recognition.start();
-            } catch {
-                micWasStopped = true;
-                isListening.value = false;
-                activeRecognition = null;
-                voiceStatus.value = t('retryMic');
-            }
-        }
 
         async function loadTree(reset = false, nextLanguage = language.value) {
             loading.value = true;
@@ -649,8 +299,6 @@ const App = {
                 language.value = nextLanguage;
                 document.documentElement.lang = nextLanguage;
                 document.documentElement.dir = nextLanguage === 'ar' ? 'rtl' : 'ltr';
-                try { selectedVoice.value = localStorage.getItem('support-voice-' + nextLanguage) ?? ''; } catch { selectedVoice.value = ''; }
-                refreshVoices();
                 notice.value = '';
             } catch (error) {
                 loadError.value = error instanceof Error ? error.message : COPY[nextLanguage].supportIssue;
@@ -659,41 +307,27 @@ const App = {
             }
         }
 
-        function switchLanguage(next) { stopAll(); loadTree(false, next).then(speakCurrentStep); }
+        function switchLanguage(next) { loadTree(false, next); }
         function switchTheme(next) {
             theme.value = next;
             try { localStorage.setItem('support-theme', next); } catch { /* preference is optional */ }
         }
-        function setAutoRead(enabled) {
-            autoRead.value = enabled;
-            try { localStorage.setItem('support-auto-read', enabled ? 'on' : 'off'); } catch { /* optional preference */ }
-            if (!enabled) stopAudio();
-        }
-        function setSpeechRate(rate) {
-            speechRate.value = Number(rate);
-            try { localStorage.setItem('support-speech-rate', String(speechRate.value)); } catch { /* optional preference */ }
-        }
-        function setVoice(voiceURI) {
-            selectedVoice.value = voiceURI;
-            try { localStorage.setItem('support-voice-' + language.value, voiceURI); } catch { /* optional preference */ }
-        }
-
         function choose(option) {
             const nextStep = option?.next_step;
 
             if (typeof nextStep !== 'string' || !Object.hasOwn(tree.value ?? {}, nextStep)) {
-                notice.value = 'هذا الاختيار مرتبط بخطوة غير موجودة. أبلغ المسؤول عن الشجرة.';
+                notice.value = t('invalidStep');
                 return;
             }
 
             if (history.value.length >= MAX_STEPS_PER_CALL) {
-                notice.value = 'وصل المسار إلى الحد الآمن للتنقل. أعد البدء أو راجع الشجرة.';
+                notice.value = t('stepLimit');
                 return;
             }
 
             if (typeof tree.value[nextStep]?.question !== 'string'
                 || !Array.isArray(tree.value[nextStep]?.options)) {
-                notice.value = 'بيانات الخطوة التالية غير مكتملة. أبلغ المسؤول عن الشجرة.';
+                notice.value = t('incomplete');
                 return;
             }
 
@@ -722,6 +356,7 @@ const App = {
             commentDetails.value = '';
             commentRefType.value = 'none';
             commentRefNumber.value = '';
+            quickSearch.value = '';
             notice.value = '';
             afterStepChange();
         }
@@ -729,40 +364,23 @@ const App = {
         async function copyCustomerScript() {
             const script = currentStep.value?.customer_script;
             if (typeof script !== 'string' || script.length === 0) {
-                notice.value = 'لا يوجد نص عميل لنسخه في هذه الخطوة.';
+                notice.value = t('noScript');
                 return;
             }
 
             try {
                 await navigator.clipboard.writeText(script);
-                notice.value = 'تم نسخ نص العميل.';
+                notice.value = t('copied');
             } catch {
-                notice.value = 'تعذر النسخ تلقائيًا. يمكنك تحديد نص العميل ونسخه يدويًا.';
+                notice.value = t('copyError');
             }
         }
 
         onMounted(() => {
             try { theme.value = localStorage.getItem('support-theme') === 'dark' ? 'dark' : 'light'; } catch { /* optional preference */ }
-            try {
-                autoRead.value = localStorage.getItem('support-auto-read') !== 'off';
-                const savedRate = Number(localStorage.getItem('support-speech-rate'));
-                if (Number.isFinite(savedRate) && savedRate >= 0.65 && savedRate <= 1.3) speechRate.value = savedRate;
-                selectedVoice.value = localStorage.getItem('support-voice-ar') ?? '';
-            } catch { /* optional preferences */ }
-            document.documentElement.lang = 'ar';
-            document.documentElement.dir = 'rtl';
-            refreshVoices();
-            window.speechSynthesis?.addEventListener?.('voiceschanged', refreshVoices);
             loadTree(true);
-            loadNocUpdates();
-            nocRefreshTimer = setInterval(loadNocUpdates, 60_000);
         });
-        onBeforeUnmount(() => {
-            activeRecognition?.abort();
-            if (nocRefreshTimer) clearInterval(nocRefreshTimer);
-            stopAudio();
-            window.speechSynthesis?.removeEventListener?.('voiceschanged', refreshVoices);
-        });
+
 
         return () => h('main', {
                 class: `app-shell ${theme.value === 'dark' ? 'app-dark' : ''} relative isolate min-h-screen w-full overflow-x-clip bg-slate-50 px-4 py-6 pb-28 text-gray-800 sm:px-6 sm:py-10`,
@@ -784,30 +402,15 @@ const App = {
             }, [
                 h('header', { class: 'mb-5 flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-4' }, [
                     h('div', { class: 'flex min-w-0 items-center gap-3' }, [
-                        h('span', { class: 'brand-mark inline-flex size-11 shrink-0 items-center justify-center rounded-2xl bg-blue-700 text-white shadow-lg shadow-blue-700/20' }, [icon('router', 'size-6')]),
+                        h('button', { class: 'brand-mark inline-flex size-11 shrink-0 items-center justify-center rounded-2xl bg-blue-700 text-white shadow-lg shadow-blue-700/20 transition hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2', type: 'button', onClick: restart, 'aria-label': t('newInquiry'), title: t('newInquiry') }, [icon('router', 'size-6')]),
                         h('div', { class: 'min-w-0' }, [
-                            h('p', { class: 'text-xs font-semibold tracking-wide text-blue-700' }, t('brand')),
+                            h('button', { class: 'block text-start text-xs font-semibold tracking-wide text-blue-700 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500', type: 'button', onClick: restart }, t('brand')),
                             h('h1', { class: 'truncate text-xl font-bold text-gray-900 sm:text-2xl' }, t('title')),
                         ]),
                     ]),
                     h('div', { class: 'flex shrink-0 items-center gap-2' }, [
                         h('button', { class: 'app-control rounded-xl border px-3 py-2 text-sm font-semibold', type: 'button', onClick: () => switchLanguage(language.value === 'ar' ? 'en' : 'ar'), 'aria-label': language.value === 'ar' ? 'Switch to English' : 'التغيير إلى العربية' }, language.value === 'ar' ? 'EN' : 'عربي'),
                         h('button', { class: 'app-control rounded-xl border p-2', type: 'button', onClick: () => switchTheme(theme.value === 'light' ? 'dark' : 'light'), 'aria-label': theme.value === 'light' ? t('dark') : t('light'), title: theme.value === 'light' ? t('dark') : t('light') }, [icon(theme.value === 'light' ? 'moon' : 'sun')]),
-                    ]),
-                ]),
-                h('details', { class: 'settings-panel mb-5 overflow-hidden rounded-2xl border border-slate-200 bg-slate-50/80' }, [
-                    h('summary', { class: 'flex cursor-pointer list-none items-center gap-2 px-3 py-2.5 text-sm font-semibold text-slate-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-blue-500' }, [
-                        icon('speak', 'size-4 text-blue-700'),
-                        h('span', t('voice')),
-                        h('span', { class: 'text-xs font-normal text-slate-500' }, autoRead.value ? t('autoRead') : (language.value === 'ar' ? 'القراءة التلقائية متوقفة' : 'Auto read is off')),
-                        h('span', { class: 'ms-auto text-xs text-blue-700' }, language.value === 'ar' ? 'إعدادات' : 'Settings'),
-                    ]),
-                    h('div', { class: 'flex flex-wrap items-center gap-2 border-t border-slate-200 px-3 py-3' }, [
-                        h('label', { class: 'flex min-w-0 flex-1 items-center gap-2 text-xs text-gray-700' }, [t('voice'), h('select', { class: 'app-control min-w-0 flex-1 rounded-lg border bg-white px-2 py-1.5 text-xs', value: selectedVoice.value, onChange: (event) => setVoice(event.target.value) }, [h('option', { value: '' }, language.value === 'ar' ? 'تلقائي' : 'Auto'), ...voices.value.map((voice) => h('option', { value: voice.voiceURI, key: voice.voiceURI }, `${voice.name} (${voice.lang})`))])]),
-                        h('button', { class: 'app-control rounded-lg border px-2.5 py-1.5 text-xs font-semibold', type: 'button', onClick: testVoice }, t('testVoice')),
-                        h('label', { class: 'flex items-center gap-1.5 text-xs text-gray-700' }, [language.value === 'ar' ? 'السرعة' : 'Speed', h('input', { class: 'w-20 accent-blue-700', type: 'range', min: '0.65', max: '1.3', step: '0.05', value: speechRate.value, onInput: (event) => setSpeechRate(event.target.value), 'aria-label': language.value === 'ar' ? 'سرعة القراءة' : 'Speech rate' }), h('span', { class: 'w-8 tabular-nums' }, `${Number(speechRate.value).toFixed(2)}${t('rateUnit')}`)]),
-                        h('label', { class: 'flex items-center gap-1.5 text-xs text-gray-700' }, [h('input', { type: 'checkbox', checked: autoRead.value, onChange: (event) => setAutoRead(event.target.checked) }), t('autoRead')]),
-                        h('p', { class: 'w-full text-[11px] leading-4 text-gray-500' }, voices.value.length ? t('voicePrivacy') : t('voiceNotInstalled')),
                     ]),
                 ]),
                 h('section', { class: 'quick-search-panel mb-5 rounded-2xl border border-slate-200 bg-white p-3 sm:p-4' }, [
@@ -818,23 +421,7 @@ const App = {
                             type: 'search', value: quickSearch.value, placeholder: t('quickSearchPlaceholder'),
                             onInput: (event) => { quickSearch.value = event.target.value; },
                         }),
-                        h('button', {
-                            class: 'app-control inline-flex size-11 shrink-0 items-center justify-center rounded-xl border border-slate-200',
-                            type: 'button', onClick: startSearchListening, 'aria-label': t('searchByVoice'), title: t('searchByVoice'),
-                        }, [icon('mic', 'size-5')]),
                     ]),
-                    activeNocMatches.value.length ? h('div', { class: 'noc-alert-list mt-3 space-y-2', role: 'alert' }, activeNocMatches.value.map((update) => h('article', { class: 'rounded-xl border border-rose-200 bg-rose-50 p-3', key: update.id }, [
-                        h('h3', { class: 'flex items-center gap-2 font-bold text-rose-900' }, [icon('alert', 'size-4'), t('nocMatch'), ` — ${update.title}`]),
-                        h('p', { class: 'mt-1 text-sm font-medium text-rose-900' }, `${t('nocCodeMatch')}: ${(update.area_codes ?? []).join(', ')}${update.reference ? ` · ${update.reference}` : ''}`),
-                        update.agent_action ? h('p', { class: 'mt-2 text-sm leading-6 text-rose-950' }, update.agent_action) : null,
-                        update.sla ? h('p', { class: 'mt-1 text-sm font-semibold text-rose-900' }, `${t('sla')} ${update.sla}`) : null,
-                        update.customer_script ? h('p', { class: 'mt-2 rounded-lg bg-white/80 p-2 text-sm leading-6 text-emerald-950' }, update.customer_script) : null,
-                        update.sr_required || update.screenshot_required ? h('p', { class: 'mt-2 text-xs font-bold text-rose-800' }, [
-                            update.sr_required ? 'SR' : null,
-                            update.sr_required && update.screenshot_required ? ' · ' : null,
-                            update.screenshot_required ? (language.value === 'ar' ? 'أرفق Screenshot حسب هذا التحديث' : 'Screenshot required for this update') : null,
-                        ].filter(Boolean).join('')) : null,
-                    ]))) : null,
                     quickSearch.value.trim() ? h('div', { class: 'mt-3 space-y-2', 'aria-live': 'polite' }, quickSearchResults.value.length
                         ? quickSearchResults.value.map((result) => h('article', { class: 'search-result-card rounded-xl border border-slate-200 bg-slate-50/80 p-3', key: `${result.kind}-${result.id}` }, [
                             h('div', { class: 'flex items-start justify-between gap-3' }, [
@@ -844,7 +431,8 @@ const App = {
                                     h('p', { class: 'mt-1 text-[11px] text-slate-500' }, `${t('searchSource')}: ${result.source}`),
                                     result.kind === 'fact' ? h('p', { class: 'mt-1 text-xs font-medium text-amber-800' }, t('oldReference')) : null,
                                 ]),
-                                result.kind === 'step' ? h('button', { class: 'app-control inline-flex shrink-0 items-center gap-1 rounded-lg border px-2 py-1.5 text-xs font-semibold', type: 'button', onClick: () => jumpToStep(result.id) }, [icon('arrow', 'size-4'), t('openStep')]) : null,
+                                result.kind === 'step' ? h('button', { class: 'app-control inline-flex shrink-0 items-center gap-1 rounded-lg border px-2 py-1.5 text-xs font-semibold', type: 'button', onClick: () => jumpToStep(result.id) }, [icon('arrow', 'size-4'), t('openStep')])
+                                    : result.kind === 'guide' ? h('button', { class: 'app-control inline-flex shrink-0 items-center gap-1 rounded-lg border px-2 py-1.5 text-xs font-semibold', type: 'button', onClick: openOutageGuide }, [icon('arrow', 'size-4'), t('openGuide')]) : null,
                             ]),
                             result.kind === 'fact' && result.template ? h('button', {
                                 class: 'mt-2 inline-flex items-center gap-2 rounded-lg bg-blue-700 px-3 py-2 text-xs font-semibold text-white transition hover:bg-blue-800',
@@ -867,7 +455,7 @@ const App = {
                         : !currentStep.value
                             ? h('p', { class: 'text-red-700', role: 'alert' }, t('missing'))
                             : h(Transition, { name: 'step-fade', mode: 'out-in' }, { default: () => h('div', { key: currentStepId.value }, [
-                                h('div', { class: 'mb-3 flex items-center justify-between gap-2' }, [
+                                h('div', { class: 'mb-3 flex flex-wrap items-center justify-between gap-2' }, [
                                     h('p', { class: 'inline-flex items-center gap-2 text-xs font-semibold text-slate-500' }, [h('span', { class: 'inline-block size-2 rounded-full bg-emerald-500' }), t('step') + ' ' + (history.value.length + 1)]),
                                     history.value.length > 0 ? h('button', {
                                         class: 'inline-flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold text-blue-800 transition-all hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500',
@@ -883,10 +471,45 @@ const App = {
                                 h('div', { class: 'question-panel mb-5 rounded-2xl border border-blue-100 bg-blue-50/70 px-4 py-4 sm:px-5 sm:py-5' }, [
                                     h('h2', { class: 'current-question text-xl font-bold leading-8 text-gray-900 sm:text-2xl sm:leading-9' }, currentStep.value.question),
                                 ]),
+                                isFinished.value ? h('section', { class: 'mb-4 rounded-2xl border border-sky-200 bg-sky-50 p-4 sm:p-5' }, [
+                                    h('h3', { class: 'mb-1 flex items-center gap-2 font-bold text-sky-950' }, [icon('search', 'size-5'), language.value === 'ar' ? 'النتيجة التي وجدتها' : 'What we found']),
+                                    h('p', { class: 'leading-7 text-sky-950' }, currentStep.value.finding || currentStep.value.question),
+                                ]) : null,
                                 currentStep.value.customer_prompt ? h('section', { class: 'customer-prompt mb-5 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3.5 sm:px-5', 'aria-label': t('askCustomer') }, [
                                     h('h3', { class: 'mb-1 flex items-center gap-2 text-xs font-bold text-emerald-800' }, [icon('chat', 'size-4'), t('askCustomer')]),
                                     h('p', { class: 'leading-7 text-emerald-950' }, currentStep.value.customer_prompt),
                                 ]) : null,
+                                currentStep.value.package_catalog ? (() => {
+                                    const catalog = currentStep.value.package_catalog;
+                                    const renderTable = (columns, rows, keys, tableTitle) => h('section', { class: 'mt-4' }, [
+                                        h('h4', { class: 'mb-2 text-sm font-bold text-slate-900' }, tableTitle),
+                                        h('div', { class: 'max-h-72 overflow-auto rounded-xl border border-slate-200' }, [
+                                            h('table', { class: 'w-full min-w-[32rem] text-start text-sm' }, [
+                                                h('thead', { class: 'sticky top-0 bg-slate-100 text-slate-800' }, [h('tr', columns.map((column) => h('th', { class: 'p-2 font-semibold' }, column)))]),
+                                                h('tbody', rows.map((row, index) => h('tr', { class: 'border-t border-slate-200 odd:bg-white even:bg-slate-50', key: `${tableTitle}-${index}` }, keys.map((key) => h('td', { class: 'p-2 align-top' }, row[key]))))),
+                                            ]),
+                                        ]),
+                                    ]);
+                                    return h('section', { class: 'package-catalog mb-5 rounded-2xl border border-indigo-200 bg-indigo-50/70 p-4 sm:p-5' }, [
+                                        h('h3', { class: 'flex items-center gap-2 text-lg font-bold text-indigo-950' }, [icon('ticket', 'size-5'), catalog.title]),
+                                        h('p', { class: 'mt-2 text-sm leading-6 text-indigo-950' }, catalog.notes[0]),
+                                        renderTable(catalog.monthly_columns, catalog.monthly_rows, ['speed', 'quota', 'price'], catalog.monthly_title),
+                                        h('section', { class: 'mt-3 rounded-xl border border-indigo-100 bg-white/80 p-3' }, [
+                                            h('h4', { class: 'text-sm font-bold text-slate-900' }, t('checkBeforeQuote')),
+                                            h('ul', { class: 'mt-2 list-disc space-y-1 ps-5 text-sm leading-6 text-slate-700' }, catalog.staff_checks.map((check) => h('li', check))),
+                                        ]),
+                                        h('details', { class: 'mt-3 rounded-xl border border-indigo-100 bg-white/80 p-3' }, [
+                                            h('summary', { class: 'cursor-pointer font-semibold text-indigo-900' }, catalog.yearly_title),
+                                            renderTable(catalog.yearly_columns, catalog.yearly_rows, ['plan', 'quota', 'price'], catalog.yearly_title),
+                                        ]),
+                                        h('details', { class: 'mt-3 rounded-xl border border-indigo-100 bg-white/80 p-3' }, [
+                                            h('summary', { class: 'cursor-pointer font-semibold text-indigo-900' }, catalog.addons_title),
+                                            renderTable(catalog.addon_columns, catalog.addon_rows, ['kind', 'quota', 'price', 'term'], catalog.addons_title),
+                                        ]),
+                                        h('ul', { class: 'mt-3 list-disc space-y-1 ps-5 text-xs leading-5 text-slate-700' }, catalog.notes.slice(1).map((note) => h('li', note))),
+                                        h('a', { class: 'mt-3 inline-flex text-xs font-semibold text-blue-800 underline', href: catalog.source_url, target: '_blank', rel: 'noopener noreferrer' }, catalog.source_label),
+                                    ]);
+                                })() : null,
                                 isFinished.value
                                     ? h('div', { class: 'space-y-4', role: 'status' }, [
                                         h('div', { class: 'inline-flex items-center gap-2 rounded-full bg-slate-800 px-4 py-2 text-sm font-semibold text-white' }, [
@@ -949,7 +572,6 @@ const App = {
                                             ]),
                                         ]),
                                         h('div', { class: 'grid gap-2 sm:grid-cols-2' }, [
-                                            h('button', { class: 'app-control inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-semibold', type: 'button', onClick: readResult }, [icon('speak'), t('readResult')]),
                                             h('button', {
                                                 class: 'inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-green-800 px-4 py-2.5 text-sm font-semibold text-white transition-all hover:bg-green-900 active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2',
                                                 type: 'button',
@@ -962,87 +584,40 @@ const App = {
                                             onClick: restart,
                                         }, [icon('home', 'size-5'), t('newInquiry')]),
                                     ])
-                                    : h('div', { class: 'grid gap-3' }, currentStep.value.options.map((option, index) =>
-                                        h('button', {
-                                            class: 'option-button group flex min-h-14 w-full items-center gap-3 rounded-2xl border border-slate-200 bg-white px-3.5 py-3 text-start font-medium text-gray-800 shadow-sm transition-all hover:-translate-y-0.5 hover:border-blue-300 hover:bg-blue-50 hover:shadow-md active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:px-4',
-                                            type: 'button',
-                                            key: `${currentStepId.value}-${index}`,
-                                            onClick: () => choose(option),
-                                        }, [
-                                            h('span', { class: 'inline-flex size-9 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-700 transition-all group-hover:bg-blue-100 sm:size-10' }, [icon(optionIcon(option.label), 'size-5')]),
-                                            h('span', { class: 'flex-1 leading-6' }, option.label || t('choose')),
-                                            h('span', { class: 'text-blue-700 transition-transform group-hover:-translate-x-1' }, [icon('arrow', 'size-4')]),
-                                        ]),
-                                    )),
-                            ]) }),
-                h('details', { class: 'noc-updates mt-5 overflow-hidden rounded-2xl border border-rose-100 bg-white' }, [
-                    h('summary', { class: 'flex cursor-pointer list-none items-center gap-2 px-4 py-3.5 font-bold text-slate-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-blue-500' }, [
-                        icon('alert', 'size-5 text-rose-700'), t('nocUpdates'),
-                        h('span', { class: 'ms-auto rounded-full bg-rose-50 px-2 py-0.5 text-xs font-semibold text-rose-800' }, String(activeNocUpdates.value.length)),
-                    ]),
-                    h('div', { class: 'space-y-3 border-t border-rose-100 p-4' }, [
-                        h('p', { class: 'text-xs leading-5 text-slate-600' }, t('nocUpdatesHint')),
-                        activeNocUpdates.value.length
-                            ? activeNocUpdates.value.map((update) => h('article', { class: 'rounded-xl border border-slate-200 bg-slate-50 p-3', key: update.id }, [
-                                h('div', { class: 'flex flex-wrap items-start justify-between gap-2' }, [
-                                    h('div', [
-                                        h('h3', { class: 'font-bold text-slate-900' }, update.title),
-                                        h('p', { class: 'mt-1 text-xs font-medium text-slate-600' }, `${update.type} · ${(update.area_codes ?? []).join(', ')}${update.reference ? ` · ${update.reference}` : ''}`),
+                                    : h('div', { class: 'space-y-3' }, [
+                                        h('div', { class: 'grid gap-3' }, currentStep.value.options.map((option, index) =>
+                                            h('button', {
+                                                class: 'option-button group flex min-h-14 w-full items-center gap-3 rounded-2xl border border-slate-200 bg-white px-3.5 py-3 text-start font-medium text-gray-800 shadow-sm transition-all hover:-translate-y-0.5 hover:border-blue-300 hover:bg-blue-50 hover:shadow-md active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:px-4',
+                                                type: 'button',
+                                                key: `${currentStepId.value}-${index}`,
+                                                onClick: () => choose(option),
+                                            }, [
+                                                h('span', { class: 'inline-flex size-9 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-700 transition-all group-hover:bg-blue-100 sm:size-10' }, [icon(optionIcon(option.label), 'size-5')]),
+                                                h('span', { class: 'flex-1 leading-6' }, option.label || t('choose')),
+                                                h('span', { class: 'text-blue-700 transition-transform group-hover:-translate-x-1' }, [icon('arrow', 'size-4')]),
+                                            ]),
+                                        )),
+                                        currentStepId.value === tree.value.start && tree.value.tools_hub ? h('button', {
+                                            class: 'inline-flex min-h-11 items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold text-blue-800 transition hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500',
+                                            type: 'button', onClick: () => jumpToStep('tools_hub'),
+                                        }, [icon('question', 'size-4'), t('toolsHub')]) : null,
                                     ]),
-                                    h('span', { class: `rounded-full px-2 py-1 text-[11px] font-bold ${update.status === 'monitoring' ? 'bg-amber-100 text-amber-900' : 'bg-emerald-100 text-emerald-900'}` }, update.status === 'monitoring' ? t('nocMonitoring') : t('nocActive')),
-                                ]),
-                                update.agent_action ? h('p', { class: 'mt-2 text-sm leading-6 text-slate-800' }, update.agent_action) : null,
-                                update.sla ? h('p', { class: 'mt-1 text-sm font-semibold text-slate-800' }, `${t('sla')} ${update.sla}`) : null,
-                                update.customer_script ? h('p', { class: 'mt-2 rounded-lg border border-emerald-100 bg-emerald-50 p-2.5 text-sm leading-6 text-emerald-950' }, update.customer_script) : null,
-                                h('p', { class: 'mt-2 text-[11px] text-slate-500' }, `${t('nocEnteredAt')}: ${update.created_at ? new Date(update.created_at).toLocaleString(language.value === 'ar' ? 'ar-EG' : 'en-US') : '—'}${update.valid_until ? ` · ${t('nocExpiry')}: ${new Date(update.valid_until).toLocaleString(language.value === 'ar' ? 'ar-EG' : 'en-US')}` : ''}`),
-                                update.sr_required || update.screenshot_required ? h('p', { class: 'mt-1 text-xs font-bold text-rose-800' }, [
-                                    update.sr_required ? 'SR' : null,
-                                    update.sr_required && update.screenshot_required ? ' · ' : null,
-                                    update.screenshot_required ? (language.value === 'ar' ? 'Screenshot مطلوب حسب الإجراء' : 'Screenshot required by process') : null,
-                                ].filter(Boolean).join('')) : null,
-                                h('div', { class: 'mt-2 flex gap-2' }, [
-                                    h('button', { class: 'app-control rounded-lg border px-2.5 py-1.5 text-xs font-semibold', type: 'button', disabled: nocBusy.value || !nocAdminKey.value, onClick: () => editNocUpdate(update) }, t('nocEdit')),
-                                    h('button', { class: 'rounded-lg border border-rose-200 px-2.5 py-1.5 text-xs font-semibold text-rose-800 disabled:opacity-40', type: 'button', disabled: nocBusy.value || !nocAdminKey.value, onClick: () => deleteNocUpdate(update) }, [icon('trash', 'inline size-3.5'), h('span', { class: 'ms-1' }, t('nocDelete'))]),
-                                ]),
-                            ]))
-                            : h('p', { class: 'rounded-xl bg-slate-50 px-3 py-3 text-sm text-slate-600' }, t('noNocUpdates')),
-                        h('details', { class: 'rounded-xl border border-slate-200 bg-slate-50' }, [
-                            h('summary', { class: 'cursor-pointer px-3 py-3 text-sm font-bold text-slate-700' }, t('nocAdmin')),
-                            h('div', { class: 'space-y-3 border-t border-slate-200 p-3' }, [
-                                h('p', { class: 'text-xs leading-5 text-slate-600' }, t('nocAdminHint')),
-                                h('label', { class: 'block text-xs font-semibold text-slate-700' }, [t('nocAdminKey'), h('input', {
-                                    class: 'app-control mt-1.5 w-full rounded-lg border bg-white px-3 py-2 text-sm', type: 'password', autocomplete: 'off',
-                                    value: nocAdminKey.value, onInput: (event) => { nocAdminKey.value = event.target.value; },
-                                })]),
-                                h('div', { class: 'grid gap-3 sm:grid-cols-2' }, [
-                                    h('label', { class: 'block text-xs font-semibold text-slate-700' }, [t('nocTitle'), h('input', { class: 'app-control mt-1.5 w-full rounded-lg border bg-white px-3 py-2 text-sm', value: nocForm.value.title, onInput: (event) => updateNocField('title', event) })]),
-                                    h('label', { class: 'block text-xs font-semibold text-slate-700' }, [t('nocAreaCodes'), h('input', { class: 'app-control mt-1.5 w-full rounded-lg border bg-white px-3 py-2 text-sm', value: nocForm.value.area_codes, placeholder: '02, Cairo', onInput: (event) => updateNocField('area_codes', event) })]),
-                                    h('label', { class: 'block text-xs font-semibold text-slate-700' }, [t('nocType'), h('select', { class: 'app-control mt-1.5 w-full rounded-lg border bg-white px-3 py-2 text-sm', value: nocForm.value.type, onChange: (event) => updateNocField('type', event) }, ['Major Fault','Planned Outage','Unplanned Outage','Other'].map((type) => h('option', { value: type }, type)))]),
-                                    h('label', { class: 'block text-xs font-semibold text-slate-700' }, [t('nocReference'), h('input', { class: 'app-control mt-1.5 w-full rounded-lg border bg-white px-3 py-2 text-sm', value: nocForm.value.reference, onInput: (event) => updateNocField('reference', event) })]),
-                                    h('label', { class: 'block text-xs font-semibold text-slate-700' }, [t('nocSla'), h('input', { class: 'app-control mt-1.5 w-full rounded-lg border bg-white px-3 py-2 text-sm', value: nocForm.value.sla, onInput: (event) => updateNocField('sla', event) })]),
-                                    h('label', { class: 'block text-xs font-semibold text-slate-700' }, [t('nocExpiry'), h('input', { class: 'app-control mt-1.5 w-full rounded-lg border bg-white px-3 py-2 text-sm', type: 'datetime-local', value: nocForm.value.valid_until, onInput: (event) => updateNocField('valid_until', event) })]),
-                                    h('label', { class: 'block text-xs font-semibold text-slate-700 sm:col-span-2' }, [t('nocAgentAction'), h('textarea', { class: 'app-control mt-1.5 min-h-20 w-full rounded-lg border bg-white px-3 py-2 text-sm leading-6', value: nocForm.value.agent_action, onInput: (event) => updateNocField('agent_action', event) })]),
-                                    h('label', { class: 'block text-xs font-semibold text-slate-700 sm:col-span-2' }, [t('nocCustomerScript'), h('textarea', { class: 'app-control mt-1.5 min-h-20 w-full rounded-lg border bg-white px-3 py-2 text-sm leading-6', value: nocForm.value.customer_script, onInput: (event) => updateNocField('customer_script', event) })]),
-                                    h('label', { class: 'flex items-center gap-2 text-xs font-medium text-slate-700' }, [h('input', { type: 'checkbox', checked: nocForm.value.sr_required, onChange: (event) => updateNocField('sr_required', event) }), t('nocSrRequired')]),
-                                    h('label', { class: 'flex items-center gap-2 text-xs font-medium text-slate-700' }, [h('input', { type: 'checkbox', checked: nocForm.value.screenshot_required, onChange: (event) => updateNocField('screenshot_required', event) }), t('nocScreenshotRequired')]),
-                                    h('label', { class: 'block text-xs font-semibold text-slate-700' }, [t('nocStatus'), h('select', { class: 'app-control mt-1.5 w-full rounded-lg border bg-white px-3 py-2 text-sm', value: nocForm.value.status, onChange: (event) => updateNocField('status', event) }, [
-                                        h('option', { value: 'active' }, t('nocActive')), h('option', { value: 'monitoring' }, t('nocMonitoring')), h('option', { value: 'resolved' }, t('nocResolved')),
-                                    ])]),
-                                ]),
-                                h('div', { class: 'flex flex-wrap gap-2' }, [
-                                    h('button', { class: 'inline-flex min-h-10 items-center justify-center gap-2 rounded-lg bg-blue-700 px-4 py-2 text-sm font-bold text-white disabled:opacity-50', type: 'button', disabled: nocBusy.value, onClick: saveNocUpdate }, [icon('copy', 'size-4'), nocBusy.value ? t('nocSaving') : t('nocSave')]),
-                                    editingNocId.value ? h('button', { class: 'app-control rounded-lg border px-4 py-2 text-sm font-semibold', type: 'button', disabled: nocBusy.value, onClick: clearNocForm }, t('fresh')) : null,
-                                ]),
-                                nocNotice.value ? h('p', { class: 'rounded-lg bg-blue-50 px-3 py-2 text-xs leading-5 text-blue-900', role: 'status', 'aria-live': 'polite' }, nocNotice.value) : null,
-                            ]),
-                        ]),
-                    ]),
-                ]),
+                            ]) }),
                 tree.value?.operations_guide ? h('details', { class: 'operations-guide mt-5 rounded-2xl border border-blue-100 bg-blue-50/70 p-4' }, [
                     h('summary', { class: 'cursor-pointer font-semibold text-blue-900' }, [icon('ticket', 'inline size-5'), h('span', { class: 'ms-2' }, t('operations'))]),
                     h('div', { class: 'mt-4 space-y-4 leading-7 text-gray-700' }, [
                         h('section', [h('h3', { class: 'flex items-center gap-2 font-bold text-gray-900' }, [icon('search', 'size-4'), t('searchTitle')]), h('p', tree.value.operations_guide.search)]),
                         h('section', [h('h3', { class: 'flex items-center gap-2 font-bold text-gray-900' }, [icon('ticket', 'size-4'), t('recordTitle')]), h('p', tree.value.operations_guide.record)]),
+                        tree.value.operations_guide.outage_fields ? h('section', { class: 'rounded-xl border border-blue-100 bg-white/80 p-3' }, [
+                            h('h3', { class: 'font-bold text-gray-900' }, tree.value.operations_guide.outage_fields.title),
+                            h('p', { class: 'mt-1 text-sm leading-6' }, tree.value.operations_guide.outage_fields.note),
+                            h('div', { class: 'mt-3 overflow-x-auto rounded-lg border border-gray-200' }, [
+                                h('table', { class: 'w-full min-w-[34rem] text-start text-sm' }, [
+                                    h('thead', { class: 'bg-slate-100 text-gray-800' }, [h('tr', [h('th', { class: 'p-2' }, language.value === 'ar' ? 'الحقل' : 'Field'), h('th', { class: 'p-2' }, language.value === 'ar' ? 'ما الذي أتحقق منه؟' : 'What to check')])]),
+                                    h('tbody', tree.value.operations_guide.outage_fields.rows.map((row) => h('tr', { class: 'border-t border-gray-200', key: row.field }, [h('td', { class: 'p-2 font-semibold' }, row.field), h('td', { class: 'p-2' }, row.meaning)]))),
+                                ]),
+                            ]),
+                        ]) : null,
                     ]),
                     h('details', { class: 'mt-4 rounded-xl border border-blue-100 bg-white/70 p-3' }, [
                         h('summary', { class: 'cursor-pointer font-semibold text-blue-900' }, t('codesTitle')),
@@ -1069,21 +644,7 @@ const App = {
                 }, notice.value) : null,
                 h('p', { class: 'mt-6 text-xs text-gray-400' }, t('footer')),
             ]),
-            h('div', { class: 'fixed bottom-4 left-4 z-30 flex flex-col items-center gap-2 sm:bottom-6 sm:left-6' }, [
-                voiceStatus.value ? h('p', { class: 'max-w-64 rounded-xl bg-white/95 px-3 py-2 text-center text-xs font-medium text-slate-700 shadow-lg ring-1 ring-slate-200', role: 'status', 'aria-live': 'polite' }, voiceStatus.value) : null,
-                (isSpeaking.value || isListening.value) ? h('button', { class: 'inline-flex items-center gap-2 rounded-full bg-rose-700 px-4 py-2 text-sm font-semibold text-white shadow-lg', type: 'button', onClick: stopAll }, [icon('stop', 'size-4'), isListening.value ? t('stopMic') : t('stopAudio')]) : null,
-                h('button', {
-                    class: `inline-flex size-14 items-center justify-center rounded-full text-white shadow-xl shadow-blue-950/20 transition-all hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-300 active:scale-95 sm:size-15 ${isListening.value ? 'animate-pulse bg-rose-600' : 'bg-blue-700 hover:bg-blue-800'}`,
-                    type: 'button',
-                    onClick: startListening,
-                    'aria-label': isListening.value ? t('stopMic') : t('startMic'),
-                    'aria-pressed': isListening.value ? 'true' : 'false',
-                    title: isListening.value ? t('stopMic') : t('startMic'),
-                }, [h('svg', { class: 'size-7', viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', 'stroke-width': '1.8', 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'aria-hidden': 'true' }, [
-                    h('rect', { x: '9', y: '2', width: '6', height: '12', rx: '3' }),
-                    h('path', { d: 'M5 10v2a7 7 0 0 0 14 0v-2M12 19v3m-4 0h8' }),
-                ])]),
-            ]),
+
         ]);
     },
 };

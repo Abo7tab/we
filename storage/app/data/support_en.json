@@ -6,18 +6,318 @@
     "codes_note": "These FCC codes come from a dated training PDF. Use a code only when it matches the actual cause and the current TTS choices; never select by number alone.",
     "closure_codes": [
       {"code":"2","reason":"Line stable / no problem found"},{"code":"86","reason":"Problem solved after changing customer CPE"},{"code":"87","reason":"Problem solved after changing splitter"},{"code":"8","reason":"Problem solved after fixing internal wiring"},{"code":"9","reason":"Problem solved after fixing external wire"},{"code":"12","reason":"Problem solved after changing external wire"},{"code":"10","reason":"Problem solved after changing internal wiring"},{"code":"13","reason":"Problem solved after fixing from box side"},{"code":"11","reason":"Problem solved after fixing from cabin side"},{"code":"14","reason":"Problem solved after fixing from exchange"},{"code":"18","reason":"Problem solved after voice resplit"},{"code":"35","reason":"Split after contract change"},{"code":"6","reason":"New installation"},{"code":"59","reason":"Problem solved after changing new port"},{"code":"83","reason":"Internal wiring and cannot be solved"},{"code":"20","reason":"Major fault"},{"code":"84","reason":"Internal wiring; customer refuses to change it"},{"code":"81","reason":"Internal problem - cable maintenance needed"},{"code":"82","reason":"External problem - cable maintenance needed"},{"code":"75","reason":"Splitter problem - customer has no spare"},{"code":"74","reason":"Customer CPE problem"},{"code":"65","reason":"CPE configuration required; match the current TTS label"},{"code":"38","reason":"Stalagmite problem (label as shown in table)"},{"code":"17","reason":"Customer unavailable - schedule in comment"},{"code":"28","reason":"Customer refused visit / refused entry"},{"code":"96","reason":"Customer did not answer"},{"code":"26","reason":"Engineering inspection"},{"code":"19","reason":"Internal network - close compound"},{"code":"29","reason":"Customer phone device problem"},{"code":"23","reason":"Customer voice-service invoice problem"},{"code":"4","reason":"Work order not finished"},{"code":"30","reason":"Unavailable as per customer request"},{"code":"7","reason":"Installation failed"},{"code":"27","reason":"Address modification"},{"code":"73","reason":"Installation refused by customer"},{"code":"24","reason":"Line out of service"}
+    ],
+    "outage_fields": {
+      "title": "How to read an Outage record in the system",
+      "note": "Open the outage record in the approved tool and search by service number or area as the screen allows. Treat it as a match only when status, service, and area align; do not rely on an ID alone or create outage data manually.",
+      "rows": [
+        {
+          "field": "الحالة (Status)",
+          "meaning": "Active / monitoring / resolved, as shown in the system"
+        },
+        {
+          "field": "النطاق والخدمات المتأثرة",
+          "meaning": "Area/exchange or scope and affected service; match these to the customer line"
+        },
+        {
+          "field": "وقت البداية وآخر تحديث",
+          "meaning": "Check the start time and latest update before advising the customer"
+        },
+        {
+          "field": "موعد الإصلاح أو التحديث المتوقع",
+          "meaning": "Quote only the official ETA shown; if absent, do not guess an SLA"
+        },
+        {
+          "field": "رقم المرجع والإجراء المطلوب",
+          "meaning": "Record the required reference internally and follow system instructions for SR/TT or screenshots"
+        }
+      ],
+      "terms": "outage major fault general fault affected area"
+    }
+  },
+  "aggregator_payment_terminal": {
+    "question": "Electronic Fawry/aggregator payment has not appeared.",
+    "finding": "The training SLA reference lists 48 working hours for Aggregators Payment Not Clear. Verify the channel and current SLA.",
+    "action": "Check the receipt, transaction ID, channel, and paid-to number. Log the correct payment complaint in TTS and use its current SLA. Never request a full card number or OTP.",
+    "customer_script": "I will check the receipt and transaction details and log the right complaint. My training reference lists 48 working hours for this channel; I will confirm the SLA shown when the request is created.",
+    "sla": "Training: 48 working hours for Aggregators; confirm in TTS",
+    "reference_guidance": "Give the customer the actual complaint reference and displayed SLA. Do not share internal IR.",
+    "options": []
+  },
+  "balance_fraction_terminal": {
+    "question": "Service is stopped due to a small balance; check Balance Fraction eligibility.",
+    "finding": "The training reference lists Balance Fraction as available on the spot for eligible customers; confirm eligibility and any limit in the current system.",
+    "action": "Check customer eligibility and the current limit first. Use the approved system only.",
+    "customer_script": "I will check whether the line is eligible for a balance fraction and the current limit, then tell you whether service can be restored immediately.",
+    "sla": "Immediate per training reference; confirm current eligibility",
+    "options": []
+  },
+  "promise_to_pay_start": {
+    "question": "What account type does the system show?",
+    "options": [
+      {
+        "label": "Consumer Postpaid",
+        "next_step": "promise_to_pay_consumer_terminal"
+      },
+      {
+        "label": "Non-Consumer",
+        "next_step": "promise_to_pay_nonconsumer_terminal"
+      },
+      {
+        "label": "Account type is unclear",
+        "next_step": "promise_to_pay_unknown_terminal"
+      }
     ]
   },
-  "start_menu": {
-    "question": "Identify the reason for the call and choose the matching path.",
-    "customer_prompt": "What are you calling about: internet, landline, an installation/order, a service inquiry, or a complaint?",
+  "promise_to_pay_consumer_terminal": {
+    "question": "Promise to Pay — Consumer Postpaid account.",
+    "finding": "The day 10 training guide lists a 24-hour temporary restoration for eligible Consumer customers, once in the service lifecycle and for arrears. Verify current terms.",
+    "action": "Check eligibility and whether the service has already used this option during its lifecycle. Process only if the current system offers it and the reason matches To Arrears.",
+    "customer_script": "I will check eligibility for temporary restoration and confirm its duration and terms before proceeding.",
+    "sla": "Training reference: 24 hours for eligible customers; verify current duration",
+    "reference_guidance": "From day_10.pdf (dated training): once per Life Cycle for To Arrears. Verify current procedure.",
+    "options": []
+  },
+  "promise_to_pay_nonconsumer_terminal": {
+    "question": "Promise to Pay — Non-Consumer account.",
+    "finding": "The day 10 training guide lists a 48-hour temporary restoration for eligible Non-Consumer customers, once in the service lifecycle and for arrears. Verify current terms.",
+    "action": "Check account type, eligibility, and whether the service has already used this option during its lifecycle. Process only if the current system offers it and the reason matches To Arrears.",
+    "customer_script": "I will check whether the account qualifies for temporary restoration and confirm its duration and terms before proceeding.",
+    "sla": "Training reference: 48 hours for eligible customers; verify current duration",
+    "reference_guidance": "From day_10.pdf (dated training): once per Life Cycle for To Arrears. Verify current procedure.",
+    "options": []
+  },
+  "promise_to_pay_unknown_terminal": {
+    "question": "Account type is unclear.",
+    "finding": "Account classification has not been verified, so Promise to Pay eligibility cannot be determined.",
+    "action": "Check the account type in the current system first. Do not assume Consumer or Non-Consumer status.",
+    "customer_script": "I will confirm the account type and available terms, then explain the appropriate option.",
+    "sla": "Do not promise a duration until verified",
+    "options": []
+  },
+  "tools_hub": {
+    "question": "Choose a quick guide. For troubleshooting, choose internet or line issues from the start.",
     "options": [
-      { "label": "Internet outage/slow speed or DSL issue", "next_step": "preflight_start" },
-      { "label": "Landline or voice issue", "next_step": "preflight_start" },
-      { "label": "New installation or installation follow-up", "next_step": "request_start" },
-      { "label": "Package, service, or general inquiry", "next_step": "inquiry_start" },
-      { "label": "Complaint or escalation", "next_step": "complaint_start" },
-      { "label": "Exception or close code shown in TTS History", "next_step": "exceptions_start" }
+      {
+        "label": "ASSIA and Clear View",
+        "next_step": "assia_start"
+      },
+      {
+        "label": "Close Code helper",
+        "next_step": "close_code_start"
+      },
+      {
+        "label": "Weak Wi-Fi coverage and devices",
+        "next_step": "wifi_devices_terminal"
+      },
+      {
+        "label": "Enterprise, CNAM, and short numbers",
+        "next_step": "enterprise_terminal"
+      },
+      {
+        "label": "Exception or code shown in TTS History",
+        "next_step": "exceptions_start"
+      }
+    ]
+  },
+  "assia_start": {
+    "question": "In ASSIA, is the line Supported, and is Collection Date today?",
+    "customer_prompt": "I will check the ASSIA result first, then explain the next step.",
+    "options": [
+      {
+        "label": "Supported and Collection Date is today; check Clear View",
+        "next_step": "assia_result"
+      },
+      {
+        "label": "Supported but Collection Date is not today; run Clear View and verify Last fix within 24 hours",
+        "next_step": "assia_result"
+      },
+      {
+        "label": "Not Supported by ASSIA",
+        "next_step": "assia_not_supported"
+      }
+    ]
+  },
+  "assia_result": {
+    "question": "What result appears in Clear View?",
+    "options": [
+      {
+        "label": "A relevant Physical Layer issue or Fault appears",
+        "next_step": "assia_physical_terminal"
+      },
+      {
+        "label": "No DSL Physical-Layer issue is detected",
+        "next_step": "assia_logical_terminal"
+      },
+      {
+        "label": "Another or unclear result",
+        "next_step": "assia_unknown_terminal"
+      }
+    ]
+  },
+  "assia_physical_terminal": {
+    "question": "Result: Clear View shows a Physical Layer indicator.",
+    "finding": "A Physical Layer indicator is present; match the Fault to the customer symptoms before classifying.",
+    "action": "Follow the advice for the matching Fault. For a Physical Instability complaint, run ASSIA Clear View and verify Last fix within 24 hours before escalation. Log the correct complaint and attach a screenshot when required.",
+    "customer_script": "I found an indicator on the line. I will try the relevant steps with you. If a follow-up ticket is needed, I will give you its reference and the SLA shown in the system.",
+    "sla": "Depends on complaint type in TTS; verify before promising",
+    "reference_guidance": "Give the actual TT/SR reference if created and required; IR is internal.",
+    "options": []
+  },
+  "assia_logical_terminal": {
+    "question": "Clear View result: No DSL Physical-Layer issue is detected. What does the ADSL light do during the disconnection?",
+    "finding": "This result alone does not detect a Physical Layer fault or prove a logical cause; use the light status to choose the next path.",
+    "customer_prompt": "When the internet drops, does the ADSL light stay steady or go off?",
+    "options": [
+      {
+        "label": "ADSL stays steady during the disconnection",
+        "next_step": "logical_start"
+      },
+      {
+        "label": "ADSL disconnects or goes off",
+        "next_step": "physical_start"
+      },
+      {
+        "label": "Cannot determine the light status",
+        "next_step": "dsl_status_unknown"
+      }
+    ]
+  },
+  "assia_not_supported": {
+    "question": "Result: line is Not Supported by ASSIA.",
+    "finding": "ASSIA does not support this line; do not infer a fault type from this alone.",
+    "action": "Ask whether the ADSL light stays on or goes off during an internet disconnection. Steady: follow Logical Instability. Goes off: follow Physical Instability. Use approved alternative tools.",
+    "customer_script": "This tool does not support the line, so I will identify the disconnection type from the ADSL light and continue the relevant checks.",
+    "sla": "Depends on any ticket required",
+    "options": [
+      {
+        "label": "ADSL stays steady during the disconnection",
+        "next_step": "logical_start"
+      },
+      {
+        "label": "ADSL disconnects or goes off",
+        "next_step": "physical_start"
+      },
+      {
+        "label": "Cannot determine the light status",
+        "next_step": "dsl_status_unknown"
+      }
+    ]
+  },
+  "assia_unknown_terminal": {
+    "question": "Clear View result is unclear or does not match known cases.",
+    "finding": "Physical/Logical cause is not confirmed from available data.",
+    "action": "Do not guess the classification. Review the complete Clear View output and current tools, then use the approved support path if still unclear.",
+    "customer_script": "The result needs another check. I will verify the line details and continue with a confirmed next step.",
+    "sla": "Do not promise before checking ticket SLA",
+    "options": []
+  },
+  "close_code_start": {
+    "question": "Are you looking up a successful fix code or reviewing a code on an existing ticket?",
+    "options": [
+      {
+        "label": "Internal wiring was repaired; look up the closure code",
+        "next_step": "close_code_8_terminal"
+      },
+      {
+        "label": "Code 67 appears on an existing TT: Data Ports",
+        "next_step": "exception_67"
+      },
+      {
+        "label": "Code 81 or 82 appears on an existing cable ticket",
+        "next_step": "close_code_cable"
+      },
+      {
+        "label": "Another cause or unsure; search the code table",
+        "next_step": "exceptions_start"
+      }
+    ]
+  },
+  "close_code_cable": {
+    "question": "Which code appears on the existing ticket?",
+    "options": [
+      {
+        "label": "81 — internal cable issue",
+        "next_step": "close_code_81_terminal"
+      },
+      {
+        "label": "82 — external cable issue",
+        "next_step": "close_code_82_terminal"
+      },
+      {
+        "label": "Code is unclear",
+        "next_step": "close_code_unknown_terminal"
+      }
+    ]
+  },
+  "close_code_8_terminal": {
+    "question": "Suggested close code: 8 — internal wiring repaired.",
+    "finding": "Closure reason: internal wiring was repaired.",
+    "action": "Use code 8 only if the repair was completed and the option matches current TTS.",
+    "customer_script": "The internal wiring has been repaired. May I confirm the service is stable with you?",
+    "sla": "Follow current closure procedure",
+    "options": []
+  },
+  "close_code_81_terminal": {
+    "question": "Code 81 on an existing ticket: internal cable maintenance.",
+    "finding": "The training table describes 81 as an internal cable issue requiring maintenance; this workflow handles a code already shown on an open ticket.",
+    "action": "Check there is no Major Fault and complete the normal checks, then update/re-escalate the existing ticket. The day 8 guide says to skip the main-wire test in this path. Do not create a duplicate ticket.",
+    "customer_script": "I will review the existing ticket and checks, continue on the same request with the relevant team, and give you its displayed timeframe.",
+    "sla": "Training SLA lists one day for 81/82; verify current SLA",
+    "reference_guidance": "References: day_8.pdf and SLA.pdf. Use the existing TT reference.",
+    "options": []
+  },
+  "close_code_82_terminal": {
+    "question": "Code 82 on an existing ticket: external cable maintenance.",
+    "finding": "The training table describes 82 as an external cable issue requiring maintenance; this workflow handles a code already shown on an open ticket.",
+    "action": "Check there is no Major Fault and complete the normal checks, then update/re-escalate the existing ticket. The day 8 guide says to skip the main-wire test in this path. Do not create a duplicate ticket.",
+    "customer_script": "I will review the existing ticket and checks, continue on the same request with the relevant team, and give you its displayed timeframe.",
+    "sla": "Training SLA lists one day for 81/82; verify current SLA",
+    "reference_guidance": "References: day_8.pdf and SLA.pdf. Use the existing TT reference.",
+    "options": []
+  },
+  "close_code_unknown_terminal": {
+    "question": "Cable fault location has not been confirmed.",
+    "finding": "There is not enough evidence to choose 81 or 82.",
+    "action": "Determine whether the fault is internal or external. Do not guess; check the current TTS table.",
+    "customer_script": "I need to confirm the fault location before recording the right category.",
+    "sla": "Do not promise before confirming the path",
+    "options": []
+  },
+  "wifi_devices_terminal": {
+    "question": "Quick guide for weak Wi-Fi coverage and devices.",
+    "finding": "Weak in-home coverage may need router placement or an extender; it does not by itself mean the line is faulty.",
+    "action": "Test speed near the router and distinguish coverage from line speed. RE200 (AC750) supports up to 300 Mbps at 2.4 GHz. Deco M5 has four internal antennas and Self-Healing. Confirm compatibility and current availability/price. Return guidance: 14 days from delivery without cause, with exceptions, or 30 days for defective goods; apply the official terms and product condition.",
+    "customer_script": "If speed is good near the router but weak in a distant room, we can check a coverage option. I will confirm compatibility, current availability, price, and applicable return terms first.",
+    "reference_guidance": "Manufacturer specs: tp-link.com/us/home-networking/range-extender/re200/v3/ and tp-link.com/us/deco-mesh-wifi/product-family/deco-m5/. Returns: Egypt Consumer Protection Agency at cpa.gov.eg.",
+    "sla": "Immediate inquiry; price and availability depend on current system",
+    "options": []
+  },
+  "enterprise_terminal": {
+    "question": "Quick guide for enterprise inquiries.",
+    "finding": "Covers short numbers, CNAM, and business services.",
+    "action": "Verify eligibility and current rules in the enterprise system. The day 14 training guide confirms short numbers have five digits, but does not establish current prefixes/prices. It lists a maximum 50-character English CNAM name. Use current product details/prices for Smart Parking, WE FinTech, and commercial BeIN.",
+    "customer_script": "I will check the service requirements for your business, current price and coverage, and explain activation and provide an order reference if created.",
+    "reference_guidance": "Training reference: day_14.pdf. Verify prefixes, prices, and service terms in the current enterprise system.",
+    "sla": "Depends on business service; verify current SLA",
+    "options": []
+  },
+  "start_menu": {
+    "question": "What is the reason for the customer’s contact?",
+    "customer_prompt": "Are you calling about a service problem, an inquiry, or a new/existing request?",
+    "options": [
+      {
+        "label": "Service problem",
+        "next_step": "preflight_start"
+      },
+      {
+        "label": "Service, package, or billing inquiry",
+        "next_step": "inquiry_start"
+      },
+      {
+        "label": "New request or installation follow-up",
+        "next_step": "request_start"
+      }
     ]
   },
   "preflight_start": {
@@ -89,15 +389,23 @@
     ]
   },
   "technical_type": {
-    "question": "Which fault type remains after checking duplicate tickets, outages, billing, and package usage?",
+    "question": "After checking history, outages, account, and package, which situation applies?",
     "options": [
       {
-        "label": "Internet or DSL",
-        "next_step": "physical_start"
+        "label": "Internet/DSL disconnection or poor performance",
+        "next_step": "voice_verification"
       },
       {
-        "label": "Landline or voice",
+        "label": "Landline/voice problem",
         "next_step": "voice_start"
+      },
+      {
+        "label": "Follow up a problem with an existing TT",
+        "next_step": "existing_tt_terminal"
+      },
+      {
+        "label": "Complaint about a visit/staff interaction or supervisor request",
+        "next_step": "complaint_start"
       }
     ]
   },
@@ -149,18 +457,36 @@
     "question": "Identify the DSL/ADSL light status during the fault.",
     "customer_prompt": "Please check the router and tell me whether the DSL/ADSL light is off, steady, or blinking.",
     "options": [
-      { "label": "Off", "next_step": "power_check" },
-      { "label": "Disconnecting or blinking", "next_step": "instability_visit" },
-      { "label": "Stable, but no IP, browsing, or speed is affected", "next_step": "logical_start" },
-      { "label": "Customer cannot identify the light", "next_step": "dsl_status_unknown" }
+      {
+        "label": "Off",
+        "next_step": "power_check"
+      },
+      {
+        "label": "Disconnecting or blinking",
+        "next_step": "instability_visit"
+      },
+      {
+        "label": "Stable, but no IP, browsing, or speed is affected",
+        "next_step": "logical_start"
+      },
+      {
+        "label": "Customer cannot identify the light",
+        "next_step": "dsl_status_unknown"
+      }
     ]
   },
   "power_check": {
     "question": "Check the router power source and Power light status.",
     "customer_prompt": "When the service drops, is the Power light steady, off, or flickering?",
     "options": [
-      { "label": "No, it is off or unstable", "next_step": "power_terminal" },
-      { "label": "Yes, it is steady", "next_step": "data_down_logs" }
+      {
+        "label": "No, it is off or unstable",
+        "next_step": "power_terminal"
+      },
+      {
+        "label": "Yes, it is steady",
+        "next_step": "data_down_logs"
+      }
     ]
   },
   "dsl_status_unknown": {
@@ -181,58 +507,109 @@
   "data_down_logs": {
     "question": "Using internal diagnostic tools only, without sharing their details with the customer, what do the last 12 hours of system logs show?",
     "options": [
-      { "label": "At least 3 logs, including one in the last 3 hours", "next_step": "instability_visit" },
-      { "label": "That log rule does not apply; classify as Data Down", "next_step": "wiring_check" }
+      {
+        "label": "At least 3 logs, including one in the last 3 hours",
+        "next_step": "instability_visit"
+      },
+      {
+        "label": "That log rule does not apply; classify as Data Down",
+        "next_step": "wiring_check"
+      }
     ]
   },
   "wiring_check": {
     "question": "Identify how the router is connected to the telephone line.",
     "customer_prompt": "Is the router connected directly to the main line, or through a wall socket/filter?",
     "options": [
-      { "label": "Main wire directly to the router", "next_step": "main_wire_check" },
-      { "label": "Wall outlet or splitter/filter", "next_step": "wall_wiring_check" },
-      { "label": "The customer cannot identify the wiring", "next_step": "physical_escalation" }
+      {
+        "label": "Main wire directly to the router",
+        "next_step": "main_wire_check"
+      },
+      {
+        "label": "Wall outlet or splitter/filter",
+        "next_step": "wall_wiring_check"
+      },
+      {
+        "label": "The customer cannot identify the wiring",
+        "next_step": "physical_escalation"
+      }
     ]
   },
   "main_wire_check": {
     "question": "After direct connection, check whether the DSL light returned.",
     "customer_prompt": "After connecting the router directly to the main line, is the DSL light steady now?",
     "options": [
-      { "label": "Yes, service is back", "next_step": "resolved_terminal" },
-      { "label": "No, it is still down", "next_step": "physical_escalation" }
+      {
+        "label": "Yes, service is back",
+        "next_step": "resolved_terminal"
+      },
+      {
+        "label": "No, it is still down",
+        "next_step": "physical_escalation"
+      }
     ]
   },
   "wall_wiring_check": {
     "question": "Check the filter and internal wiring.",
     "customer_prompt": "Can we check that the filter and wires are connected properly? Have we tried bypassing the filter?",
     "options": [
-      { "label": "We corrected the wiring and service returned", "next_step": "resolved_terminal" },
-      { "label": "We bypassed the splitter, but the issue remains", "next_step": "physical_escalation" },
-      { "label": "Wiring is correct, but the line is still down", "next_step": "physical_escalation" }
+      {
+        "label": "We corrected the wiring and service returned",
+        "next_step": "resolved_terminal"
+      },
+      {
+        "label": "We bypassed the splitter, but the issue remains",
+        "next_step": "physical_escalation"
+      },
+      {
+        "label": "Wiring is correct, but the line is still down",
+        "next_step": "physical_escalation"
+      }
     ]
   },
   "instability_visit": {
     "question": "Check whether a technician visit or wiring change preceded the instability.",
     "customer_prompt": "Was there a technician visit or any wiring change before the issue started?",
     "options": [
-      { "label": "Yes, there was a visit or change", "next_step": "after_visit_check" },
-      { "label": "No visit took place", "next_step": "physical_escalation" },
-      { "label": "The line recovered during the call", "next_step": "stable_after_recheck" }
+      {
+        "label": "Yes, there was a visit or change",
+        "next_step": "after_visit_check"
+      },
+      {
+        "label": "No visit took place",
+        "next_step": "physical_escalation"
+      },
+      {
+        "label": "The line recovered during the call",
+        "next_step": "stable_after_recheck"
+      }
     ]
   },
   "after_visit_check": {
     "question": "Check the result of the visit/change and whether the fault remains.",
     "customer_prompt": "After the visit or wiring change, is the service stable now or does the issue remain?",
     "options": [
-      { "label": "Yes, the issue remains", "next_step": "physical_escalation" },
-      { "label": "No, service is stable after the check", "next_step": "resolved_terminal" }
+      {
+        "label": "Yes, the issue remains",
+        "next_step": "physical_escalation"
+      },
+      {
+        "label": "No, service is stable after the check",
+        "next_step": "resolved_terminal"
+      }
     ]
   },
   "stable_after_recheck": {
     "question": "Did ASSIA/Clear View confirm that there is no physical-layer issue?",
     "options": [
-      { "label": "Yes, no physical issue and the line is stable", "next_step": "resolved_terminal" },
-      { "label": "No, or the result is unavailable", "next_step": "physical_escalation" }
+      {
+        "label": "Yes, no physical issue and the line is stable",
+        "next_step": "resolved_terminal"
+      },
+      {
+        "label": "No, or the result is unavailable",
+        "next_step": "physical_escalation"
+      }
     ]
   },
   "physical_escalation": {
@@ -247,57 +624,108 @@
     "question": "Classify the reported symptoms before selecting internet-fault checks.",
     "customer_prompt": "Is the internet down, are only some websites unavailable, is the speed slow, or does the connection drop?",
     "options": [
-      { "label": "The router has no WAN IP or internet", "next_step": "no_ip_check" },
-      { "label": "Internet is connected, but websites do not open", "next_step": "browsing_check" },
-      { "label": "Internet speed is slow", "next_step": "slowness_check" },
-      { "label": "Speed values differ between system tools", "next_step": "speed_variance_terminal" },
-      { "label": "The line drops while the DSL light stays on", "next_step": "logical_logs" }
+      {
+        "label": "The router has no WAN IP or internet",
+        "next_step": "no_ip_check"
+      },
+      {
+        "label": "Internet is connected, but websites do not open",
+        "next_step": "browsing_check"
+      },
+      {
+        "label": "Internet speed is slow",
+        "next_step": "slowness_check"
+      },
+      {
+        "label": "Speed values differ between system tools",
+        "next_step": "speed_variance_terminal"
+      },
+      {
+        "label": "The line drops while the DSL light stays on",
+        "next_step": "logical_logs"
+      }
     ]
   },
   "no_ip_check": {
     "question": "Using the approved support tool, and without asking for the customer's password, have you checked MAC status, CPE settings, and connection details?",
     "options": [
-      { "label": "MAC is not learned or settings are incorrect", "next_step": "cpe_reconfigure" },
-      { "label": "Settings look correct, but there is still no IP", "next_step": "noc_escalation" }
+      {
+        "label": "MAC is not learned or settings are incorrect",
+        "next_step": "cpe_reconfigure"
+      },
+      {
+        "label": "Settings look correct, but there is still no IP",
+        "next_step": "noc_escalation"
+      }
     ]
   },
   "cpe_reconfigure": {
     "question": "After CPE setup, check whether the router received an IP and service returned.",
     "customer_prompt": "After configuring the router, is the Internet light on and is the service back?",
     "options": [
-      { "label": "Yes, service is back", "next_step": "resolved_terminal" },
-      { "label": "No, there is still no IP", "next_step": "noc_escalation" }
+      {
+        "label": "Yes, service is back",
+        "next_step": "resolved_terminal"
+      },
+      {
+        "label": "No, there is still no IP",
+        "next_step": "noc_escalation"
+      }
     ]
   },
   "browsing_check": {
     "question": "Identify the scope of the browsing issue: all devices or a specific device/site.",
     "customer_prompt": "Does browsing fail on all devices, or only on one device or website?",
     "options": [
-      { "label": "All sites or more than one device", "next_step": "browsing_network_steps" },
-      { "label": "Only one site or device", "next_step": "browsing_device_steps" }
+      {
+        "label": "All sites or more than one device",
+        "next_step": "browsing_network_steps"
+      },
+      {
+        "label": "Only one site or device",
+        "next_step": "browsing_device_steps"
+      }
     ]
   },
   "browsing_network_steps": {
     "question": "After network checks and another device/router test, confirm whether the fault remains.",
     "customer_prompt": "After trying another device/router, is the issue still happening?",
     "options": [
-      { "label": "No, browsing works again", "next_step": "resolved_terminal" },
-      { "label": "Yes, attach a site trace according to the process", "next_step": "noc_escalation" }
+      {
+        "label": "No, browsing works again",
+        "next_step": "resolved_terminal"
+      },
+      {
+        "label": "Yes, attach a site trace according to the process",
+        "next_step": "noc_escalation"
+      }
     ]
   },
   "browsing_device_steps": {
     "question": "Test browsing on another device or browser.",
     "customer_prompt": "Does browsing work if we try another device or browser?",
     "options": [
-      { "label": "Yes, the issue is limited to one device/browser", "next_step": "device_terminal" },
-      { "label": "No, it affects more than one device", "next_step": "browsing_network_steps" }
+      {
+        "label": "Yes, the issue is limited to one device/browser",
+        "next_step": "device_terminal"
+      },
+      {
+        "label": "No, it affects more than one device",
+        "next_step": "browsing_network_steps"
+      }
     ]
   },
   "slowness_check": {
     "question": "After checking the package allowance and expected line speed, is the current speed below the recorded value?",
     "options": [
-      { "label": "No, it is within range or in the optimization period", "next_step": "speed_within_range" },
-      { "label": "Yes, it is below range or optimization has ended", "next_step": "slowness_troubleshoot" }
+      {
+        "label": "No, it is within range or in the optimization period",
+        "next_step": "speed_within_range"
+      },
+      {
+        "label": "Yes, it is below range or optimization has ended",
+        "next_step": "slowness_troubleshoot"
+      }
     ]
   },
   "speed_within_range": {
@@ -311,24 +739,45 @@
     "question": "Run the approved speed test and confirm whether slowness continues.",
     "customer_prompt": "After a direct speed test on one device, is the speed still slow?",
     "options": [
-      { "label": "No, speed is acceptable now", "next_step": "resolved_terminal" },
-      { "label": "Yes, the issue continues", "next_step": "noc_escalation" }
+      {
+        "label": "No, speed is acceptable now",
+        "next_step": "resolved_terminal"
+      },
+      {
+        "label": "Yes, the issue continues",
+        "next_step": "noc_escalation"
+      }
     ]
   },
   "logical_logs": {
     "question": "Are there repeated system logs or fault indicators, and has another CPE been tested?",
     "options": [
-      { "label": "Yes, logs exist or the issue continues with another CPE", "next_step": "noc_escalation" },
-      { "label": "No logs; test another CPE and check for an Outage", "next_step": "logical_recheck" }
+      {
+        "label": "Yes, logs exist or the issue continues with another CPE",
+        "next_step": "noc_escalation"
+      },
+      {
+        "label": "No logs; test another CPE and check for an Outage",
+        "next_step": "logical_recheck"
+      }
     ]
   },
   "logical_recheck": {
     "question": "After checking Outage and testing another CPE, identify whether the issue remains.",
     "customer_prompt": "After trying another router and checking network status, does the issue remain?",
     "options": [
-      { "label": "Yes, it remains", "next_step": "noc_escalation" },
-      { "label": "No, service works", "next_step": "resolved_terminal" },
-      { "label": "There may be an Outage", "next_step": "outage_terminal" }
+      {
+        "label": "Yes, it remains",
+        "next_step": "noc_escalation"
+      },
+      {
+        "label": "No, service works",
+        "next_step": "resolved_terminal"
+      },
+      {
+        "label": "There may be an Outage",
+        "next_step": "outage_terminal"
+      }
     ]
   },
   "noc_escalation": {
@@ -359,9 +808,18 @@
     "question": "Identify whether only landline voice or both voice and internet are affected.",
     "customer_prompt": "Is only the landline dial tone affected, or are both landline and internet affected?",
     "options": [
-      { "label": "Landline voice only", "next_step": "voice_down_terminal" },
-      { "label": "Both voice and internet", "next_step": "data_down_logs" },
-      { "label": "Voice is overlapping or unstable", "next_step": "voice_down_terminal" }
+      {
+        "label": "Landline voice only",
+        "next_step": "voice_down_terminal"
+      },
+      {
+        "label": "Both voice and internet",
+        "next_step": "data_down_logs"
+      },
+      {
+        "label": "Voice is overlapping or unstable",
+        "next_step": "voice_down_terminal"
+      }
     ]
   },
   "voice_down_terminal": {
@@ -375,17 +833,35 @@
   "request_start": {
     "question": "Which installation request or follow-up is this?",
     "options": [
-      { "label": "Check availability or place a new line request", "next_step": "availability_check" },
-      { "label": "Follow up on an existing installation", "next_step": "order_followup" },
-      { "label": "Installation is delayed or failed", "next_step": "installation_delay" }
+      {
+        "label": "Check availability or place a new line request",
+        "next_step": "availability_check"
+      },
+      {
+        "label": "Follow up on an existing installation",
+        "next_step": "order_followup"
+      },
+      {
+        "label": "Installation is delayed or failed",
+        "next_step": "installation_delay"
+      }
     ]
   },
   "availability_check": {
     "question": "Which technology is required or available at the address?",
     "options": [
-      { "label": "MSAN or TDM line", "next_step": "copper_install_terminal" },
-      { "label": "FTTH fiber", "next_step": "fiber_install_terminal" },
-      { "label": "Availability is unclear", "next_step": "availability_terminal" }
+      {
+        "label": "MSAN or TDM line",
+        "next_step": "copper_install_terminal"
+      },
+      {
+        "label": "FTTH fiber",
+        "next_step": "fiber_install_terminal"
+      },
+      {
+        "label": "Availability is unclear",
+        "next_step": "availability_terminal"
+      }
     ]
   },
   "copper_install_terminal": {
@@ -416,16 +892,31 @@
     "question": "Check whether an installation order or ticket reference exists.",
     "customer_prompt": "Do you have the installation order or follow-up reference number?",
     "options": [
-      { "label": "Yes, check the current order status and activity", "next_step": "order_status_check" },
-      { "label": "No, search for orders on the account", "next_step": "order_status_check" }
+      {
+        "label": "Yes, check the current order status and activity",
+        "next_step": "order_status_check"
+      },
+      {
+        "label": "No, search for orders on the account",
+        "next_step": "order_status_check"
+      }
     ]
   },
   "order_status_check": {
     "question": "How does the order status compare with the SLA shown in the system?",
     "options": [
-      { "label": "Within SLA, with no visible error", "next_step": "order_within_sla" },
-      { "label": "SLA exceeded or status is Failed/Abnormal", "next_step": "installation_delay" },
-      { "label": "Order is complete but service is not working", "next_step": "installation_delay" }
+      {
+        "label": "Within SLA, with no visible error",
+        "next_step": "order_within_sla"
+      },
+      {
+        "label": "SLA exceeded or status is Failed/Abnormal",
+        "next_step": "installation_delay"
+      },
+      {
+        "label": "Order is complete but service is not working",
+        "next_step": "installation_delay"
+      }
     ]
   },
   "order_within_sla": {
@@ -448,20 +939,310 @@
     "question": "Classify the customer inquiry.",
     "customer_prompt": "Are you asking about a package, service, bill/usage, or a service change?",
     "options": [
-      { "label": "Package price or details", "next_step": "package_inquiry_terminal" },
-      { "label": "Router, light, or setting", "next_step": "device_inquiry_terminal" },
-      { "label": "Activate or cancel an add-on service/package", "next_step": "service_request_terminal" },
-      { "label": "Bill, balance, or payment", "next_step": "billing_inquiry_start" },
-      { "label": "Cancel or change a service/number", "next_step": "account_change_terminal" }
+      {
+        "label": "WE Space fixed home internet package inquiry",
+        "next_step": "package_inquiry_terminal"
+      },
+      {
+        "label": "Router, light, or setting",
+        "next_step": "device_inquiry_terminal"
+      },
+      {
+        "label": "Activate or cancel an add-on service/package",
+        "next_step": "service_request_terminal"
+      },
+      {
+        "label": "Bill, balance, or payment",
+        "next_step": "billing_inquiry_start"
+      },
+      {
+        "label": "Cancel or change a service/number",
+        "next_step": "account_change_terminal"
+      }
     ]
   },
   "package_inquiry_terminal": {
     "question": "Package or offer inquiry.",
-    "action": "Check current packages, prices, taxes, and eligibility in the approved system/sales channel. Do not use prices or offer values in training PDFs because they may have changed. Explain the benefits and expected line speed, then record the customer's choice.",
+    "action": "Use the monthly, yearly, and add-on tables below. If the customer asks about their current plan, check tool 855 as referenced in day_11.pdf. Verify usage, available technology/speed, eligibility, final price, and tax in the current system. Do not record an inquiry as an order or a fault.",
     "customer_script": "I will check the latest available packages and your eligibility, then confirm the tax-inclusive price and expected speed before submitting any request.",
     "reference_guidance": "If the customer chooses a package and a request is submitted, give them the order reference generated by the system. For an inquiry only, do not create a ticket or say a request was made.",
     "sla": "Immediate inquiry; fulfillment depends on the service",
-    "options": []
+    "options": [],
+    "package_catalog": {
+      "checked_on": "2026-10-31",
+      "source_url": "https://www.te.eg/personal/home/we-internet/we-space",
+      "title": "WE Space home internet package tables",
+      "monthly_title": "Monthly plans",
+      "yearly_title": "Yearly plans",
+      "addons_title": "Quota add-ons",
+      "monthly_columns": [
+        "Listed speed",
+        "Quota",
+        "Displayed monthly price"
+      ],
+      "yearly_columns": [
+        "Plan/speed",
+        "Yearly quota",
+        "Displayed yearly price"
+      ],
+      "addon_columns": [
+        "Add-on",
+        "Quota",
+        "Price",
+        "Validity/renewal"
+      ],
+      "monthly_rows": [
+        {
+          "speed": "Up to 30 Mbps",
+          "quota": "50 GB",
+          "price": "150 EGP / month"
+        },
+        {
+          "speed": "Up to 30 Mbps",
+          "quota": "150 GB",
+          "price": "260 EGP / month"
+        },
+        {
+          "speed": "Up to 30 Mbps",
+          "quota": "200 GB",
+          "price": "330 EGP / month"
+        },
+        {
+          "speed": "Up to 30 Mbps",
+          "quota": "250 GB",
+          "price": "395 EGP / month"
+        },
+        {
+          "speed": "Up to 30 Mbps",
+          "quota": "300 GB",
+          "price": "460 EGP / month"
+        },
+        {
+          "speed": "Up to 30 Mbps",
+          "quota": "400 GB",
+          "price": "580 EGP / month"
+        },
+        {
+          "speed": "Up to 30 Mbps",
+          "quota": "500 GB",
+          "price": "660 EGP / month"
+        },
+        {
+          "speed": "Up to 30 Mbps",
+          "quota": "750 GB",
+          "price": "925 EGP / month"
+        },
+        {
+          "speed": "Up to 30 Mbps",
+          "quota": "1500 GB",
+          "price": "1650 EGP / month"
+        },
+        {
+          "speed": "Up to 70 Mbps",
+          "quota": "250 GB",
+          "price": "785 EGP / month"
+        },
+        {
+          "speed": "Up to 70 Mbps",
+          "quota": "500 GB",
+          "price": "900 EGP / month"
+        },
+        {
+          "speed": "Up to 70 Mbps",
+          "quota": "750 GB",
+          "price": "1175 EGP / month"
+        },
+        {
+          "speed": "Up to 70 Mbps",
+          "quota": "1500 GB",
+          "price": "2000 EGP / month"
+        },
+        {
+          "speed": "Up to 100 Mbps",
+          "quota": "500 GB",
+          "price": "1150 EGP / month"
+        },
+        {
+          "speed": "Up to 100 Mbps",
+          "quota": "750 GB",
+          "price": "1425 EGP / month"
+        },
+        {
+          "speed": "Up to 100 Mbps",
+          "quota": "1500 GB",
+          "price": "2350 EGP / month"
+        },
+        {
+          "speed": "Up to 200 Mbps",
+          "quota": "1500 GB",
+          "price": "2700 EGP / month"
+        },
+        {
+          "speed": "Up to 500 Mbps",
+          "quota": "3 TB",
+          "price": "3500 EGP / month"
+        },
+        {
+          "speed": "Up to 1 Gbps",
+          "quota": "Not displayed",
+          "price": "Check current system"
+        }
+      ],
+      "yearly_rows": [
+        {
+          "plan": "Super, up to 30 Mbps",
+          "quota": "1800 GB",
+          "price": "3120 EGP / year"
+        },
+        {
+          "plan": "Super, up to 30 Mbps",
+          "quota": "2400 GB",
+          "price": "3960 EGP / year"
+        },
+        {
+          "plan": "Super, up to 30 Mbps",
+          "quota": "3000 GB",
+          "price": "4345 EGP / year"
+        },
+        {
+          "plan": "Super, up to 30 Mbps",
+          "quota": "3600 GB",
+          "price": "5060 EGP / year"
+        },
+        {
+          "plan": "Super, up to 30 Mbps",
+          "quota": "4800 GB",
+          "price": "6380 EGP / year"
+        },
+        {
+          "plan": "Super, up to 30 Mbps",
+          "quota": "6000 GB",
+          "price": "6930 EGP / year"
+        },
+        {
+          "plan": "Super, up to 30 Mbps",
+          "quota": "9000 GB",
+          "price": "9715 EGP / year"
+        },
+        {
+          "plan": "Super, up to 30 Mbps",
+          "quota": "18 TB",
+          "price": "16500 EGP / year"
+        },
+        {
+          "plan": "Mega, up to 70 Mbps",
+          "quota": "3000 GB",
+          "price": "6490 EGP / year"
+        },
+        {
+          "plan": "Mega, up to 70 Mbps",
+          "quota": "6000 GB",
+          "price": "9450 EGP / year"
+        },
+        {
+          "plan": "Mega, up to 70 Mbps",
+          "quota": "9000 GB",
+          "price": "12340 EGP / year"
+        },
+        {
+          "plan": "Mega, up to 70 Mbps",
+          "quota": "18 TB",
+          "price": "20000 EGP / year"
+        },
+        {
+          "plan": "Ultra, up to 100 Mbps",
+          "quota": "3000 GB",
+          "price": "8635 EGP / year"
+        },
+        {
+          "plan": "Ultra, up to 100 Mbps",
+          "quota": "6000 GB",
+          "price": "12075 EGP / year"
+        },
+        {
+          "plan": "Ultra, up to 100 Mbps",
+          "quota": "9000 GB",
+          "price": "14965 EGP / year"
+        },
+        {
+          "plan": "Max, up to 200 Mbps",
+          "quota": "18 TB",
+          "price": "23500 EGP / year"
+        }
+      ],
+      "addon_rows": [
+        {
+          "kind": "Extra quota",
+          "quota": "20 GB",
+          "price": "60 EGP",
+          "term": "One time or auto-renew every 30 days"
+        },
+        {
+          "kind": "Extra quota",
+          "quota": "50 GB",
+          "price": "120 EGP",
+          "term": "One time or auto-renew every 30 days"
+        },
+        {
+          "kind": "Extra quota",
+          "quota": "100 GB",
+          "price": "190 EGP",
+          "term": "One time or auto-renew every 30 days"
+        },
+        {
+          "kind": "Giga Tank",
+          "quota": "400 GB",
+          "price": "500 EGP",
+          "term": "One time"
+        },
+        {
+          "kind": "Giga Tank",
+          "quota": "2000 GB",
+          "price": "2000 EGP",
+          "term": "One time"
+        },
+        {
+          "kind": "PlayStation add-on",
+          "quota": "150 GB",
+          "price": "120 EGP",
+          "term": "30 days; tax excluded"
+        },
+        {
+          "kind": "PlayStation add-on",
+          "quota": "300 GB",
+          "price": "240 EGP",
+          "term": "30 days; tax excluded"
+        },
+        {
+          "kind": "GAME ON",
+          "quota": "40 GB",
+          "price": "40 EGP",
+          "term": "30 days; tax excluded"
+        },
+        {
+          "kind": "Salefny",
+          "quota": "5 GB",
+          "price": "10 EGP",
+          "term": "2 days; if eligible"
+        }
+      ],
+      "notes": [
+        "Prices shown on WE’s official page when reviewed; prices and availability can change. Match the line speed and customer eligibility, and confirm the final charge/tax in the internal system before quoting.",
+        "The page does not state tax treatment next to the monthly-plan table. It explicitly says add-on and yearly prices exclude VAT.",
+        "After the basic quota is consumed, browsing continues at a reduced speed; early renewal is available under the page terms."
+      ],
+      "source_label": "Official WE page — reviewed 31 October 2026",
+      "check_title": "Check before quoting",
+      "staff_checks": [
+        "For the currently subscribed plan, the day_11.pdf training reference says to check tool 855; confirm the tool and procedure are still current.",
+        "For speed questions, compare Contracted Speed in Matrix for TOM lines or CST 360 for other line types, as described in training; do not reuse an old PDF SLA.",
+        "Check package usage. The official page says browsing continues at reduced speed after the basic quota is consumed, so verify usage before classifying slow speed as a fault.",
+        "Before offering or submitting a change, verify technology/availability, line eligibility, final price, and tax in the current system.",
+        "If the customer means a mobile or WE Air plan, do not use this table; open the matching service catalog in the current system."
+      ],
+      "scope_note": "This table is for WE Space home internet only; do not use it for mobile or WE Air plans. Verify the technology and speed availability on the line."
+    },
+    "customer_prompt": "Are you asking about the current plan or looking for a new one? Which matters more: higher speed or more quota?"
   },
   "device_inquiry_terminal": {
     "question": "Technical inquiry about a CPE or one of its lights.",
@@ -482,17 +1263,44 @@
     "question": "Identify whether this is a bill inquiry, an unposted payment, or a payment made to another number by mistake.",
     "customer_prompt": "Is this about a bill, a payment that has not appeared, or a payment made to another WE number by mistake?",
     "options": [
-      { "label": "Bill, balance, or usage", "next_step": "billing_inquiry_terminal" },
-      { "label": "Payment is unclear or missing", "next_step": "payment_not_clear_terminal" },
-      { "label": "Payment was made to another number by mistake", "next_step": "wrong_number_payment_check" }
+      {
+        "label": "Bill, balance, or usage",
+        "next_step": "billing_inquiry_terminal"
+      },
+      {
+        "label": "Payment is unclear or missing",
+        "next_step": "payment_not_clear_terminal"
+      },
+      {
+        "label": "Fawry/aggregator payment not reflected",
+        "next_step": "aggregator_payment_terminal"
+      },
+      {
+        "label": "Service stopped due to a small balance (Balance Fraction)",
+        "next_step": "balance_fraction_terminal"
+      },
+      {
+        "label": "Temporary restoration / Promise to Pay inquiry",
+        "next_step": "promise_to_pay_start"
+      },
+      {
+        "label": "Payment was made to another number by mistake",
+        "next_step": "wrong_number_payment_check"
+      }
     ]
   },
   "wrong_number_payment_check": {
     "question": "Check the transaction/receipt, then establish whether the customer agrees to a Balance Transfer.",
     "customer_prompt": "Would you agree to have us check a transfer to the correct number, or would you like us to check refund eligibility?",
     "options": [
-      { "label": "Customer agrees to Balance Transfer", "next_step": "wrong_number_transfer_terminal" },
-      { "label": "Customer does not agree or requests a refund", "next_step": "wrong_number_refund_terminal" }
+      {
+        "label": "Customer agrees to Balance Transfer",
+        "next_step": "wrong_number_transfer_terminal"
+      },
+      {
+        "label": "Customer does not agree or requests a refund",
+        "next_step": "wrong_number_refund_terminal"
+      }
     ]
   },
   "wrong_number_transfer_terminal": {
@@ -540,9 +1348,18 @@
     "question": "Classify the complaint before choosing its path.",
     "customer_prompt": "Is the complaint about a technical issue, a technician/staff interaction, or a request to speak with a supervisor?",
     "options": [
-      { "label": "Technical service issue", "next_step": "technical_complaint_terminal" },
-      { "label": "Technician visit or staff conduct", "next_step": "conduct_complaint_terminal" },
-      { "label": "Customer is dissatisfied and requests a supervisor", "next_step": "escalation_request_terminal" }
+      {
+        "label": "Technical service issue",
+        "next_step": "technical_complaint_terminal"
+      },
+      {
+        "label": "Technician visit or staff conduct",
+        "next_step": "conduct_complaint_terminal"
+      },
+      {
+        "label": "Customer is dissatisfied and requests a supervisor",
+        "next_step": "escalation_request_terminal"
+      }
     ]
   },
   "technical_complaint_terminal": {
@@ -586,38 +1403,83 @@
   "exceptions_start": {
     "question": "Did TTS History show one of these special cases or close-code updates? Check open and closed history before troubleshooting.",
     "options": [
-      {"label":"Close Code 74: CPE problem in the last 30 days","next_step":"exception_74"},
-      {"label":"Close Code 81 or 82: cable maintenance","next_step":"exception_8182"},
-      {"label":"Close Code 67: Data Ports problem","next_step":"exception_67"},
-      {"label":"Close Code 27: address modification","next_step":"exception_27"},
-      {"label":"Close Code 24: landline out of service","next_step":"exception_24"},
-      {"label":"Outside TEData: FCC in another department on the same line","next_step":"exception_outside"},
-      {"label":"Major Fault: voice returned but internet remains affected","next_step":"exception_major"},
-      {"label":"Close Code 28: customer refused a visit","next_step":"exception_28"},
-      {"label":"Physical Instability Contradiction: customer reports drops but ASSIA shows no physical layer","next_step":"exception_contradiction"}
+      {
+        "label": "Close Code 74: CPE problem in the last 30 days",
+        "next_step": "exception_74"
+      },
+      {
+        "label": "Close Code 81 or 82: cable maintenance",
+        "next_step": "exception_8182"
+      },
+      {
+        "label": "Close Code 67: Data Ports problem",
+        "next_step": "exception_67"
+      },
+      {
+        "label": "Close Code 27: address modification",
+        "next_step": "exception_27"
+      },
+      {
+        "label": "Close Code 24: landline out of service",
+        "next_step": "exception_24"
+      },
+      {
+        "label": "Outside TEData: FCC in another department on the same line",
+        "next_step": "exception_outside"
+      },
+      {
+        "label": "Major Fault: voice returned but internet remains affected",
+        "next_step": "exception_major"
+      },
+      {
+        "label": "Close Code 28: customer refused a visit",
+        "next_step": "exception_28"
+      },
+      {
+        "label": "Physical Instability Contradiction: customer reports drops but ASSIA shows no physical layer",
+        "next_step": "exception_contradiction"
+      }
     ]
   },
   "exception_74": {
     "question": "Is the customer in Cairo/Alexandria or another governorate?",
     "options": [
-      {"label":"Cairo or Alexandria: router inspection at branch","next_step":"exception_74_cairo"},
-      {"label":"Another governorate: test an alternate router","next_step":"exception_74_other"}
+      {
+        "label": "Cairo or Alexandria: router inspection at branch",
+        "next_step": "exception_74_cairo"
+      },
+      {
+        "label": "Another governorate: test an alternate router",
+        "next_step": "exception_74_other"
+      }
     ]
   },
   "exception_74_cairo": {
     "question": "Check the result of the router inspection at the branch.",
     "customer_prompt": "After the router was inspected at the branch, is the issue still happening?",
     "options": [
-      {"label":"Yes, inspection and history criteria are met","next_step":"exception_74_escalate"},
-      {"label":"No, inspection or another criterion is missing","next_step":"exception_74_branch"}
+      {
+        "label": "Yes, inspection and history criteria are met",
+        "next_step": "exception_74_escalate"
+      },
+      {
+        "label": "No, inspection or another criterion is missing",
+        "next_step": "exception_74_branch"
+      }
     ]
   },
   "exception_74_other": {
     "question": "Check the result of the alternate-router test.",
     "customer_prompt": "After trying another router, is the issue still happening?",
     "options": [
-      {"label":"Yes, test and history criteria are met","next_step":"exception_74_escalate"},
-      {"label":"No, test or another criterion is missing","next_step":"exception_74_test"}
+      {
+        "label": "Yes, test and history criteria are met",
+        "next_step": "exception_74_escalate"
+      },
+      {
+        "label": "No, test or another criterion is missing",
+        "next_step": "exception_74_test"
+      }
     ]
   },
   "exception_74_branch": {
@@ -645,8 +1507,14 @@
   "exception_8182": {
     "question": "Is Close Code 81/82 in TTS history, and have you checked that there is no Major Fault?",
     "options": [
-      {"label":"Yes, code is present and no Major Fault exists","next_step":"exception_8182_action"},
-      {"label":"Major Fault exists or has not been checked","next_step":"exception_major_check"}
+      {
+        "label": "Yes, code is present and no Major Fault exists",
+        "next_step": "exception_8182_action"
+      },
+      {
+        "label": "Major Fault exists or has not been checked",
+        "next_step": "exception_major_check"
+      }
     ]
   },
   "exception_8182_action": {
@@ -660,8 +1528,14 @@
   "exception_67": {
     "question": "Is Close Code 67 shown on a previous ticket, and have you checked for a general outage?",
     "options": [
-      {"label":"Yes, code exists and no outage is present","next_step":"exception_67_action"},
-      {"label":"Code is absent or outage has not been checked","next_step":"exception_major_check"}
+      {
+        "label": "Yes, code exists and no outage is present",
+        "next_step": "exception_67_action"
+      },
+      {
+        "label": "Code is absent or outage has not been checked",
+        "next_step": "exception_major_check"
+      }
     ]
   },
   "exception_67_action": {
@@ -675,8 +1549,14 @@
   "exception_27": {
     "question": "Is there an FTTH Migration Order linked to the Address Modification / Close Code 27 update?",
     "options": [
-      {"label":"Yes, an FTTH migration order exists","next_step":"exception_27_migration"},
-      {"label":"No order exists","next_step":"exception_27_branch"}
+      {
+        "label": "Yes, an FTTH migration order exists",
+        "next_step": "exception_27_migration"
+      },
+      {
+        "label": "No order exists",
+        "next_step": "exception_27_branch"
+      }
     ]
   },
   "exception_27_migration": {
@@ -698,8 +1578,14 @@
     "question": "Check whether the landline has dial tone.",
     "customer_prompt": "When you pick up the landline handset, do you hear a dial tone or silence?",
     "options": [
-      {"label":"Yes, dial tone works","next_step":"exception_24_on"},
-      {"label":"No dial tone","next_step":"exception_24_off"}
+      {
+        "label": "Yes, dial tone works",
+        "next_step": "exception_24_on"
+      },
+      {
+        "label": "No dial tone",
+        "next_step": "exception_24_off"
+      }
     ]
   },
   "exception_24_on": {
@@ -720,8 +1606,14 @@
   "exception_outside": {
     "question": "Is another FCC on the same line assigned to a different department, such as landline service?",
     "options": [
-      {"label":"Yes, an Outside TEData update is present","next_step":"exception_outside_action"},
-      {"label":"No or unclear","next_step":"exception_major_check"}
+      {
+        "label": "Yes, an Outside TEData update is present",
+        "next_step": "exception_outside_action"
+      },
+      {
+        "label": "No or unclear",
+        "next_step": "exception_major_check"
+      }
     ]
   },
   "exception_outside_action": {
@@ -735,16 +1627,28 @@
   "exception_major_check": {
     "question": "Is a Major Fault confirmed by Outage/ADF or a maintenance-team update?",
     "options": [
-      {"label":"Yes, Major Fault is confirmed","next_step":"exception_major_action"},
-      {"label":"No, it is not confirmed or is absent","next_step":"exception_no_major"}
+      {
+        "label": "Yes, Major Fault is confirmed",
+        "next_step": "exception_major_action"
+      },
+      {
+        "label": "No, it is not confirmed or is absent",
+        "next_step": "exception_no_major"
+      }
     ]
   },
   "exception_major": {
     "question": "Check whether dial tone returned while internet remains affected.",
     "customer_prompt": "Has the landline dial tone returned while the internet is still down?",
     "options": [
-      {"label":"Yes, voice is back and internet remains affected","next_step":"exception_major_data"},
-      {"label":"No, voice remains affected too","next_step":"exception_major_action"}
+      {
+        "label": "Yes, voice is back and internet remains affected",
+        "next_step": "exception_major_data"
+      },
+      {
+        "label": "No, voice remains affected too",
+        "next_step": "exception_major_action"
+      }
     ]
   },
   "exception_major_action": {
@@ -774,8 +1678,14 @@
     "question": "Confirm whether the customer actually refused access/visit.",
     "customer_prompt": "Did you refuse technician access, or was the visit unable to be completed?",
     "options": [
-      {"label":"Yes, the customer refused the visit/access","next_step":"exception_28_action"},
-      {"label":"No, the customer did not refuse or another failure occurred","next_step":"exception_no_major"}
+      {
+        "label": "Yes, the customer refused the visit/access",
+        "next_step": "exception_28_action"
+      },
+      {
+        "label": "No, the customer did not refuse or another failure occurred",
+        "next_step": "exception_no_major"
+      }
     ]
   },
   "exception_28_action": {
@@ -789,23 +1699,41 @@
     "question": "Record when the line drops and the DSL light status reported by the customer.",
     "customer_prompt": "Please tell me when the line drops and whether the DSL light turns off at that time.",
     "options": [
-      {"label":"Yes, customer report conflicts with ASSIA","next_step":"exception_contradiction_hdm"},
-      {"label":"No, result and symptoms agree","next_step":"exception_no_major"}
+      {
+        "label": "Yes, customer report conflicts with ASSIA",
+        "next_step": "exception_contradiction_hdm"
+      },
+      {
+        "label": "No, result and symptoms agree",
+        "next_step": "exception_no_major"
+      }
     ]
   },
   "exception_contradiction_hdm": {
     "question": "Have you checked HDM DSL Physical Uptime and System Uptime, plus Clear View history and Fix Mode?",
     "options": [
-      {"label":"Yes, HDM/ASSIA indicates stability despite the report","next_step":"exception_contradiction_cpe"},
-      {"label":"No, tool is unavailable or result shows Physical/Dispatch","next_step":"exception_contradiction_tools"}
+      {
+        "label": "Yes, HDM/ASSIA indicates stability despite the report",
+        "next_step": "exception_contradiction_cpe"
+      },
+      {
+        "label": "No, tool is unavailable or result shows Physical/Dispatch",
+        "next_step": "exception_contradiction_tools"
+      }
     ]
   },
   "exception_contradiction_cpe": {
     "question": "Check the full-day alternate-router test result from the main line.",
     "customer_prompt": "After testing another router from the main line for a full day, does the connection still drop?",
     "options": [
-      {"label":"Yes, test completed and issue remains","next_step":"exception_contradiction_escalate"},
-      {"label":"No, test was not completed or no alternate router is available","next_step":"exception_contradiction_test"}
+      {
+        "label": "Yes, test completed and issue remains",
+        "next_step": "exception_contradiction_escalate"
+      },
+      {
+        "label": "No, test was not completed or no alternate router is available",
+        "next_step": "exception_contradiction_test"
+      }
     ]
   },
   "exception_contradiction_test": {
@@ -828,6 +1756,56 @@
     "customer_script": "After reviewing the line results and router test, I have recorded the case for technical review. We will follow up according to the SLA shown in the system.",
     "reference_guidance": "After logging the Physical Instability Contradiction complaint, give the customer its customer-facing reference and current SLA. IR/Delay records are internal; share them only if the system provides a customer-facing reference.",
     "sla": "24 hours in the training guide; verify the current SLA",
+    "options": []
+  },
+  "voice_verification": {
+    "question": "Verify the voice service: is there a dial tone on the landline?",
+    "customer_prompt": "Reconnect the phone to the line socket and lift the handset. Do you hear a dial tone?",
+    "options": [
+      {
+        "label": "Dial tone is present",
+        "next_step": "connection_check"
+      },
+      {
+        "label": "No dial tone or voice is affected",
+        "next_step": "voice_start"
+      },
+      {
+        "label": "Could not test",
+        "next_step": "voice_verify_unknown"
+      }
+    ]
+  },
+  "voice_verify_unknown": {
+    "question": "Voice service status could not be confirmed.",
+    "action": "Record the actual test result shown in the system. Do not classify by guess; continue DSL/ADSL checks if only internet is affected, or consult the current landline procedure.",
+    "customer_script": "I could not confirm the dial tone now; I will check the line status and continue with the right checks.",
+    "sla": "Based on the test result and current system",
+    "options": []
+  },
+  "connection_check": {
+    "question": "Confirm the router is connected directly to the main line socket, without internal extensions or an extra splitter. Was this tested?",
+    "customer_prompt": "Disconnect internal extensions/splitters, connect the router directly to the main socket, then check the DSL/ADSL light.",
+    "options": [
+      {
+        "label": "Yes, directly on the main socket; no internal extensions",
+        "next_step": "physical_start"
+      },
+      {
+        "label": "There was an internal extension; tested from the main socket",
+        "next_step": "physical_start"
+      },
+      {
+        "label": "Cannot test or main socket is unclear",
+        "next_step": "connection_unknown_terminal"
+      }
+    ]
+  },
+  "connection_unknown_terminal": {
+    "question": "Internal wiring has not been ruled out.",
+    "action": "Record that a direct test was not completed. Do not claim internal wiring was fixed or confirmed as the cause without an actual result. Follow the approved wiring check or continue after testing the main socket.",
+    "customer_script": "Before I identify the cause, we need to test the router directly on the main socket and check the wiring.",
+    "sla": "Do not classify until checks are complete",
     "options": []
   }
 }

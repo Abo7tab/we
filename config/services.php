@@ -34,9 +34,4 @@ return [
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
-
-    'noc_updates' => [
-        'admin_key' => env('NOC_UPDATES_ADMIN_KEY'),
-    ],
-
 ];

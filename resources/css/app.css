@@ -87,10 +87,8 @@ body {
 }
 
 .app-dark .quick-search-panel,
-.app-dark .noc-updates,
 .app-dark .comment-generator,
 .app-dark .search-result-card,
-.app-dark .noc-updates article,
 .app-dark .comment-generator textarea {
     background: #172338 !important;
     border-color: #34445e !important;

@@ -292,7 +292,7 @@ const App = {
         const slaSortDirection = ref('asc');
         const packageSearch = ref('');
         const quickDrawerOpen = ref(false);
-        const workspaceMode = ref('home');
+        const workspaceMode = ref('guided');
         const treeMapPath = ref([]);
         const treeMapSearch = ref('');
         const reviewDeckId = ref(null);
@@ -639,8 +639,15 @@ const App = {
         function goHome() {
             quickToolsOpen.value = '';
             quickDrawerOpen.value = false;
-            workspaceMode.value = 'home';
+            workspaceMode.value = 'guided';
             reviewDeckId.value = null;
+            if (tree.value?.start) {
+                currentStepId.value = tree.value.start;
+                history.value = [];
+                pathSelections.value = [];
+                treeMapPath.value = [];
+                resetPackageControls();
+            }
             afterStepChange();
         }
 
@@ -743,6 +750,19 @@ const App = {
                 h('span', [h('strong', option.label), h('small', tree.value?.[option.next_step]?.question || '')]),
                 icon('arrow', 'size-4'),
             ]));
+            const lessonCards = [
+                step.customer_prompt ? { icon: 'chat', label: t('askCustomer'), text: step.customer_prompt, kind: 'ask' } : null,
+                step.check_guidance ? { icon: 'search', label: t('checkGuidance'), text: step.check_guidance, kind: 'check' } : null,
+                step.action ? { icon: 'ticket', label: t('whatToDo'), text: step.action, kind: 'act' } : null,
+            ].filter(Boolean);
+            const branchCount = Math.min(step.options?.length || 0, 4);
+            const diagramTargets = branchCount ? Array.from({ length: branchCount }, (_, index) => {
+                const x = 50 + ((index - (branchCount - 1) / 2) * Math.min(24, 72 / Math.max(1, branchCount - 1)));
+                return h('g', { key: 'lesson-branch-' + index }, [
+                    h('path', { class: 'review-diagram-wire', d: `M50 30 C50 58 ${x} 58 ${x} 82` }),
+                    h('circle', { class: 'review-diagram-node is-branch', cx: String(x), cy: '82', r: '5' }),
+                ]);
+            }) : [h('path', { class: 'review-diagram-wire is-complete', d: 'M50 30 V82' }), h('circle', { class: 'review-diagram-node is-complete', cx: '50', cy: '82', r: '6' })];
 
             return h('section', { class: 'review-presenter' }, [
                 h('header', { class: 'review-presenter-head' }, [
@@ -754,10 +774,32 @@ const App = {
                 h(Transition, { name: 'map-node', mode: 'out-in' }, { default: () => h('article', { class: 'review-slide', key: row.id }, [
                     h('div', { class: 'review-slide-topline' }, [h('span', t('reviewStudy')), h('span', step.options?.length ? step.options.length + ' ' + t('mapOptionsCount') : t('mapTerminal'))]),
                     h('h2', { class: 'review-slide-title' }, step.question),
-                    step.finding ? h('section', { class: 'review-slide-panel review-finding' }, [h('b', t('mapFound')), h('p', step.finding)]) : null,
-                    step.customer_prompt ? h('section', { class: 'review-slide-panel review-customer' }, [h('b', t('askCustomer')), h('p', step.customer_prompt)]) : null,
-                    step.check_guidance ? h('section', { class: 'review-slide-panel review-check' }, [h('b', t('checkGuidance')), h('p', step.check_guidance)]) : null,
-                    step.action ? h('section', { class: 'review-slide-panel review-action' }, [h('b', t('whatToDo')), h('p', step.action)]) : null,
+                    h('section', { class: 'review-slide-visual' }, [
+                        h('div', { class: 'review-diagram-copy' }, [
+                            h('span', { class: 'review-diagram-kicker' }, language.value === 'ar' ? 'خريطة الخطوة' : 'STEP MAP'),
+                            h('strong', step.options?.length ? (language.value === 'ar' ? 'النتيجة تحدد الفرع التالي' : 'Your finding selects the next branch') : (language.value === 'ar' ? 'وصلت لنهاية الإجراء' : 'You reached the resolution')),
+                            h('small', language.value === 'ar' ? `${step.options?.length || 0} اختيارات · ${step.sla ? 'SLA محدد' : 'راجع الإجراء قبل الإغلاق'}` : `${step.options?.length || 0} choices · ${step.sla ? 'SLA recorded' : 'Check action before closing'}`),
+                        ]),
+                        h('svg', { class: 'review-slide-diagram', viewBox: '0 0 100 100', role: 'img', 'aria-label': language.value === 'ar' ? 'مخطط تفرع الإجراء' : 'Action branch diagram' }, [
+                            h('path', { class: 'review-diagram-wire', d: 'M50 16 V30' }),
+                            ...diagramTargets,
+                            h('circle', { class: 'review-diagram-node is-start', cx: '50', cy: '16', r: '10' }),
+                            h('circle', { class: 'review-diagram-core', cx: '50', cy: '16', r: '3' }),
+                        ]),
+                        h('div', { class: 'review-diagram-legend' }, [
+                            h('span', [h('i', { class: 'legend-start' }), language.value === 'ar' ? 'افحص' : 'CHECK']),
+                            h('span', [h('i', { class: 'legend-branch' }), language.value === 'ar' ? 'اختَر النتيجة' : 'CHOOSE']),
+                            h('span', [h('i', { class: 'legend-end' }), language.value === 'ar' ? 'الإجراء' : 'ACTION']),
+                        ]),
+                    ]),
+                    step.finding ? h('section', { class: 'review-takeaway' }, [icon('alert', 'size-5'), h('div', [h('b', t('mapFound')), h('p', step.finding)])]) : null,
+                    lessonCards.length ? h('section', { class: 'review-lesson-sequence', 'aria-label': language.value === 'ar' ? 'تسلسل التنفيذ' : 'Action sequence' }, lessonCards.map((card, index) => h('article', { class: 'review-lesson-card is-' + card.kind, key: card.kind }, [
+                        h('span', { class: 'review-lesson-number' }, String(index + 1).padStart(2, '0')),
+                        h('span', { class: 'review-lesson-icon' }, icon(card.icon, 'size-5')),
+                        h('b', card.label),
+                        h('p', card.text),
+                        index < lessonCards.length - 1 ? h('span', { class: 'review-lesson-connector', 'aria-hidden': 'true' }, language.value === 'ar' ? '←' : '→') : null,
+                    ]))) : null,
                     step.options?.length ? h('section', { class: 'review-branches' }, [h('h3', t('reviewCaseMap')), ...options]) : h('section', { class: 'review-endings' }, [
                         step.sla ? h('div', { class: 'review-slide-panel review-sla' }, [icon('clock', 'size-5'), h('span', [h('b', t('sla')), h('strong', step.sla)])]) : null,
                         step.customer_script ? h('div', { class: 'review-slide-panel review-customer-script' }, [h('b', t('customerScript')), h('p', step.customer_script)]) : null,
@@ -787,7 +829,7 @@ const App = {
                     ...treeMapPath.value.slice(0, levelIndex),
                     { stepId, optionIndex, nextStep: option.next_step },
                 ];
-                nextTick(() => document.querySelector('.decision-level.is-current')?.scrollIntoView({ behavior: 'smooth', block: 'center' }));
+                nextTick(() => document.querySelector('.decision-level.is-current')?.scrollIntoView({ behavior: 'auto', block: 'nearest' }));
             }
 
             const levels = [
@@ -838,11 +880,14 @@ const App = {
                         h('div', { class: 'decision-level-question-wrap' }, [
                             h('span', { class: 'decision-level-kicker' }, level.current ? (terminal ? t('mapTerminal') : count + ' ' + t('mapOptionsCount')) : (language.value === 'ar' ? 'السؤال السابق' : 'Previous decision')),
                             h('h3', { class: 'decision-level-question' }, level.step.question),
-                            !terminal && level.step.check_guidance ? h('p', { class: 'decision-level-guidance' }, level.step.check_guidance) : null,
-                            !terminal && level.step.action ? h('p', { class: 'decision-level-guidance is-action' }, level.step.action) : null,
-                            !terminal && level.step.customer_prompt ? h('p', { class: 'decision-level-guidance is-customer' }, level.step.customer_prompt) : null,
                         ]),
                     ]),
+                    !terminal && (level.step.check_guidance || level.step.action || level.step.customer_prompt) ? h('details', { class: 'decision-slide-notes' }, [
+                        h('summary', [icon('question', 'size-4'), language.value === 'ar' ? 'دليل سريع للخطوة' : 'Step guide']),
+                        level.step.check_guidance ? h('div', { class: 'decision-note-item is-check' }, [h('b', language.value === 'ar' ? 'افحص' : 'Check'), h('p', level.step.check_guidance)]) : null,
+                        level.step.action ? h('div', { class: 'decision-note-item is-action' }, [h('b', t('whatToDo')), h('p', level.step.action)]) : null,
+                        level.step.customer_prompt ? h('div', { class: 'decision-note-item is-customer' }, [h('b', t('askCustomer')), h('p', level.step.customer_prompt)]) : null,
+                    ]) : null,
                     terminal ? h('div', { class: 'decision-ending-panel' }, [
                         level.step.finding ? h('div', { class: 'decision-ending-finding' }, [h('b', t('mapFound')), h('p', level.step.finding)]) : null,
                         level.step.action ? h('div', { class: 'decision-ending-action' }, [h('b', t('action')), h('p', level.step.action)]) : null,
@@ -874,7 +919,6 @@ const App = {
                     treeMapSearch.value ? h('button', { class: 'decision-search-clear', type: 'button', onClick: () => { treeMapSearch.value = ''; }, 'aria-label': t('closeDrawer') }, '×') : null,
                 ]),
                 treeMapSearch.value.trim() ? h('div', { class: 'decision-search-results', 'aria-live': 'polite' }, treeMapSearchResults.value.length ? treeMapSearchResults.value.map(({ id, step }) => h('button', { class: 'decision-search-result', key: id, type: 'button', onClick: () => openMapSearchResult(id) }, [h('span', [h('strong', step.question || id), h('small', step.action || step.finding || '')]), icon('arrow', 'size-4')])) : h('p', { class: 'decision-empty' }, t('mapSearchEmpty'))) : null,
-                treeMapPath.value.length ? h('div', { class: 'decision-map-status' }, [h('span', { class: 'status-pulse' }), treeMapPath.value.length + ' ' + t('mapVisits'), h('span', language.value === 'ar' ? 'كل القرارات السابقة ظاهرة' : 'Earlier decisions remain visible')]) : null,
                 h(TransitionGroup, { name: 'tree-branch', tag: 'div', class: 'decision-tree-board' }, { default: () => renderedLevels }),
                 h('div', { class: 'decision-map-footer' }, [
                     h('span', { class: 'decision-progress' }, treeMapPath.value.length ? treeMapPath.value.length + ' ' + t('mapVisits') : t('mapRoot')),
@@ -1091,7 +1135,6 @@ const App = {
                         ]),
                     ]),
                     h('nav', { class: 'world-nav order-3 flex w-full items-center gap-1 rounded-xl border border-slate-200 bg-slate-50 p-1 sm:order-none sm:w-auto', 'aria-label': language.value === 'ar' ? 'أوضاع العمل' : 'Work modes' }, [
-                        h('button', { class: `world-nav-button inline-flex min-h-9 flex-1 items-center justify-center gap-1.5 rounded-lg px-3 text-xs font-bold transition sm:flex-none ${workspaceMode.value === 'home' ? 'bg-white text-purple-800 shadow-sm' : 'text-slate-600 hover:bg-white'}`, type: 'button', onClick: goHome, 'aria-pressed': workspaceMode.value === 'home' }, [icon('home', 'size-4'), t('homeRoomsLabel')]),
                         h('button', { class: `inline-flex min-h-9 flex-1 items-center justify-center gap-1.5 rounded-lg px-3 text-xs font-bold transition sm:flex-none ${workspaceMode.value === 'guided' || workspaceMode.value === 'reference' ? 'bg-white text-purple-800 shadow-sm' : 'text-slate-600 hover:bg-white'}`, type: 'button', onClick: enterGuided, 'aria-pressed': workspaceMode.value === 'guided' || workspaceMode.value === 'reference' }, [icon('chat', 'size-4'), t('guidedMode')]),
                         h('button', { class: `inline-flex min-h-9 flex-1 items-center justify-center gap-1.5 rounded-lg px-3 text-xs font-bold transition sm:flex-none ${workspaceMode.value === 'map' ? 'bg-white text-purple-800 shadow-sm' : 'text-slate-600 hover:bg-white'}`, type: 'button', onClick: openTreeMap, 'aria-pressed': workspaceMode.value === 'map' }, [icon('tree', 'size-4'), t('treeMode')]),
                         h('button', { class: `inline-flex min-h-9 flex-1 items-center justify-center gap-1.5 rounded-lg px-3 text-xs font-bold transition sm:flex-none ${workspaceMode.value === 'review' ? 'bg-white text-purple-800 shadow-sm' : 'text-slate-600 hover:bg-white'}`, type: 'button', onClick: enterReview, 'aria-pressed': workspaceMode.value === 'review' }, [icon('grid', 'size-4'), t('reviewMode')]),

@@ -51,6 +51,60 @@ body {
     transform: translateY(-6px);
 }
 
+.map-node-enter-active,
+.map-node-leave-active {
+    transition: opacity 220ms ease, transform 220ms ease;
+}
+
+.map-node-enter-from {
+    opacity: 0;
+    transform: translateY(12px) scale(.99);
+}
+
+.map-node-leave-to {
+    opacity: 0;
+    transform: translateY(-8px) scale(.99);
+}
+
+.tree-branch-enter-active,
+.tree-branch-leave-active,
+.tree-branch-move {
+    transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.tree-branch-enter-from,
+.tree-branch-leave-to {
+    opacity: 0;
+    transform: translateY(10px);
+}
+
+.tree-trail-row {
+    position: relative;
+}
+
+.tree-trail-row:not(:last-child)::after {
+    position: absolute;
+    top: 1.8rem;
+    inset-inline-start: .72rem;
+    width: 1px;
+    height: .75rem;
+    background: #c4b5fd;
+    content: '';
+}
+
+.decision-branch {
+    margin-inline-start: .5rem;
+}
+
+.decision-branch::before {
+    position: absolute;
+    top: 1.45rem;
+    inset-inline-start: -.55rem;
+    width: .55rem;
+    border-top: 1px solid #c4b5fd;
+    content: '';
+}
+
 .app-shell {
     transition: background-color 180ms ease, color 180ms ease;
 }
@@ -237,6 +291,14 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
+    .map-node-enter-active,
+    .map-node-leave-active,
+    .tree-branch-enter-active,
+    .tree-branch-leave-active,
+    .tree-branch-move {
+        transition-duration: .01ms !important;
+    }
+
     *,
     *::before,
     *::after {
@@ -298,6 +360,20 @@ body {
 
 .app-dark.we-brand { background: #0b1220 !important; }
 .app-dark.we-brand .app-card { border-top-color: #a578c8; }
+.app-dark .decision-map { background: #172338 !important; border-color: #47345b !important; }
+.app-dark .decision-map .question-panel,
+.app-dark .decision-map .decision-branch,
+.app-dark .decision-map .tree-trail-row > div,
+.app-dark .decision-map .bg-white {
+    background-color: #111b2b !important;
+    color: #e2e8f0 !important;
+    border-color: #3b3150 !important;
+}
+.app-dark .decision-map .bg-slate-50 { background-color: #172338 !important; }
+.app-dark .decision-map .text-slate-900,
+.app-dark .decision-map .text-slate-700,
+.app-dark .decision-map .text-slate-600,
+.app-dark .decision-map .text-slate-500 { color: #cbd5e1 !important; }
 .app-dark .we-exceed { color: #7dd3fc; }
 .app-dark .we-internal,
 .app-dark .we-footer { color: #b8abc8; }

@@ -1,5 +1,5 @@
 import './bootstrap';
-import { computed, createApp, h, onMounted, nextTick, ref, Transition } from 'vue';
+import { computed, createApp, h, onMounted, nextTick, ref, Transition, TransitionGroup } from 'vue';
 
 const MAX_STEPS_PER_CALL = 100;
 const DEFAULT_TREE = 'support';
@@ -44,6 +44,7 @@ function icon(name, className = 'size-5') {
         search: [h('circle', { cx: '10.8', cy: '10.8', r: '6.8' }), h('path', { d: 'm16 16 5 5' })],
         ticket: [h('path', { d: 'M4 6h16v4a2 2 0 0 0 0 4v4H4v-4a2 2 0 0 0 0-4V6Z' }), h('path', { d: 'M13 6v2m0 4v2m0 4v2' })],
         grid: [h('rect', { x: '3', y: '3', width: '7', height: '7', rx: '1.5' }), h('rect', { x: '14', y: '3', width: '7', height: '7', rx: '1.5' }), h('rect', { x: '3', y: '14', width: '7', height: '7', rx: '1.5' }), h('rect', { x: '14', y: '14', width: '7', height: '7', rx: '1.5' })],
+        tree: [h('path', { d: 'M12 3v5m0 0H6v5m6-5h6v5M6 13v3m6-3v3m6-3v3' }), h('rect', { x: '9', y: '2', width: '6', height: '5', rx: '2' }), h('rect', { x: '3', y: '12', width: '6', height: '5', rx: '2' }), h('rect', { x: '9', y: '16', width: '6', height: '5', rx: '2' }), h('rect', { x: '15', y: '12', width: '6', height: '5', rx: '2' })],
         sun: [h('circle', { cx: '12', cy: '12', r: '4' }), h('path', { d: 'M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42' })],
         moon: [h('path', { d: 'M20.9 13A8.5 8.5 0 0 1 11 3.1 8.5 8.5 0 1 0 20.9 13Z' })],
     };
@@ -217,6 +218,7 @@ const COPY = {
         slaSortBy: 'ترتيب حسب', slaSortDuration: 'مدة المهلة', slaSortCase: 'اسم الحالة', slaAscending: 'تصاعدي', slaDescending: 'تنازلي', slaCaseColumn: 'الحالة', slaDurationColumn: 'المهلة',
         quickChangePackage: 'تغيير باقة',
         quickAccess: 'الوصول السريع', closeDrawer: 'إغلاق',
+        guidedMode: 'مساعد المكالمة', treeMode: 'خريطة الشجرة', mapTitle: 'استكشف شجرة القرار', mapIntro: 'كل بطاقة فرع محتمل. افتح الفرع لتكمل الشجرة، أو جرّبه في مساعد المكالمة.', mapSearch: 'ابحث عن حالة أو أداة أو عرض…', mapSearchHint: 'البحث يشمل الأسئلة والإجراءات والنهايات في كل الشجرة.', mapTrail: 'المسار الذي استكشفته', mapRoot: 'بداية الشجرة', mapBranches: 'النتائج الممكنة من هذه الخطوة', mapBranch: 'استكشف الفرع', mapTry: 'جرّب في المساعد', mapOpenCurrent: 'ابدأ هذه الخطوة في المساعد', mapBackBranch: 'ارجع للتفرع السابق', mapReset: 'ابدأ استكشافًا جديدًا', mapTerminal: 'نهاية المسار', mapSla: 'SLA المسار', mapSearchEmpty: 'لا توجد حالة مطابقة.', mapOptionsCount: 'فروع متاحة', mapVisits: 'خطوات اتخذتها', mapProgress: 'اللي تم في المسار', mapNext: 'الخطوة الحالية', mapNoPath: 'لا يوجد مسار متاح لهذه الخطوة.', mapFound: 'النتيجة التي وصلنا لها',
         quickProblem: 'تشخيص مشكلة', quickInquiry: 'استفسار خدمة', quickRequest: 'طلب أو متابعة تركيب', quickBilling: 'فاتورة أو سداد', quickComplaint: 'شكوى أو تصعيد',
         openReference: 'مرجع الدعم', returnGuided: 'العودة لمساعد المكالمة',
         slaSearchPlaceholder: 'الحالة أو رقم الساعات/الأيام…', packageSearchPlaceholder: 'اسم الباقة أو السرعة أو السعة…', packagesNote: 'البحث يشمل السعة والسرعة والاسم والأسعار الموجودة في الجداول. عدد الأشخاص ليس تصنيفًا رسميًا في البيانات؛ استخدم الاستهلاك وعدد الأجهزة ولا تفترض سعة مناسبة من عدد الأفراد وحده.',
@@ -249,6 +251,7 @@ const COPY = {
         slaSortBy: 'Sort by', slaSortDuration: 'SLA duration', slaSortCase: 'Case name', slaAscending: 'Ascending', slaDescending: 'Descending', slaCaseColumn: 'Case', slaDurationColumn: 'SLA',
         quickChangePackage: 'Change package',
         quickAccess: 'Quick access', closeDrawer: 'Close',
+        guidedMode: 'Call assistant', treeMode: 'Decision map', mapTitle: 'Explore the decision tree', mapIntro: 'Each card is a possible branch. Open a branch to keep exploring, or try it in the call assistant.', mapSearch: 'Search a case, tool, or symptom…', mapSearchHint: 'Searches questions, actions, and end states across the full tree.', mapTrail: 'Explored path', mapRoot: 'Tree start', mapBranches: 'Possible results from this step', mapBranch: 'Explore branch', mapTry: 'Try in assistant', mapOpenCurrent: 'Open this step in assistant', mapBackBranch: 'Back to previous branch', mapReset: 'Start a new exploration', mapTerminal: 'End of path', mapSla: 'Path SLA', mapSearchEmpty: 'No matching case.', mapOptionsCount: 'branches', mapVisits: 'Steps taken', mapProgress: 'What you have done', mapNext: 'Current step', mapNoPath: 'No path is available for this step.', mapFound: 'Outcome reached',
         quickProblem: 'Troubleshoot a problem', quickInquiry: 'Service inquiry', quickRequest: 'Installation request or follow-up', quickBilling: 'Bill or payment', quickComplaint: 'Complaint or escalation',
         openReference: 'Support reference', returnGuided: 'Return to call guide',
         slaSearchPlaceholder: 'Case or hours/days…', packageSearchPlaceholder: 'Package name, speed, or quota…', packagesNote: 'Search covers the names, speeds, quotas, and prices in the available tables. Number of people is not an official package field; use actual usage and device count, and do not infer a quota from household size alone.',
@@ -288,6 +291,8 @@ const App = {
         const packageSearch = ref('');
         const quickDrawerOpen = ref(false);
         const workspaceMode = ref('guided');
+        const treeMapPath = ref([]);
+        const treeMapSearch = ref('');
         const packagePeriod = ref('monthly');
         const packageAccountMode = ref('');
         const selectedPackage = ref(null);
@@ -301,6 +306,44 @@ const App = {
             if (!tree.value || !currentStepId.value) return null;
             return tree.value[currentStepId.value] ?? null;
         });
+        const treeMapFocusId = computed(() => treeMapPath.value.at(-1)?.nextStep || tree.value?.start || null);
+        const treeMapFocusStep = computed(() => tree.value?.[treeMapFocusId.value] ?? null);
+        const treeMapTrail = computed(() => treeMapPath.value.map((entry) => ({
+            ...entry,
+            step: tree.value?.[entry.stepId],
+            option: tree.value?.[entry.stepId]?.options?.[entry.optionIndex],
+            next: tree.value?.[entry.nextStep],
+        })));
+        const treeMapBranches = computed(() => (treeMapFocusStep.value?.options || []).map((option, index) => ({
+            option,
+            index,
+            step: tree.value?.[option.next_step],
+            stepId: option.next_step,
+            terminal: tree.value?.[option.next_step]?.options?.length === 0,
+        })));
+        const treeMapSearchResults = computed(() => {
+            const query = normalizeSearch(treeMapSearch.value, language.value);
+            if (!query || !tree.value) return [];
+            const tokens = query.split(' ');
+            return Object.entries(tree.value)
+                .filter(([id, step]) => id !== 'operations_guide' && step && typeof step === 'object')
+                .map(([id, step]) => {
+                    const searchable = normalizeSearch([
+                        id, step.question, step.finding, step.action, step.check_guidance, step.customer_prompt,
+                        step.customer_script, step.sla, step.reference_guidance, step.clear_description,
+                        ...(step.options || []).map((option) => option.label),
+                    ].filter(Boolean).join(' '), language.value);
+                    const score = tokens.reduce((total, token) => total + (searchable.includes(token) ? 1 : 0), 0);
+                    return { id, step, score };
+                })
+                .filter((result) => result.score === tokens.length)
+                .sort((a, b) => b.score - a.score || (a.step.question || a.id).localeCompare(b.step.question || b.id, language.value))
+                .slice(0, 12);
+        });
+        const completedPath = computed(() => pathSelections.value.map(({ stepId, optionIndex }) => ({
+            step: tree.value?.[stepId],
+            option: tree.value?.[stepId]?.options?.[optionIndex],
+        })).filter((entry) => entry.step && entry.option));
         const isFinished = computed(() => currentStep.value?.options?.length === 0);
         const isPackageInquiry = computed(() => currentStepId.value === 'package_inquiry_terminal');
         const productCustomerScript = computed(() => {
@@ -479,19 +522,152 @@ const App = {
             nextTick(() => window.scrollTo({ top: 0, behavior: 'smooth' }));
         }
 
-        function jumpToStep(stepId) {
-            if (!tree.value?.[stepId]) return;
-            workspaceMode.value = 'guided';
-            quickToolsOpen.value = '';
-            quickDrawerOpen.value = false;
+        function findTreePath(stepId) {
+            if (!tree.value?.[stepId]) return null;
+            if (stepId === tree.value.start) return [];
+            const queue = [{ stepId: tree.value.start, path: [] }];
+            const visited = new Set([tree.value.start]);
+            while (queue.length) {
+                const current = queue.shift();
+                const options = tree.value[current.stepId]?.options || [];
+                for (const [optionIndex, option] of options.entries()) {
+                    const nextStep = option.next_step;
+                    if (!tree.value[nextStep]) continue;
+                    const path = [...current.path, { stepId: current.stepId, optionIndex, nextStep }];
+                    if (nextStep === stepId) return path;
+                    if (!visited.has(nextStep)) {
+                        visited.add(nextStep);
+                        queue.push({ stepId: nextStep, path });
+                    }
+                }
+            }
+            return null;
+        }
+
+        function applyPathToGuide(path, stepId) {
             currentStepId.value = stepId;
-            history.value = [];
-            pathSelections.value = [];
+            history.value = path.map((entry) => entry.stepId);
+            pathSelections.value = path.map(({ stepId: parentId, optionIndex }) => ({ stepId: parentId, optionIndex }));
+            resetPackageControls();
             commentDetails.value = '';
             commentRefNumber.value = '';
             quickSearch.value = '';
-            resetPackageControls();
+            quickToolsOpen.value = '';
+            workspaceMode.value = 'guided';
             afterStepChange();
+        }
+
+        function openTreeMap() {
+            if (!tree.value) return;
+            quickToolsOpen.value = '';
+            quickDrawerOpen.value = false;
+            const route = pathSelections.value.map(({ stepId, optionIndex }) => ({
+                stepId,
+                optionIndex,
+                nextStep: tree.value?.[stepId]?.options?.[optionIndex]?.next_step,
+            })).filter((entry) => entry.nextStep);
+            treeMapPath.value = currentStepId.value && currentStepId.value !== tree.value.start
+                ? (route.length && route.at(-1).nextStep === currentStepId.value ? route : findTreePath(currentStepId.value) || [])
+                : [];
+            treeMapSearch.value = '';
+            workspaceMode.value = 'map';
+            afterStepChange();
+        }
+
+        function exploreTreeBranch(optionIndex) {
+            const option = treeMapFocusStep.value?.options?.[optionIndex];
+            if (!option || !tree.value?.[option.next_step]) return;
+            treeMapPath.value = [...treeMapPath.value, { stepId: treeMapFocusId.value, optionIndex, nextStep: option.next_step }];
+        }
+
+        function backTreeBranch() {
+            if (!treeMapPath.value.length) return;
+            treeMapPath.value = treeMapPath.value.slice(0, -1);
+        }
+
+        function openMapFocusInGuide() {
+            if (!treeMapFocusId.value || !tree.value?.[treeMapFocusId.value]) return;
+            applyPathToGuide(treeMapPath.value, treeMapFocusId.value);
+        }
+
+        function openMapSearchResult(stepId) {
+            const path = findTreePath(stepId);
+            if (!path) return;
+            treeMapPath.value = path;
+            treeMapSearch.value = '';
+        }
+
+        function renderDecisionMap() {
+            const focus = treeMapFocusStep.value;
+            if (!focus) return h('p', { class: 'text-red-700', role: 'alert' }, t('missing'));
+            const terminal = focus.options?.length === 0;
+            const pathRows = treeMapTrail.value.map((entry, index) => h('div', { class: 'tree-trail-row flex items-start gap-3', key: `${entry.stepId}-${index}` }, [
+                h('span', { class: 'mt-1 inline-flex size-6 shrink-0 items-center justify-center rounded-full bg-purple-100 text-[10px] font-bold text-purple-800' }, String(index + 1)),
+                h('div', { class: 'min-w-0 rounded-xl border border-purple-100 bg-white px-3 py-2 text-sm leading-6' }, [
+                    h('p', { class: 'm-0 font-semibold text-slate-700' }, entry.step?.question || entry.stepId),
+                    h('p', { class: 'm-0 text-xs font-bold text-purple-800' }, `↳ ${entry.option?.label || ''}`),
+                ]),
+            ]));
+            const branchCards = treeMapBranches.value.map(({ option, index, step, stepId, terminal: branchTerminal }) => h('article', { class: 'decision-branch relative rounded-2xl border border-purple-100 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-purple-300 hover:shadow-md', key: `${treeMapFocusId.value}-${index}` }, [
+                h('div', { class: 'mb-2 flex items-start gap-3' }, [
+                    h('span', { class: 'inline-flex size-9 shrink-0 items-center justify-center rounded-xl bg-purple-50 text-purple-800' }, [icon(optionIcon(option.label), 'size-5')]),
+                    h('div', { class: 'min-w-0 flex-1' }, [
+                        h('p', { class: 'm-0 text-sm font-bold leading-6 text-slate-900' }, option.label || t('choose')),
+                        h('p', { class: 'mt-1 text-xs leading-5 text-slate-600' }, step?.question || t('incomplete')),
+                    ]),
+                    branchTerminal ? h('span', { class: 'shrink-0 rounded-full bg-emerald-100 px-2 py-1 text-[10px] font-bold text-emerald-900' }, t('mapTerminal')) : null,
+                ]),
+                branchTerminal ? h('div', { class: 'mt-3 space-y-2 rounded-xl bg-slate-50 p-3 text-xs leading-5' }, [
+                    step?.finding ? h('p', { class: 'm-0 text-slate-700' }, step.finding) : null,
+                    step?.action ? h('p', { class: 'm-0 font-semibold text-orange-900' }, `${t('action')} ${step.action}`) : null,
+                    step?.sla ? h('p', { class: 'm-0 font-bold text-blue-900' }, `${t('sla')} ${step.sla}`) : null,
+                ]) : null,
+                h('div', { class: 'mt-3 grid grid-cols-2 gap-2' }, [
+                    h('button', { class: 'inline-flex min-h-10 items-center justify-center gap-1.5 rounded-xl bg-purple-800 px-3 py-2 text-xs font-bold text-white transition hover:bg-purple-900 active:scale-[.98]', type: 'button', onClick: () => exploreTreeBranch(index) }, [icon('tree', 'size-4'), t('mapBranch')]),
+                    h('button', { class: 'app-control inline-flex min-h-10 items-center justify-center gap-1.5 rounded-xl border px-2 py-2 text-xs font-bold text-slate-700 transition hover:bg-slate-50', type: 'button', onClick: () => { treeMapPath.value = [...treeMapPath.value, { stepId: treeMapFocusId.value, optionIndex: index, nextStep: stepId }]; openMapFocusInGuide(); } }, [icon('chat', 'size-4'), t('mapTry')]),
+                ]),
+            ]));
+            return h('section', { class: 'decision-map rounded-2xl border border-purple-200 bg-purple-50/50 p-3 sm:p-5', 'aria-label': t('mapTitle') }, [
+                h('div', { class: 'mb-4 flex flex-wrap items-start justify-between gap-3' }, [
+                    h('div', [h('h2', { class: 'm-0 text-lg font-extrabold text-slate-900 sm:text-xl' }, t('mapTitle')), h('p', { class: 'mt-1 text-xs leading-5 text-slate-600' }, t('mapIntro'))]),
+                    h('div', { class: 'flex flex-wrap gap-2' }, [
+                        h('button', { class: 'app-control inline-flex min-h-9 items-center gap-1.5 rounded-lg border px-3 py-2 text-xs font-bold', type: 'button', onClick: backTreeBranch, disabled: !treeMapPath.value.length }, [icon('back', 'size-4'), t('mapBackBranch')]),
+                        h('button', { class: 'app-control inline-flex min-h-9 items-center gap-1.5 rounded-lg border px-3 py-2 text-xs font-bold', type: 'button', onClick: () => { treeMapPath.value = []; treeMapSearch.value = ''; } }, [icon('home', 'size-4'), t('mapReset')]),
+                    ]),
+                ]),
+                h('label', { class: 'mb-2 block text-xs font-bold text-slate-700', for: 'tree-map-search' }, t('mapSearch')),
+                h('input', { id: 'tree-map-search', class: 'app-control mb-2 w-full rounded-xl border bg-white px-3 py-2.5 text-sm', type: 'search', value: treeMapSearch.value, placeholder: t('mapSearch'), onInput: (event) => { treeMapSearch.value = event.target.value; } }),
+                treeMapSearch.value.trim() ? h('div', { class: 'mb-4 max-h-64 space-y-2 overflow-y-auto', 'aria-live': 'polite' }, treeMapSearchResults.value.length ? treeMapSearchResults.value.map(({ id, step }) => h('button', { class: 'app-control flex w-full items-start justify-between gap-3 rounded-xl border bg-white p-3 text-start', key: id, type: 'button', onClick: () => openMapSearchResult(id) }, [h('span', [h('span', { class: 'block text-sm font-bold text-slate-900' }, step.question || id), h('span', { class: 'mt-1 block text-xs text-slate-500' }, step.action || step.finding || '')]), icon('arrow', 'size-4 text-purple-800')])) : h('p', { class: 'rounded-xl bg-white p-3 text-sm text-slate-600' }, t('mapSearchEmpty'))) : null,
+                treeMapTrail.value.length ? h('section', { class: 'mb-5 rounded-2xl border border-purple-100 bg-white/80 p-3 sm:p-4' }, [
+                    h('h3', { class: 'mb-3 text-xs font-bold text-purple-900' }, t('mapTrail')),
+                    h('div', { class: 'tree-trail space-y-2' }, pathRows),
+                ]) : h('p', { class: 'mb-3 inline-flex rounded-full bg-white px-3 py-1.5 text-xs font-bold text-purple-900' }, t('mapRoot')),
+                h(Transition, { name: 'map-node', mode: 'out-in' }, { default: () => h('div', { key: treeMapFocusId.value }, [
+                    h('div', { class: 'question-panel mb-4 rounded-2xl border border-purple-200 bg-white px-4 py-4 sm:px-5' }, [
+                        h('p', { class: 'mb-1 text-[10px] font-bold uppercase tracking-wide text-purple-700' }, terminal ? t('mapTerminal') : `${treeMapBranches.value.length} ${t('mapOptionsCount')}`),
+                        h('h3', { class: 'current-question m-0 text-lg font-extrabold leading-8 text-slate-900 sm:text-xl' }, focus.question),
+                    ]),
+                    !terminal && focus.customer_prompt ? h('section', { class: 'mb-3 rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-sm leading-6 text-emerald-950' }, [h('strong', t('askCustomer')), h('p', { class: 'm-0 mt-1' }, focus.customer_prompt)]) : null,
+                    !terminal && focus.check_guidance ? h('section', { class: 'mb-3 rounded-xl border border-indigo-200 bg-indigo-50 p-3 text-sm leading-6 text-indigo-950' }, [h('strong', t('checkGuidance')), h('p', { class: 'm-0 mt-1' }, focus.check_guidance)]) : null,
+                    !terminal && focus.action ? h('section', { class: 'mb-3 rounded-xl border border-sky-200 bg-sky-50 p-3 text-sm leading-6 text-sky-950' }, [h('strong', t('whatToDo')), h('p', { class: 'm-0 mt-1' }, focus.action)]) : null,
+                    terminal ? h('div', { class: 'mb-4 space-y-3' }, [
+                        focus.finding ? h('section', { class: 'rounded-xl border border-sky-200 bg-sky-50 p-3 text-sm leading-6 text-sky-950' }, [h('strong', t('mapFound')), h('p', { class: 'm-0 mt-1' }, focus.finding)]) : null,
+                        focus.check_guidance ? h('section', { class: 'rounded-xl border border-indigo-200 bg-indigo-50 p-3 text-sm leading-6 text-indigo-950' }, [h('strong', t('checkGuidance')), h('p', { class: 'm-0 mt-1' }, focus.check_guidance)]) : null,
+                        focus.action ? h('section', { class: 'rounded-xl border border-orange-200 bg-orange-50 p-3 text-sm leading-6 text-orange-950' }, [h('strong', t('action')), h('p', { class: 'm-0 mt-1' }, focus.action)]) : null,
+                        focus.sla ? h('section', { class: 'rounded-xl border border-blue-200 bg-blue-50 p-3 text-sm leading-6 text-blue-950' }, [h('strong', `${t('sla')} `), focus.sla]) : null,
+                        focus.customer_script ? h('section', { class: 'rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-sm leading-6 text-emerald-950' }, [h('strong', t('customerScript')), h('p', { class: 'm-0 mt-1' }, focus.customer_script)]) : null,
+                    ]) : h(TransitionGroup, { name: 'tree-branch', tag: 'div', class: 'decision-branches space-y-3' }, { default: () => branchCards }),
+                    h('button', { class: 'mt-4 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 py-3 text-sm font-bold text-white transition hover:bg-slate-800 active:scale-[.99]', type: 'button', onClick: openMapFocusInGuide }, [icon('chat', 'size-5'), t('mapOpenCurrent')]),
+                ]) }),
+            ]);
+        }
+
+        function jumpToStep(stepId) {
+            if (!tree.value?.[stepId]) return;
+            quickDrawerOpen.value = false;
+            const path = findTreePath(stepId);
+            if (!path) return;
+            applyPathToGuide(path, stepId);
         }
 
         function openQuickTool(key) {
@@ -685,6 +861,10 @@ const App = {
                             h('h1', { class: 'truncate text-xl font-bold text-gray-900 sm:text-2xl' }, t('title')),
                         ]),
                     ]),
+                    h('nav', { class: 'order-3 flex w-full items-center gap-1 rounded-xl border border-slate-200 bg-slate-50 p-1 sm:order-none sm:w-auto', 'aria-label': language.value === 'ar' ? 'أوضاع العمل' : 'Work modes' }, [
+                        h('button', { class: `inline-flex min-h-9 flex-1 items-center justify-center gap-1.5 rounded-lg px-3 text-xs font-bold transition sm:flex-none ${workspaceMode.value === 'guided' || workspaceMode.value === 'reference' ? 'bg-white text-purple-800 shadow-sm' : 'text-slate-600 hover:bg-white'}`, type: 'button', onClick: () => { workspaceMode.value = 'guided'; quickToolsOpen.value = ''; }, 'aria-pressed': workspaceMode.value === 'guided' || workspaceMode.value === 'reference' }, [icon('chat', 'size-4'), t('guidedMode')]),
+                        h('button', { class: `inline-flex min-h-9 flex-1 items-center justify-center gap-1.5 rounded-lg px-3 text-xs font-bold transition sm:flex-none ${workspaceMode.value === 'map' ? 'bg-white text-purple-800 shadow-sm' : 'text-slate-600 hover:bg-white'}`, type: 'button', onClick: openTreeMap, 'aria-pressed': workspaceMode.value === 'map' }, [icon('tree', 'size-4'), t('treeMode')]),
+                    ]),
                     h('div', { class: 'flex shrink-0 items-center gap-2' }, [
                         h('button', { class: 'app-control rounded-xl border px-3 py-2 text-sm font-semibold', type: 'button', onClick: () => switchLanguage(language.value === 'ar' ? 'en' : 'ar'), 'aria-label': language.value === 'ar' ? 'Switch to English' : 'التغيير إلى العربية' }, language.value === 'ar' ? 'EN' : 'عربي'),
                         h('button', { class: 'app-control rounded-xl border p-2', type: 'button', onClick: () => switchTheme(theme.value === 'light' ? 'dark' : 'light'), 'aria-label': theme.value === 'light' ? t('dark') : t('light'), title: theme.value === 'light' ? t('dark') : t('light') }, [icon(theme.value === 'light' ? 'moon' : 'sun')]),
@@ -754,7 +934,7 @@ const App = {
                         item.source ? h('p', { class: 'mt-2 text-[10px] text-slate-500' }, item.source) : null,
                     ])) : h('p', { class: 'rounded-lg bg-slate-50 p-3 text-sm text-slate-600' }, t('noQuickMatches'))),
                 ]) : null,
-                h('section', { class: 'quick-search-panel mb-5 rounded-2xl border border-slate-200 bg-white p-3 sm:p-4' }, [
+                workspaceMode.value === 'map' ? null : h('section', { class: 'quick-search-panel mb-5 rounded-2xl border border-slate-200 bg-white p-3 sm:p-4' }, [
                     h('label', { class: 'mb-2 flex items-center gap-2 text-sm font-bold text-slate-800', for: 'quick-support-search' }, [icon('search', 'size-4 text-blue-700'), t('quickSearch')]),
                     h('div', { class: 'flex gap-2' }, [
                         h('input', {
@@ -794,7 +974,9 @@ const App = {
                         ]))
                         : h('p', { class: 'rounded-xl bg-amber-50 px-3 py-2 text-sm leading-6 text-amber-900' }, t('noSearchResults'))) : null,
                 ]),
-                workspaceMode.value === 'reference'
+                workspaceMode.value === 'map'
+                    ? renderDecisionMap()
+                    : workspaceMode.value === 'reference'
                     ? h('section', { class: 'rounded-2xl border border-blue-100 bg-blue-50/60 p-4 text-sm leading-6 text-slate-700' }, [
                         h('p', { class: 'font-semibold text-slate-900' }, t('referenceIntro')),
                         h('p', { class: 'mt-2 text-xs text-slate-600' }, t('searchHint')),
@@ -826,6 +1008,16 @@ const App = {
                                         onClick: restart,
                                     }, [icon('home', 'size-4'), t('newInquiry')]) : null,
                                 ]),
+                                completedPath.value.length ? h('details', { class: 'mb-4 overflow-hidden rounded-2xl border border-purple-100 bg-purple-50/60' }, [
+                                    h('summary', { class: 'cursor-pointer list-none px-4 py-3 text-xs font-bold text-purple-900' }, t('mapProgress') + ': ' + completedPath.value.length + ' ' + t('mapVisits')),
+                                    h(TransitionGroup, { name: 'tree-branch', tag: 'ol', class: 'm-0 space-y-2 px-4 pb-4' }, {
+                                        default: () => completedPath.value.map(({ step, option }, index) => h('li', { class: 'flex items-start gap-2 text-xs leading-5', key: step.question + '-' + index }, [
+                                            h('span', { class: 'inline-flex size-5 shrink-0 items-center justify-center rounded-full bg-white font-bold text-purple-800' }, String(index + 1)),
+                                            h('span', { class: 'text-slate-700' }, [h('span', { class: 'font-semibold' }, step.question), h('span', { class: 'mx-1 text-purple-700' }, '→'), h('span', { class: 'font-bold text-purple-900' }, option.label)]),
+                                        ])),
+                                    }),
+                                    h('p', { class: 'm-0 border-t border-purple-100 px-4 py-2 text-xs text-purple-900' }, t('mapNext') + ': ' + currentStep.value.question),
+                                ]) : null,
                                 h('div', { class: 'question-panel mb-5 rounded-2xl border border-blue-100 bg-blue-50/70 px-4 py-4 sm:px-5 sm:py-5' }, [
                                     h('h2', { class: 'current-question text-xl font-bold leading-8 text-gray-900 sm:text-2xl sm:leading-9' }, currentStep.value.question),
                                 ]),

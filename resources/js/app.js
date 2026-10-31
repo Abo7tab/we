@@ -451,31 +451,36 @@ const App = {
                 ]),
             ]),
             h('section', {
-                class: 'app-card relative z-10 mx-auto max-w-2xl rounded-3xl bg-white p-5 shadow-2xl shadow-slate-400/20 ring-1 ring-slate-900/5 sm:p-8',
+                class: 'app-card relative z-10 mx-auto max-w-3xl rounded-[1.75rem] bg-white p-4 shadow-2xl shadow-slate-400/20 ring-1 ring-slate-900/5 sm:p-7 lg:p-9',
                 'aria-busy': loading.value ? 'true' : 'false',
             }, [
-                h('header', { class: 'mb-6 space-y-4' }, [
-                    h('div', [
-                        h('p', { class: 'mb-2 text-sm font-semibold text-blue-700' }, t('brand')),
-                        h('h1', { class: 'text-2xl font-bold text-gray-900' }, t('title')),
+                h('header', { class: 'mb-5 flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-4' }, [
+                    h('div', { class: 'flex min-w-0 items-center gap-3' }, [
+                        h('span', { class: 'brand-mark inline-flex size-11 shrink-0 items-center justify-center rounded-2xl bg-blue-700 text-white shadow-lg shadow-blue-700/20' }, [icon('router', 'size-6')]),
+                        h('div', { class: 'min-w-0' }, [
+                            h('p', { class: 'text-xs font-semibold tracking-wide text-blue-700' }, t('brand')),
+                            h('h1', { class: 'truncate text-xl font-bold text-gray-900 sm:text-2xl' }, t('title')),
+                        ]),
                     ]),
-                    h('div', { class: 'flex gap-2' }, [
-                        h('button', { class: 'app-control rounded-xl border px-3 py-2 text-sm', type: 'button', onClick: () => switchLanguage(language.value === 'ar' ? 'en' : 'ar') }, language.value === 'ar' ? 'EN' : 'عربي'),
-                        h('button', { class: 'app-control rounded-xl border px-3 py-2', type: 'button', onClick: () => switchTheme(theme.value === 'light' ? 'dark' : 'light'), 'aria-label': theme.value === 'light' ? t('dark') : t('light') }, [icon(theme.value === 'light' ? 'moon' : 'sun')]),
+                    h('div', { class: 'flex shrink-0 items-center gap-2' }, [
+                        h('button', { class: 'app-control rounded-xl border px-3 py-2 text-sm font-semibold', type: 'button', onClick: () => switchLanguage(language.value === 'ar' ? 'en' : 'ar'), 'aria-label': language.value === 'ar' ? 'Switch to English' : 'التغيير إلى العربية' }, language.value === 'ar' ? 'EN' : 'عربي'),
+                        h('button', { class: 'app-control rounded-xl border p-2', type: 'button', onClick: () => switchTheme(theme.value === 'light' ? 'dark' : 'light'), 'aria-label': theme.value === 'light' ? t('dark') : t('light'), title: theme.value === 'light' ? t('dark') : t('light') }, [icon(theme.value === 'light' ? 'moon' : 'sun')]),
                     ]),
-                    tree.value ? h('button', {
-                        class: 'inline-flex shrink-0 items-center gap-2 rounded-xl border border-gray-200 px-3 py-2 text-sm font-medium text-gray-600 transition-all hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500',
-                        type: 'button',
-                        onClick: restart,
-                        'aria-label': t('newInquiry'),
-                    }, [icon('home', 'size-4'), t('fresh')]) : null,
                 ]),
-                h('div', { class: 'settings-panel mb-4 flex flex-wrap items-center gap-2 rounded-2xl bg-slate-50 p-2.5' }, [
-                    h('label', { class: 'flex min-w-0 flex-1 items-center gap-2 text-xs text-gray-700' }, [t('voice'), h('select', { class: 'app-control min-w-0 flex-1 rounded-lg border bg-white px-2 py-1.5 text-xs', value: selectedVoice.value, onChange: (event) => setVoice(event.target.value) }, [h('option', { value: '' }, language.value === 'ar' ? 'تلقائي' : 'Auto'), ...voices.value.map((voice) => h('option', { value: voice.voiceURI, key: voice.voiceURI }, `${voice.name} (${voice.lang})`))])]),
-                    h('button', { class: 'app-control rounded-lg border px-2.5 py-1.5 text-xs font-medium', type: 'button', onClick: testVoice }, t('testVoice')),
-                    h('label', { class: 'flex items-center gap-1.5 text-xs text-gray-700' }, [language.value === 'ar' ? 'السرعة' : 'Speed', h('input', { class: 'w-20 accent-blue-700', type: 'range', min: '0.65', max: '1.3', step: '0.05', value: speechRate.value, onInput: (event) => setSpeechRate(event.target.value), 'aria-label': language.value === 'ar' ? 'سرعة القراءة' : 'Speech rate' }), h('span', { class: 'w-8 tabular-nums' }, `${Number(speechRate.value).toFixed(2)}${t('rateUnit')}`)]),
-                    h('label', { class: 'flex items-center gap-1.5 text-xs text-gray-700' }, [h('input', { type: 'checkbox', checked: autoRead.value, onChange: (event) => setAutoRead(event.target.checked) }), t('autoRead')]),
-                    h('p', { class: 'w-full text-[11px] leading-4 text-gray-500' }, voices.value.length ? t('voicePrivacy') : t('voiceNotInstalled')),
+                h('details', { class: 'settings-panel mb-5 overflow-hidden rounded-2xl border border-slate-200 bg-slate-50/80' }, [
+                    h('summary', { class: 'flex cursor-pointer list-none items-center gap-2 px-3 py-2.5 text-sm font-semibold text-slate-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-blue-500' }, [
+                        icon('speak', 'size-4 text-blue-700'),
+                        h('span', t('voice')),
+                        h('span', { class: 'text-xs font-normal text-slate-500' }, autoRead.value ? t('autoRead') : (language.value === 'ar' ? 'القراءة التلقائية متوقفة' : 'Auto read is off')),
+                        h('span', { class: 'ms-auto text-xs text-blue-700' }, language.value === 'ar' ? 'إعدادات' : 'Settings'),
+                    ]),
+                    h('div', { class: 'flex flex-wrap items-center gap-2 border-t border-slate-200 px-3 py-3' }, [
+                        h('label', { class: 'flex min-w-0 flex-1 items-center gap-2 text-xs text-gray-700' }, [t('voice'), h('select', { class: 'app-control min-w-0 flex-1 rounded-lg border bg-white px-2 py-1.5 text-xs', value: selectedVoice.value, onChange: (event) => setVoice(event.target.value) }, [h('option', { value: '' }, language.value === 'ar' ? 'تلقائي' : 'Auto'), ...voices.value.map((voice) => h('option', { value: voice.voiceURI, key: voice.voiceURI }, `${voice.name} (${voice.lang})`))])]),
+                        h('button', { class: 'app-control rounded-lg border px-2.5 py-1.5 text-xs font-semibold', type: 'button', onClick: testVoice }, t('testVoice')),
+                        h('label', { class: 'flex items-center gap-1.5 text-xs text-gray-700' }, [language.value === 'ar' ? 'السرعة' : 'Speed', h('input', { class: 'w-20 accent-blue-700', type: 'range', min: '0.65', max: '1.3', step: '0.05', value: speechRate.value, onInput: (event) => setSpeechRate(event.target.value), 'aria-label': language.value === 'ar' ? 'سرعة القراءة' : 'Speech rate' }), h('span', { class: 'w-8 tabular-nums' }, `${Number(speechRate.value).toFixed(2)}${t('rateUnit')}`)]),
+                        h('label', { class: 'flex items-center gap-1.5 text-xs text-gray-700' }, [h('input', { type: 'checkbox', checked: autoRead.value, onChange: (event) => setAutoRead(event.target.checked) }), t('autoRead')]),
+                        h('p', { class: 'w-full text-[11px] leading-4 text-gray-500' }, voices.value.length ? t('voicePrivacy') : t('voiceNotInstalled')),
+                    ]),
                 ]),
                 loading.value
                     ? h('p', { class: 'py-8 text-center text-gray-500', role: 'status' }, t('loading'))
@@ -491,15 +496,22 @@ const App = {
                         : !currentStep.value
                             ? h('p', { class: 'text-red-700', role: 'alert' }, t('missing'))
                             : h(Transition, { name: 'step-fade', mode: 'out-in' }, { default: () => h('div', { key: currentStepId.value }, [
-                                h('div', { class: 'mb-3 flex items-center justify-between gap-4' }, [
-                                    h('p', { class: 'text-sm text-gray-500' }, t('step') + ' ' + (history.value.length + 1)),
+                                h('div', { class: 'mb-3 flex items-center justify-between gap-2' }, [
+                                    h('p', { class: 'inline-flex items-center gap-2 text-xs font-semibold text-slate-500' }, [h('span', { class: 'inline-block size-2 rounded-full bg-emerald-500' }), t('step') + ' ' + (history.value.length + 1)]),
                                     history.value.length > 0 ? h('button', {
-                                        class: 'inline-flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium text-blue-800 transition-all hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500',
+                                        class: 'inline-flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold text-blue-800 transition-all hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500',
                                         type: 'button',
                                         onClick: goBack,
                                     }, [icon('back', 'size-4'), t('back')]) : null,
+                                    history.value.length > 0 ? h('button', {
+                                        class: 'inline-flex items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-medium text-slate-500 transition-all hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500',
+                                        type: 'button',
+                                        onClick: restart,
+                                    }, [icon('home', 'size-4'), t('newInquiry')]) : null,
                                 ]),
-                                h('h2', { class: 'current-question mb-6 text-2xl font-semibold leading-10 text-gray-800' }, currentStep.value.question),
+                                h('div', { class: 'question-panel mb-5 rounded-2xl border border-blue-100 bg-blue-50/70 px-4 py-4 sm:px-5 sm:py-5' }, [
+                                    h('h2', { class: 'current-question text-xl font-bold leading-8 text-gray-900 sm:text-2xl sm:leading-9' }, currentStep.value.question),
+                                ]),
                                 isFinished.value
                                     ? h('div', { class: 'space-y-4', role: 'status' }, [
                                         h('div', { class: 'inline-flex items-center gap-2 rounded-full bg-slate-800 px-4 py-2 text-sm font-semibold text-white' }, [
@@ -519,12 +531,14 @@ const App = {
                                             ]),
                                             h('p', { class: 'leading-7 text-green-950' }, currentStep.value.customer_script || '—'),
                                         ]),
-                                        h('button', { class: 'app-control inline-flex w-full items-center justify-center gap-2 rounded-xl border px-4 py-3', type: 'button', onClick: readResult }, [icon('speak'), t('readResult')]),
-                                        h('button', {
-                                            class: 'inline-flex w-full items-center justify-center gap-2 rounded-xl bg-green-800 px-4 py-3 font-semibold text-white transition-all hover:bg-green-900 active:scale-95 focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2',
-                                            type: 'button',
-                                            onClick: copyCustomerScript,
-                                        }, [icon('copy', 'size-5'), t('copy')]),
+                                        h('div', { class: 'grid gap-2 sm:grid-cols-2' }, [
+                                            h('button', { class: 'app-control inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-semibold', type: 'button', onClick: readResult }, [icon('speak'), t('readResult')]),
+                                            h('button', {
+                                                class: 'inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-green-800 px-4 py-2.5 text-sm font-semibold text-white transition-all hover:bg-green-900 active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2',
+                                                type: 'button',
+                                                onClick: copyCustomerScript,
+                                            }, [icon('copy', 'size-5'), t('copy')]),
+                                        ]),
                                         h('button', {
                                             class: 'inline-flex w-full items-center justify-center gap-2 rounded-xl border border-gray-200 px-4 py-3 font-semibold text-gray-700 transition-all hover:bg-gray-50 active:scale-95 focus:outline-none focus:ring-2 focus:ring-blue-500',
                                             type: 'button',
@@ -533,14 +547,14 @@ const App = {
                                     ])
                                     : h('div', { class: 'grid gap-3' }, currentStep.value.options.map((option, index) =>
                                         h('button', {
-                                            class: 'option-button group flex min-h-16 w-full items-center gap-3 rounded-2xl border border-gray-200 bg-white px-4 py-3 text-start font-medium text-gray-800 shadow-sm transition-all hover:border-blue-300 hover:bg-blue-50 active:scale-95 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2',
+                                            class: 'option-button group flex min-h-14 w-full items-center gap-3 rounded-2xl border border-slate-200 bg-white px-3.5 py-3 text-start font-medium text-gray-800 shadow-sm transition-all hover:-translate-y-0.5 hover:border-blue-300 hover:bg-blue-50 hover:shadow-md active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:px-4',
                                             type: 'button',
                                             key: `${currentStepId.value}-${index}`,
                                             onClick: () => choose(option),
                                         }, [
-                                            h('span', { class: 'inline-flex size-10 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-700 transition-all group-hover:bg-blue-100' }, [icon(optionIcon(option.label))]),
+                                            h('span', { class: 'inline-flex size-9 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-700 transition-all group-hover:bg-blue-100 sm:size-10' }, [icon(optionIcon(option.label), 'size-5')]),
                                             h('span', { class: 'flex-1 leading-6' }, option.label || t('choose')),
-                                            h('span', { class: 'text-blue-700 transition-transform group-hover:-translate-x-1' }, [icon('arrow', 'size-5')]),
+                                            h('span', { class: 'text-blue-700 transition-transform group-hover:-translate-x-1' }, [icon('arrow', 'size-4')]),
                                         ]),
                                     )),
                             ]) }),
@@ -575,11 +589,11 @@ const App = {
                 }, notice.value) : null,
                 h('p', { class: 'mt-6 text-xs text-gray-400' }, t('footer')),
             ]),
-            h('div', { class: 'fixed bottom-5 left-5 z-30 flex flex-col items-center gap-2' }, [
+            h('div', { class: 'fixed bottom-4 left-4 z-30 flex flex-col items-center gap-2 sm:bottom-6 sm:left-6' }, [
                 voiceStatus.value ? h('p', { class: 'max-w-64 rounded-xl bg-white/95 px-3 py-2 text-center text-xs font-medium text-slate-700 shadow-lg ring-1 ring-slate-200', role: 'status', 'aria-live': 'polite' }, voiceStatus.value) : null,
                 (isSpeaking.value || isListening.value) ? h('button', { class: 'inline-flex items-center gap-2 rounded-full bg-rose-700 px-4 py-2 text-sm font-semibold text-white shadow-lg', type: 'button', onClick: stopAll }, [icon('stop', 'size-4'), isListening.value ? t('stopMic') : t('stopAudio')]) : null,
                 h('button', {
-                    class: `inline-flex size-16 items-center justify-center rounded-full text-white shadow-xl transition-all hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-300 active:scale-95 ${isListening.value ? 'animate-pulse bg-rose-600' : 'bg-blue-700 hover:bg-blue-800'}`,
+                    class: `inline-flex size-14 items-center justify-center rounded-full text-white shadow-xl shadow-blue-950/20 transition-all hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-300 active:scale-95 sm:size-15 ${isListening.value ? 'animate-pulse bg-rose-600' : 'bg-blue-700 hover:bg-blue-800'}`,
                     type: 'button',
                     onClick: startListening,
                     'aria-label': isListening.value ? t('stopMic') : t('startMic'),

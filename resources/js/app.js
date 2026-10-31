@@ -41,6 +41,12 @@ function icon(name, className = 'size-5') {
             h('rect', { x: '8', y: '8', width: '12', height: '12', rx: '2' }),
             h('path', { d: 'M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3' }),
         ],
+        search: [h('circle', { cx: '10.8', cy: '10.8', r: '6.8' }), h('path', { d: 'm16 16 5 5' })],
+        ticket: [h('path', { d: 'M4 6h16v4a2 2 0 0 0 0 4v4H4v-4a2 2 0 0 0 0-4V6Z' }), h('path', { d: 'M13 6v2m0 4v2m0 4v2' })],
+        sun: [h('circle', { cx: '12', cy: '12', r: '4' }), h('path', { d: 'M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42' })],
+        moon: [h('path', { d: 'M20.9 13A8.5 8.5 0 0 1 11 3.1 8.5 8.5 0 1 0 20.9 13Z' })],
+        stop: [h('rect', { x: '5', y: '5', width: '14', height: '14', rx: '2' })],
+        speak: [h('path', { d: 'M11 5 6 9H3v6h3l5 4V5Z' }), h('path', { d: 'M15.5 8.5a5 5 0 0 1 0 7m3-10a9 9 0 0 1 0 13' })],
     };
 
     return h('svg', {
@@ -58,21 +64,64 @@ function icon(name, className = 'size-5') {
 function optionIcon(label = '') {
     if (/adsl|router|راوتر|لمب|واي.?فاي|wifi/i.test(label)) return 'router';
     if (/cable|wire|fiber|سلك|كابل|فايبر/i.test(label)) return 'cable';
+    if (/physical|فيزيائي|سلك|حرارة|dsl|adsl/i.test(label)) return 'cable';
+    if (/logical|منطقي|ip|brows|تصفح|سرع|slow/i.test(label)) return 'search';
+    if (/tt|ticket|تركيب|طلب|شكوى|complaint|order|تذكرة/i.test(label)) return 'ticket';
+    if (/package|باقة|خدمة|service|billing|فاتورة/i.test(label)) return 'chat';
     return 'question';
 }
 
-function normalizeArabic(value = '') {
-    return value
+function normalizeSpeech(value = '', language = 'ar') {
+    let normalized = value
         .normalize('NFKC')
-        .toLocaleLowerCase('ar-EG')
-        .replace(/[\u064B-\u065F\u0670\u0640]/g, '')
-        .replace(/[أإآٱ]/g, 'ا')
-        .replace(/ى/g, 'ي')
-        .replace(/ة/g, 'ه')
+        .toLocaleLowerCase(language === 'ar' ? 'ar-EG' : 'en-US');
+    if (language === 'ar') {
+        normalized = normalized
+            .replace(/[\u064B-\u065F\u0670\u0640]/g, '')
+            .replace(/[أإآٱ]/g, 'ا')
+            .replace(/ى/g, 'ي')
+            .replace(/ة/g, 'ه');
+    }
+    return normalized
         .replace(/[^\p{L}\p{N}]+/gu, ' ')
         .trim()
         .replace(/\s+/g, ' ');
 }
+
+const COPY = {
+    ar: {
+        brand: 'مساعد الدعم الفني', title: 'دليل الدعم الفني', fresh: 'جديد', loading: 'جاري تحميل شجرة القرارات…', retry: 'إعادة المحاولة',
+        missing: 'الخطوة الحالية غير موجودة في الشجرة.', step: 'الخطوة', back: 'رجوع خطوة', sla: 'المهلة:', action: 'إجراء الموظف',
+        customerScript: 'نص تقوله للعميل', copy: 'نسخ نص العميل', newInquiry: 'بدء استعلام جديد', choose: 'اختيار', footer: 'تُحمّل الشجرة من Laravel، وتتم خطوات المسار داخل المتصفح.',
+        copied: 'تم نسخ نص العميل.', noScript: 'لا يوجد نص عميل لنسخه في هذه الخطوة.', copyError: 'تعذر النسخ تلقائيًا. يمكنك تحديد النص ونسخه يدويًا.',
+        invalidStep: 'هذا الاختيار مرتبط بخطوة غير موجودة. أبلغ المسؤول عن الشجرة.', stepLimit: 'وصل المسار إلى الحد الآمن للتنقل. أعد البدء أو راجع الشجرة.',
+        incomplete: 'بيانات الخطوة التالية غير مكتملة. أبلغ المسؤول عن الشجرة.', loadError: 'تعذر تحميل شجرة القرارات.', invalidTree: 'ملف شجرة القرارات غير مكتمل.',
+        voiceUnsupported: 'التعرف على الصوت غير مدعوم في هذا المتصفح. استخدم الأزرار للاختيار.', micDenied: 'اسمح للمتصفح باستخدام الميكروفون، ثم حاول مرة أخرى.',
+        voiceUnavailable: 'خدمة التعرف على الصوت غير متاحة. استخدم الأزرار للاختيار.', noSpeech: 'لم أسمع صوتًا. اضغط الميكروفون وحاول مرة أخرى.',
+        micError: 'تعذر الوصول إلى الميكروفون.', listen: 'استمع الآن… قل اختيارًا ظاهرًا على الشاشة.', matched: 'تم التعرف على الاختيار.',
+        ambiguous: 'لم يتضح الاختيار. قل نص الزر بوضوح أو اضغط عليه.', voiceError: 'تعذر التعرف على الصوت. يمكنك الاختيار بالضغط.',
+        startMic: 'اختيار صوتي', stopMic: 'إيقاف الاستماع', stopAudio: 'إيقاف الصوت', readResult: 'قراءة النتيجة',
+        autoRead: 'قراءة السؤال تلقائيًا', voice: 'الصوت', language: 'اللغة', dark: 'الوضع الداكن', light: 'الوضع الفاتح',
+        operations: 'رقم البحث والتسجيل في النظام', searchTitle: 'أبحث بأي رقم؟', recordTitle: 'أسجل إيه؟',
+        toolLabel: 'الأداة:', supportIssue: 'حدث خطأ أثناء التحميل.', retryMic: 'تعذر تشغيل الميكروفون. حاول مرة أخرى أو اضغط على الاختيار.',
+    },
+    en: {
+        brand: 'Technical Support Assistant', title: 'Support Guide', fresh: 'New', loading: 'Loading decision tree…', retry: 'Try again',
+        missing: 'The current step is missing from the tree.', step: 'Step', back: 'Go back', sla: 'SLA:', action: 'Agent action',
+        customerScript: 'What to tell the customer', copy: 'Copy customer script', newInquiry: 'Start a new inquiry', choose: 'Choose', footer: 'The tree is loaded from Laravel; steps run in your browser.',
+        copied: 'Customer script copied.', noScript: 'There is no customer script to copy at this step.', copyError: 'Automatic copy failed. Select and copy the text manually.',
+        invalidStep: 'This option points to a missing step. Notify the tree administrator.', stepLimit: 'The safe step limit was reached. Restart or review the tree.',
+        incomplete: 'The next step data is incomplete. Notify the tree administrator.', loadError: 'Could not load the decision tree.', invalidTree: 'The decision tree file is incomplete.',
+        voiceUnsupported: 'Speech recognition is not supported in this browser. Use the buttons instead.', micDenied: 'Allow microphone access in your browser, then try again.',
+        voiceUnavailable: 'Speech recognition is unavailable. Use the buttons instead.', noSpeech: 'No speech was detected. Tap the microphone and try again.',
+        micError: 'The microphone could not be accessed.', listen: 'Listening… say one of the visible options.', matched: 'Option recognized.',
+        ambiguous: 'The option was unclear. Say the button text clearly or tap it.', voiceError: 'Speech recognition failed. You can still tap an option.',
+        startMic: 'Voice choice', stopMic: 'Stop listening', stopAudio: 'Stop audio', readResult: 'Read result',
+        autoRead: 'Read each question automatically', voice: 'Voice', language: 'Language', dark: 'Dark mode', light: 'Light mode',
+        operations: 'Which ID and record should I use?', searchTitle: 'What should I search by?', recordTitle: 'What should I record?',
+        toolLabel: 'Tool:', supportIssue: 'An error occurred while loading.', retryMic: 'Could not start the microphone. Try again or tap an option.',
+    },
+};
 
 const App = {
     setup() {
@@ -83,8 +132,16 @@ const App = {
         const loadError = ref('');
         const notice = ref('');
         const isListening = ref(false);
+        const isSpeaking = ref(false);
+        const language = ref('ar');
+        const theme = ref('light');
+        const voices = ref([]);
+        const selectedVoice = ref('');
+        const autoRead = ref(true);
+        const speechRate = ref(0.85);
         const voiceStatus = ref('');
         let activeRecognition = null;
+        const t = (key) => COPY[language.value][key] ?? key;
 
         const currentStep = computed(() => {
             if (!tree.value || !currentStepId.value) return null;
@@ -92,24 +149,29 @@ const App = {
         });
         const isFinished = computed(() => currentStep.value?.options?.length === 0);
 
-        function speakCurrentStep() {
-            if (!('speechSynthesis' in window) || !currentStep.value) return;
-
-            const script = isFinished.value
-                ? [currentStep.value.question, currentStep.value.action, currentStep.value.sla, currentStep.value.customer_script]
-                    .filter(Boolean).join('. ')
-                : currentStep.value.question;
-            if (!script) return;
-
-            window.speechSynthesis.cancel();
-            const utterance = new SpeechSynthesisUtterance(script);
-            utterance.lang = 'ar-EG';
-            utterance.rate = 0.95;
-            const arabicVoice = window.speechSynthesis.getVoices()
-                .find((voice) => voice.lang?.toLowerCase().startsWith('ar'));
-            if (arabicVoice) utterance.voice = arabicVoice;
+        function refreshVoices() {
+            if (!window.speechSynthesis) return;
+            voices.value = window.speechSynthesis.getVoices().filter((voice) => voice.lang?.toLowerCase().startsWith(language.value));
+            if (!voices.value.some((voice) => voice.voiceURI === selectedVoice.value)) {
+                selectedVoice.value = voices.value.find((voice) => voice.lang?.toLowerCase() === (language.value === 'ar' ? 'ar-eg' : 'en-us'))?.voiceURI ?? voices.value[0]?.voiceURI ?? '';
+            }
+        }
+        function stopAudio() { window.speechSynthesis?.cancel(); isSpeaking.value = false; }
+        function stopListening() { activeRecognition?.abort(); activeRecognition = null; isListening.value = false; }
+        function stopAll() { stopListening(); stopAudio(); }
+        function speak(text) {
+            if (!window.speechSynthesis || !text) return;
+            stopAudio();
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = language.value === 'ar' ? 'ar-EG' : 'en-US';
+            utterance.rate = Number(speechRate.value);
+            utterance.voice = voices.value.find((voice) => voice.voiceURI === selectedVoice.value) ?? null;
+            utterance.onstart = () => { isSpeaking.value = true; };
+            utterance.onend = utterance.onerror = () => { isSpeaking.value = false; };
             window.speechSynthesis.speak(utterance);
         }
+        function speakCurrentStep() { if (autoRead.value && currentStep.value) speak(currentStep.value.question); }
+        function readResult() { speak([currentStep.value?.action, currentStep.value?.sla, currentStep.value?.customer_script].filter(Boolean).join('. ')); }
 
         function afterStepChange() {
             voiceStatus.value = '';
@@ -119,19 +181,21 @@ const App = {
         }
 
         function findSpokenOption(transcript) {
-            const spoken = normalizeArabic(transcript);
+            const spoken = normalizeSpeech(transcript, language.value);
             if (!spoken) return null;
 
             const buttons = [...document.querySelectorAll('.option-button')];
-            const exactMatches = buttons.filter((button) => normalizeArabic(button.innerText) === spoken);
+            const exactMatches = buttons.filter((button) => normalizeSpeech(button.innerText, language.value) === spoken);
             if (exactMatches.length === 1) return exactMatches[0];
             if (exactMatches.length > 1) return null;
 
-            const words = spoken.split(' ').filter((word) => word.length > 1);
+            const words = spoken.split(' ').filter((word) => word.length > 2);
             const matches = buttons.filter((button) => {
-                const label = normalizeArabic(button.innerText);
-                return label && (spoken.includes(label) || label.includes(spoken)
-                    || words.some((word) => label.split(' ').includes(word)));
+                const label = normalizeSpeech(button.innerText, language.value);
+                if (!label) return false;
+                if (spoken.includes(label) || label.includes(spoken)) return true;
+                const common = words.filter((word) => label.split(' ').includes(word));
+                return words.length > 0 && common.length >= Math.min(2, words.length);
             });
             return matches.length === 1 ? matches[0] : null;
         }
@@ -139,24 +203,25 @@ const App = {
         function startListening() {
             const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             if (!Recognition) {
-                voiceStatus.value = 'التعرف على الصوت غير مدعوم في هذا المتصفح. استخدم الأزرار للاختيار.';
+                voiceStatus.value = t('voiceUnsupported');
                 return;
             }
             if (isListening.value) {
-                activeRecognition?.stop();
+                stopListening();
                 return;
             }
+            stopAudio();
 
             const recognition = new Recognition();
             activeRecognition = recognition;
-            recognition.lang = 'ar-EG';
+            recognition.lang = language.value === 'ar' ? 'ar-EG' : 'en-US';
             recognition.interimResults = false;
             recognition.maxAlternatives = 3;
             recognition.continuous = false;
 
             recognition.onstart = () => {
                 isListening.value = true;
-                voiceStatus.value = 'استمع الآن… قل اختيارًا ظاهرًا على الشاشة.';
+                voiceStatus.value = t('listen');
             };
             recognition.onresult = (event) => {
                 const result = event.results?.[event.resultIndex];
@@ -169,20 +234,20 @@ const App = {
                 const uniqueMatches = [...new Set(matched)];
 
                 if (uniqueMatches.length === 1) {
-                    voiceStatus.value = 'تم التعرف على الاختيار.';
+                    voiceStatus.value = t('matched');
                     uniqueMatches[0].click();
                 } else {
-                    voiceStatus.value = 'لم يتضح الاختيار. قل نص الزر بوضوح أو اضغط عليه.';
+                    voiceStatus.value = t('ambiguous');
                 }
             };
             recognition.onerror = (event) => {
                 const messages = {
-                    'not-allowed': 'اسمح للمتصفح باستخدام الميكروفون، ثم حاول مرة أخرى.',
-                    'service-not-allowed': 'خدمة التعرف على الصوت غير متاحة. استخدم الأزرار للاختيار.',
-                    'no-speech': 'لم أسمع صوتًا. اضغط الميكروفون وحاول مرة أخرى.',
-                    'audio-capture': 'تعذر الوصول إلى الميكروفون.',
+                    'not-allowed': t('micDenied'),
+                    'service-not-allowed': t('voiceUnavailable'),
+                    'no-speech': t('noSpeech'),
+                    'audio-capture': t('micError'),
                 };
-                voiceStatus.value = messages[event.error] || 'تعذر التعرف على الصوت. يمكنك الاختيار بالضغط.';
+                voiceStatus.value = messages[event.error] || t('voiceError');
             };
             recognition.onend = () => {
                 isListening.value = false;
@@ -194,41 +259,53 @@ const App = {
             } catch {
                 isListening.value = false;
                 activeRecognition = null;
-                voiceStatus.value = 'تعذر تشغيل الميكروفون. حاول مرة أخرى أو اضغط على الاختيار.';
+                voiceStatus.value = t('retryMic');
             }
         }
 
-        async function loadTree() {
+        async function loadTree(reset = false, nextLanguage = language.value) {
             loading.value = true;
             loadError.value = '';
 
             try {
-                const response = await fetch(`/trees/${DEFAULT_TREE}`, {
+                const response = await fetch(`/trees/${DEFAULT_TREE}${nextLanguage === 'en' ? '_en' : ''}`, {
                     headers: { Accept: 'application/json' },
                     credentials: 'same-origin',
                 });
 
-                if (!response.ok) throw new Error('تعذر تحميل شجرة القرارات.');
+                if (!response.ok) throw new Error(COPY[nextLanguage].loadError);
 
                 const data = await response.json();
-                const inferredStart = Object.keys(data ?? {}).find((key) => key !== 'start');
+                const inferredStart = Object.keys(data ?? {}).find((key) => key !== 'start' && key !== 'operations_guide');
                 const startId = typeof data?.start === 'string' ? data.start : inferredStart;
                 const validStart = typeof startId === 'string'
                     && Object.hasOwn(data, startId)
                     && typeof data[startId]?.question === 'string'
                     && Array.isArray(data[startId]?.options);
 
-                if (!validStart) throw new Error('ملف شجرة القرارات غير مكتمل.');
+                if (!validStart) throw new Error(COPY[nextLanguage].invalidTree);
 
                 tree.value = { ...data, start: startId };
-                currentStepId.value = startId;
-                history.value = [];
+                if (reset || !currentStepId.value || !Object.hasOwn(tree.value, currentStepId.value)) {
+                    currentStepId.value = startId;
+                    history.value = [];
+                }
+                language.value = nextLanguage;
+                document.documentElement.lang = nextLanguage;
+                document.documentElement.dir = nextLanguage === 'ar' ? 'rtl' : 'ltr';
+                refreshVoices();
                 notice.value = '';
             } catch (error) {
-                loadError.value = error instanceof Error ? error.message : 'حدث خطأ أثناء التحميل.';
+                loadError.value = error instanceof Error ? error.message : COPY[nextLanguage].supportIssue;
             } finally {
                 loading.value = false;
             }
+        }
+
+        function switchLanguage(next) { stopAll(); loadTree(false, next).then(speakCurrentStep); }
+        function switchTheme(next) {
+            theme.value = next;
+            try { localStorage.setItem('support-theme', next); } catch { /* preference is optional */ }
         }
 
         function choose(option) {
@@ -287,14 +364,22 @@ const App = {
             }
         }
 
-        onMounted(loadTree);
+        onMounted(() => {
+            try { theme.value = localStorage.getItem('support-theme') === 'dark' ? 'dark' : 'light'; } catch { /* optional preference */ }
+            document.documentElement.lang = 'ar';
+            document.documentElement.dir = 'rtl';
+            refreshVoices();
+            window.speechSynthesis?.addEventListener?.('voiceschanged', refreshVoices);
+            loadTree(true);
+        });
         onBeforeUnmount(() => {
             activeRecognition?.abort();
-            window.speechSynthesis?.cancel();
+            stopAudio();
+            window.speechSynthesis?.removeEventListener?.('voiceschanged', refreshVoices);
         });
 
         return () => h('main', {
-                class: 'relative isolate min-h-screen w-full overflow-x-clip bg-slate-50 px-4 py-6 pb-28 text-gray-800 sm:px-6 sm:py-10',
+                class: `app-shell ${theme.value === 'dark' ? 'app-dark' : ''} relative isolate min-h-screen w-full overflow-x-clip bg-slate-50 px-4 py-6 pb-28 text-gray-800 sm:px-6 sm:py-10`,
         }, [
             h('div', { class: 'wave-backdrop pointer-events-none absolute inset-x-0 bottom-0 z-0 h-48 overflow-hidden sm:h-64', 'aria-hidden': 'true' }, [
                 h('svg', { class: 'wave wave-one absolute bottom-0 h-full w-[200%]', viewBox: '0 0 2880 320', preserveAspectRatio: 'none' }, [
@@ -308,23 +393,32 @@ const App = {
                 ]),
             ]),
             h('section', {
-                class: 'relative z-10 mx-auto max-w-lg rounded-3xl bg-white p-5 shadow-2xl shadow-slate-400/20 ring-1 ring-slate-900/5 sm:p-8',
+                class: 'app-card relative z-10 mx-auto max-w-2xl rounded-3xl bg-white p-5 shadow-2xl shadow-slate-400/20 ring-1 ring-slate-900/5 sm:p-8',
                 'aria-busy': loading.value ? 'true' : 'false',
             }, [
-                h('header', { class: 'mb-6 flex items-start justify-between gap-4' }, [
+                h('header', { class: 'mb-6 space-y-4' }, [
                     h('div', [
-                        h('p', { class: 'mb-2 text-sm font-semibold text-blue-700' }, 'مساعد الدعم الفني'),
-                        h('h1', { class: 'text-2xl font-bold text-gray-900' }, 'دليل الدعم الفني'),
+                        h('p', { class: 'mb-2 text-sm font-semibold text-blue-700' }, t('brand')),
+                        h('h1', { class: 'text-2xl font-bold text-gray-900' }, t('title')),
+                    ]),
+                    h('div', { class: 'flex gap-2' }, [
+                        h('button', { class: 'app-control rounded-xl border px-3 py-2 text-sm', type: 'button', onClick: () => switchLanguage(language.value === 'ar' ? 'en' : 'ar') }, language.value === 'ar' ? 'EN' : 'عربي'),
+                        h('button', { class: 'app-control rounded-xl border px-3 py-2', type: 'button', onClick: () => switchTheme(theme.value === 'light' ? 'dark' : 'light'), 'aria-label': theme.value === 'light' ? t('dark') : t('light') }, [icon(theme.value === 'light' ? 'moon' : 'sun')]),
                     ]),
                     tree.value ? h('button', {
                         class: 'inline-flex shrink-0 items-center gap-2 rounded-xl border border-gray-200 px-3 py-2 text-sm font-medium text-gray-600 transition-all hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500',
                         type: 'button',
                         onClick: restart,
-                        'aria-label': 'إعادة بدء المسار',
-                    }, [icon('home', 'size-4'), 'جديد']) : null,
+                        'aria-label': t('newInquiry'),
+                    }, [icon('home', 'size-4'), t('fresh')]) : null,
+                ]),
+                h('div', { class: 'settings-panel mb-5 grid gap-3 rounded-2xl bg-slate-50 p-3 sm:grid-cols-2' }, [
+                    h('label', { class: 'flex items-center justify-between gap-2 text-sm text-gray-700' }, [t('voice'), h('select', { class: 'app-control max-w-[70%] rounded border bg-white p-2', value: selectedVoice.value, onChange: (event) => { selectedVoice.value = event.target.value; } }, [h('option', { value: '' }, language.value === 'ar' ? 'الافتراضي' : 'Default'), ...voices.value.map((voice) => h('option', { value: voice.voiceURI, key: voice.voiceURI }, `${voice.name} (${voice.lang})`))])]),
+                    h('label', { class: 'flex items-center justify-between gap-2 text-sm' }, [language.value === 'ar' ? 'سرعة القراءة' : 'Speech speed', h('input', { type: 'range', min: '0.75', max: '1.05', step: '0.05', value: speechRate.value, onInput: (event) => { speechRate.value = event.target.value; } })]),
+                    h('label', { class: 'flex items-center gap-2 text-sm sm:col-span-2' }, [h('input', { type: 'checkbox', checked: autoRead.value, onChange: (event) => { autoRead.value = event.target.checked; if (!autoRead.value) stopAudio(); } }), t('autoRead')]),
                 ]),
                 loading.value
-                    ? h('p', { class: 'py-8 text-center text-gray-500', role: 'status' }, 'جاري تحميل شجرة القرارات…')
+                    ? h('p', { class: 'py-8 text-center text-gray-500', role: 'status' }, t('loading'))
                     : loadError.value
                         ? h('div', { class: 'space-y-4', role: 'alert' }, [
                             h('p', { class: 'text-red-700' }, loadError.value),
@@ -332,79 +426,88 @@ const App = {
                                 class: 'w-full rounded-xl bg-blue-700 px-4 py-3 font-semibold text-white transition-all hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2',
                                 type: 'button',
                                 onClick: loadTree,
-                            }, 'إعادة المحاولة'),
+                            }, t('retry')),
                         ])
                         : !currentStep.value
-                            ? h('p', { class: 'text-red-700', role: 'alert' }, 'الخطوة الحالية غير موجودة في الشجرة.')
+                            ? h('p', { class: 'text-red-700', role: 'alert' }, t('missing'))
                             : h(Transition, { name: 'step-fade', mode: 'out-in' }, { default: () => h('div', { key: currentStepId.value }, [
                                 h('div', { class: 'mb-3 flex items-center justify-between gap-4' }, [
-                                    h('p', { class: 'text-sm text-gray-500' }, `الخطوة ${history.value.length + 1}`),
+                                    h('p', { class: 'text-sm text-gray-500' }, t('step') + ' ' + (history.value.length + 1)),
                                     history.value.length > 0 ? h('button', {
                                         class: 'inline-flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium text-blue-800 transition-all hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500',
                                         type: 'button',
                                         onClick: goBack,
-                                    }, [icon('back', 'size-4'), 'رجوع خطوة']) : null,
+                                    }, [icon('back', 'size-4'), t('back')]) : null,
                                 ]),
                                 h('h2', { class: 'current-question mb-6 text-2xl font-semibold leading-10 text-gray-800' }, currentStep.value.question),
                                 isFinished.value
                                     ? h('div', { class: 'space-y-4', role: 'status' }, [
                                         h('div', { class: 'inline-flex items-center gap-2 rounded-full bg-slate-800 px-4 py-2 text-sm font-semibold text-white' }, [
                                             icon('clock', 'size-5'),
-                                            h('span', 'المهلة: '),
-                                            h('span', currentStep.value.sla || 'غير محددة'),
+                                            h('span', t('sla')),
+                                            h('span', currentStep.value.sla || '—'),
                                         ]),
                                         h('section', { class: 'rounded-2xl border border-orange-200 bg-orange-100 p-4 sm:p-5' }, [
                                             h('h3', { class: 'mb-2 flex items-center gap-2 font-bold text-orange-950' }, [
-                                                icon('alert', 'size-5'), 'إجراء الموظف',
+                                                icon('alert', 'size-5'), t('action'),
                                             ]),
-                                            h('p', { class: 'leading-7 text-orange-950' }, currentStep.value.action || 'لا يوجد إجراء محدد.'),
+                                            h('p', { class: 'leading-7 text-orange-950' }, currentStep.value.action || '—'),
                                         ]),
                                         h('section', { class: 'rounded-2xl border border-green-200 bg-green-100 p-4 sm:p-5' }, [
                                             h('h3', { class: 'mb-2 flex items-center gap-2 font-bold text-green-950' }, [
-                                                icon('chat', 'size-5'), 'نص تقوله للعميل',
+                                                icon('chat', 'size-5'), t('customerScript'),
                                             ]),
-                                            h('p', { class: 'leading-7 text-green-950' }, currentStep.value.customer_script || 'لا يوجد نص محدد.'),
+                                            h('p', { class: 'leading-7 text-green-950' }, currentStep.value.customer_script || '—'),
                                         ]),
+                                        h('button', { class: 'app-control inline-flex w-full items-center justify-center gap-2 rounded-xl border px-4 py-3', type: 'button', onClick: readResult }, [icon('speak'), t('readResult')]),
                                         h('button', {
                                             class: 'inline-flex w-full items-center justify-center gap-2 rounded-xl bg-green-800 px-4 py-3 font-semibold text-white transition-all hover:bg-green-900 active:scale-95 focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2',
                                             type: 'button',
                                             onClick: copyCustomerScript,
-                                        }, [icon('copy', 'size-5'), 'نسخ نص العميل']),
+                                        }, [icon('copy', 'size-5'), t('copy')]),
                                         h('button', {
                                             class: 'inline-flex w-full items-center justify-center gap-2 rounded-xl border border-gray-200 px-4 py-3 font-semibold text-gray-700 transition-all hover:bg-gray-50 active:scale-95 focus:outline-none focus:ring-2 focus:ring-blue-500',
                                             type: 'button',
                                             onClick: restart,
-                                        }, [icon('home', 'size-5'), 'بدء استعلام جديد']),
+                                        }, [icon('home', 'size-5'), t('newInquiry')]),
                                     ])
                                     : h('div', { class: 'grid gap-3' }, currentStep.value.options.map((option, index) =>
                                         h('button', {
-                                            class: 'option-button group flex min-h-16 w-full items-center gap-3 rounded-2xl border border-gray-200 bg-white px-4 py-3 text-right font-medium text-gray-800 shadow-sm transition-all hover:border-blue-300 hover:bg-blue-50 active:scale-95 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2',
+                                            class: 'option-button group flex min-h-16 w-full items-center gap-3 rounded-2xl border border-gray-200 bg-white px-4 py-3 text-start font-medium text-gray-800 shadow-sm transition-all hover:border-blue-300 hover:bg-blue-50 active:scale-95 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2',
                                             type: 'button',
                                             key: `${currentStepId.value}-${index}`,
                                             onClick: () => choose(option),
                                         }, [
                                             h('span', { class: 'inline-flex size-10 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-700 transition-all group-hover:bg-blue-100' }, [icon(optionIcon(option.label))]),
-                                            h('span', { class: 'flex-1 leading-6' }, option.label || 'اختيار'),
+                                            h('span', { class: 'flex-1 leading-6' }, option.label || t('choose')),
                                             h('span', { class: 'text-blue-700 transition-transform group-hover:-translate-x-1' }, [icon('arrow', 'size-5')]),
                                         ]),
                                     )),
                             ]) }),
+                tree.value?.operations_guide ? h('details', { class: 'operations-guide mt-5 rounded-2xl border border-blue-100 bg-blue-50/70 p-4' }, [
+                    h('summary', { class: 'cursor-pointer font-semibold text-blue-900' }, [icon('ticket', 'inline size-5'), h('span', { class: 'ms-2' }, t('operations'))]),
+                    h('div', { class: 'mt-4 space-y-4 leading-7 text-gray-700' }, [
+                        h('section', [h('h3', { class: 'flex items-center gap-2 font-bold text-gray-900' }, [icon('search', 'size-4'), t('searchTitle')]), h('p', tree.value.operations_guide.search)]),
+                        h('section', [h('h3', { class: 'flex items-center gap-2 font-bold text-gray-900' }, [icon('ticket', 'size-4'), t('recordTitle')]), h('p', tree.value.operations_guide.record)]),
+                    ]),
+                ]) : null,
                 notice.value ? h('p', {
                     class: 'mt-4 rounded-lg bg-gray-100 px-3 py-2 text-sm text-gray-700',
                     role: 'status',
                     'aria-live': 'polite',
                 }, notice.value) : null,
-                h('p', { class: 'mt-6 text-xs text-gray-400' }, 'تُحمّل الشجرة من Laravel، وتتم خطوات المسار داخل المتصفح.'),
+                h('p', { class: 'mt-6 text-xs text-gray-400' }, t('footer')),
             ]),
             h('div', { class: 'fixed bottom-5 left-5 z-30 flex flex-col items-center gap-2' }, [
                 voiceStatus.value ? h('p', { class: 'max-w-64 rounded-xl bg-white/95 px-3 py-2 text-center text-xs font-medium text-slate-700 shadow-lg ring-1 ring-slate-200', role: 'status', 'aria-live': 'polite' }, voiceStatus.value) : null,
+                (isSpeaking.value || isListening.value) ? h('button', { class: 'inline-flex items-center gap-2 rounded-full bg-rose-700 px-4 py-2 text-sm font-semibold text-white shadow-lg', type: 'button', onClick: stopAll }, [icon('stop', 'size-4'), isListening.value ? t('stopMic') : t('stopAudio')]) : null,
                 h('button', {
                     class: `inline-flex size-16 items-center justify-center rounded-full text-white shadow-xl transition-all hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-300 active:scale-95 ${isListening.value ? 'animate-pulse bg-rose-600' : 'bg-blue-700 hover:bg-blue-800'}`,
                     type: 'button',
                     onClick: startListening,
-                    'aria-label': isListening.value ? 'إيقاف الاستماع' : 'اختيار صوتي',
+                    'aria-label': isListening.value ? t('stopMic') : t('startMic'),
                     'aria-pressed': isListening.value ? 'true' : 'false',
-                    title: isListening.value ? 'جاري الاستماع' : 'اضغط وقل اختيارًا ظاهرًا',
+                    title: isListening.value ? t('stopMic') : t('startMic'),
                 }, [h('svg', { class: 'size-7', viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', 'stroke-width': '1.8', 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'aria-hidden': 'true' }, [
                     h('rect', { x: '9', y: '2', width: '6', height: '12', rx: '3' }),
                     h('path', { d: 'M5 10v2a7 7 0 0 0 14 0v-2M12 19v3m-4 0h8' }),

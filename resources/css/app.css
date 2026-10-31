@@ -47,6 +47,73 @@
     transform: translateY(-6px);
 }
 
+.app-shell {
+    transition: background-color 180ms ease, color 180ms ease;
+}
+
+.app-dark {
+    background: #0b1220 !important;
+    color: #e5e7eb !important;
+}
+
+.app-dark .app-card {
+    background: #111b2e !important;
+    box-shadow: 0 24px 60px rgb(0 0 0 / 35%);
+    outline-color: rgb(148 163 184 / 18%);
+}
+
+.app-dark .settings-panel,
+.app-dark .bg-gray-50,
+.app-dark .bg-gray-100,
+.app-dark .operations-guide {
+    background: #172338 !important;
+    border-color: #34445e !important;
+}
+
+.app-dark .bg-white,
+.app-dark select,
+.app-dark .app-control {
+    background-color: #1a2740 !important;
+    color: #e5e7eb !important;
+    border-color: #3b4b65 !important;
+}
+
+.app-dark .text-gray-900,
+.app-dark .text-gray-800,
+.app-dark .text-gray-700,
+.app-dark .text-gray-600,
+.app-dark .text-gray-500,
+.app-dark .text-blue-900 {
+    color: #e2e8f0 !important;
+}
+
+.app-dark .option-button:hover,
+.app-dark button:hover {
+    background-color: #223653 !important;
+}
+
+.app-dark .bg-orange-100 {
+    background-color: #3a2b1c !important;
+    border-color: #72502a !important;
+}
+
+.app-dark .text-orange-950 {
+    color: #ffdda7 !important;
+}
+
+.app-dark .bg-green-100 {
+    background-color: #173528 !important;
+    border-color: #286044 !important;
+}
+
+.app-dark .text-green-950 {
+    color: #b8f3d1 !important;
+}
+
+.app-dark .bg-blue-50 {
+    background-color: #1d3150 !important;
+}
+
 @media (prefers-reduced-motion: reduce) {
     *,
     *::before,

@@ -1,0 +1,385 @@
+{
+  "start": "start_menu",
+  "operations_guide": {
+    "search": "Use the service number to open a line profile or follow a service order. Use Account Number or NAS Port ID when the tool asks for an IP or NST/NOC log lookup. Follow the field requested by the tool and confirm the result belongs to the same customer and service. Do not enter customer numbers on this website.",
+    "record": "Technical fault: update the existing TT with all checks. When escalation is required, create/update the IR record according to the case path. An SR (Service Request) is for a new service or a customer-requested change, not a replacement for a fault TT. Create DLAY only after the SLA is breached or when the case path requires it; first check that an automatic delay ticket does not already exist, then renew the SLA and record the delay in I-Report/Cases as instructed."
+  },
+  "start_menu": {
+    "question": "What type of issue or customer request is this?",
+    "options": [
+      { "label": "Physical issue: ADSL light, cable, or landline", "next_step": "physical_start" },
+      { "label": "Logical issue: no IP, browsing, or slowness", "next_step": "logical_start" },
+      { "label": "Landline or voice issue", "next_step": "voice_start" },
+      { "label": "New installation or installation follow-up", "next_step": "request_start" },
+      { "label": "Package, service, or general inquiry", "next_step": "inquiry_start" },
+      { "label": "Complaint or escalation", "next_step": "complaint_start" }
+    ]
+  },
+  "physical_start": {
+    "question": "What is the DSL/ADSL light doing when the issue occurs?",
+    "options": [
+      { "label": "Off or repeatedly disconnecting", "next_step": "power_check" },
+      { "label": "Stable, but the internet disconnects", "next_step": "instability_visit" },
+      { "label": "Only landline voice is affected", "next_step": "voice_start" },
+      { "label": "Stable; browsing or IP is the issue", "next_step": "logical_start" }
+    ]
+  },
+  "power_check": {
+    "question": "Is the router Power light steady while the service is down?",
+    "options": [
+      { "label": "No, it is off or unstable", "next_step": "power_terminal" },
+      { "label": "Yes, it is steady", "next_step": "data_down_logs" }
+    ]
+  },
+  "power_terminal": {
+    "question": "The router may have a power supply issue.",
+    "action": "Check the original adapter and power source. Try another outlet, then another router with a compatible adapter if available. If the issue continues, follow the approved device inspection or follow-up process. Do not ask the customer to open the device.",
+    "customer_script": "Let us check the router power light and adapter, then try another outlet. If the issue continues, we can arrange an inspection through the approved process.",
+    "sla": "Immediate diagnosis; follow-up according to the ticket",
+    "options": []
+  },
+  "data_down_logs": {
+    "question": "Using internal diagnostic tools only, without sharing their details with the customer, what do the last 12 hours of system logs show?",
+    "options": [
+      { "label": "At least 3 logs, including one in the last 3 hours", "next_step": "instability_visit" },
+      { "label": "That log rule does not apply; classify as Data Down", "next_step": "wiring_check" }
+    ]
+  },
+  "wiring_check": {
+    "question": "How is the router connected to the telephone line?",
+    "options": [
+      { "label": "Main wire directly to the router", "next_step": "main_wire_check" },
+      { "label": "Wall outlet or splitter/filter", "next_step": "wall_wiring_check" },
+      { "label": "The customer cannot identify the wiring", "next_step": "physical_escalation" }
+    ]
+  },
+  "main_wire_check": {
+    "question": "After checking the direct connection, has the DSL/ADSL light returned?",
+    "options": [
+      { "label": "Yes, service is back", "next_step": "resolved_terminal" },
+      { "label": "No, it is still down", "next_step": "physical_escalation" }
+    ]
+  },
+  "wall_wiring_check": {
+    "question": "Are the wall outlet and splitter/filter connected correctly?",
+    "options": [
+      { "label": "We corrected the wiring and service returned", "next_step": "resolved_terminal" },
+      { "label": "We bypassed the splitter, but the issue remains", "next_step": "physical_escalation" },
+      { "label": "Wiring is correct, but the line is still down", "next_step": "physical_escalation" }
+    ]
+  },
+  "instability_visit": {
+    "question": "Was there a technician visit or wiring change before the instability started?",
+    "options": [
+      { "label": "Yes, there was a visit or change", "next_step": "after_visit_check" },
+      { "label": "No visit took place", "next_step": "physical_escalation" },
+      { "label": "The line recovered during the call", "next_step": "stable_after_recheck" }
+    ]
+  },
+  "after_visit_check": {
+    "question": "After documenting the technician's steps and asking about changes, is the issue still present?",
+    "options": [
+      { "label": "Yes, the issue remains", "next_step": "physical_escalation" },
+      { "label": "No, service is stable after the check", "next_step": "resolved_terminal" }
+    ]
+  },
+  "stable_after_recheck": {
+    "question": "Did ASSIA/Clear View confirm that there is no physical-layer issue?",
+    "options": [
+      { "label": "Yes, no physical issue and the line is stable", "next_step": "resolved_terminal" },
+      { "label": "No, or the result is unavailable", "next_step": "physical_escalation" }
+    ]
+  },
+  "physical_escalation": {
+    "question": "The physical fault or instability needs escalation.",
+    "action": "Record the customer's confirmation, light status, wiring, ASSIA result, and visit details if any. Create or re-escalate the fault/IU ticket according to the case type. Check for an Outage and outstanding line bills before escalation. Follow the SLA recorded for the case.",
+    "customer_script": "I have recorded the checks and their results, and I will send the case to the specialist team for review. We will follow up using the contact details on file.",
+    "sla": "Usually 24 hours for IU cases; Outages and other fault types may differ. Check the case SLA.",
+    "options": []
+  },
+  "logical_start": {
+    "question": "Which description best matches the issue?",
+    "options": [
+      { "label": "The router has no WAN IP or internet", "next_step": "no_ip_check" },
+      { "label": "Internet is connected, but websites do not open", "next_step": "browsing_check" },
+      { "label": "Internet speed is slow", "next_step": "slowness_check" },
+      { "label": "Speed values differ between system tools", "next_step": "speed_variance_terminal" },
+      { "label": "The line drops while the DSL light stays on", "next_step": "logical_logs" }
+    ]
+  },
+  "no_ip_check": {
+    "question": "Using the approved support tool, and without asking for the customer's password, have you checked MAC status, CPE settings, and connection details?",
+    "options": [
+      { "label": "MAC is not learned or settings are incorrect", "next_step": "cpe_reconfigure" },
+      { "label": "Settings look correct, but there is still no IP", "next_step": "noc_escalation" }
+    ]
+  },
+  "cpe_reconfigure": {
+    "question": "After configuring the CPE through the approved process, did the router obtain an IP?",
+    "options": [
+      { "label": "Yes, service is back", "next_step": "resolved_terminal" },
+      { "label": "No, there is still no IP", "next_step": "noc_escalation" }
+    ]
+  },
+  "browsing_check": {
+    "question": "Does the issue affect all sites/devices or only one site/device?",
+    "options": [
+      { "label": "All sites or more than one device", "next_step": "browsing_network_steps" },
+      { "label": "Only one site or device", "next_step": "browsing_device_steps" }
+    ]
+  },
+  "browsing_network_steps": {
+    "question": "After checking MTU and DNS and trying another device or CPE, does the issue remain?",
+    "options": [
+      { "label": "No, browsing works again", "next_step": "resolved_terminal" },
+      { "label": "Yes, attach a site trace according to the process", "next_step": "noc_escalation" }
+    ]
+  },
+  "browsing_device_steps": {
+    "question": "Does browsing work on another device or browser?",
+    "options": [
+      { "label": "Yes, the issue is limited to one device/browser", "next_step": "device_terminal" },
+      { "label": "No, it affects more than one device", "next_step": "browsing_network_steps" }
+    ]
+  },
+  "slowness_check": {
+    "question": "After checking the package allowance and expected line speed, is the current speed below the recorded value?",
+    "options": [
+      { "label": "No, it is within range or in the optimization period", "next_step": "speed_within_range" },
+      { "label": "Yes, it is below range or optimization has ended", "next_step": "slowness_troubleshoot" }
+    ]
+  },
+  "speed_within_range": {
+    "question": "The speed is within the expected range or the line is still in its optimization period.",
+    "action": "Compare the measured speed with the line and package details in the system. Explain that DSL speed can be affected by line distance, network load, and shared capacity. Do not rely on old package prices or speed tables from training PDFs.",
+    "customer_script": "I have checked the expected speed for your line. The service is within the current range/optimization period, and we can review it again when that period ends.",
+    "sla": "According to the optimization period recorded for the line",
+    "options": []
+  },
+  "slowness_troubleshoot": {
+    "question": "After testing one device with a direct connection according to the process, does the slowness continue?",
+    "options": [
+      { "label": "No, speed is acceptable now", "next_step": "resolved_terminal" },
+      { "label": "Yes, the issue continues", "next_step": "noc_escalation" }
+    ]
+  },
+  "logical_logs": {
+    "question": "Are there repeated system logs or fault indicators, and has another CPE been tested?",
+    "options": [
+      { "label": "Yes, logs exist or the issue continues with another CPE", "next_step": "noc_escalation" },
+      { "label": "No logs; test another CPE and check for an Outage", "next_step": "logical_recheck" }
+    ]
+  },
+  "logical_recheck": {
+    "question": "After checking for an Outage and testing another CPE, does the issue remain?",
+    "options": [
+      { "label": "Yes, it remains", "next_step": "noc_escalation" },
+      { "label": "No, service works", "next_step": "resolved_terminal" },
+      { "label": "There may be an Outage", "next_step": "outage_terminal" }
+    ]
+  },
+  "noc_escalation": {
+    "question": "The logical issue needs escalation to the relevant team.",
+    "action": "Record the symptoms, start time, tested devices, CPE status, and MTU/DNS/trace or system-log results. Escalate to NOC according to the case type and follow the SLA shown in the system. Do not include credentials or internal addresses in customer-facing comments.",
+    "customer_script": "We have completed the initial checks, and I will send the case to the specialist team to review the network. We will follow up according to the SLA recorded for your case.",
+    "sla": "Depends on the case and escalation path; check the system and do not quote one universal SLA",
+    "options": []
+  },
+  "speed_variance_terminal": {
+    "question": "The speed values differ between system tools.",
+    "action": "Check the package speed, profile, and operational speed in approved tools. Resolve the Speed Variance path before continuing other logical-fault checks. Record the readings and escalate to the responsible team using the SLA shown in the system.",
+    "customer_script": "I found a mismatch in the speed information on our systems. I will send it for technical review before continuing other checks.",
+    "sla": "According to the Speed Variance path shown in the system",
+    "options": []
+  },
+  "outage_terminal": {
+    "question": "The issue may be related to a general network outage.",
+    "action": "Check the Outage Tool or CST360 for the outage type (planned/unplanned) and end time before opening an individual ticket. If the outage window has ended and the issue remains, restart the individual-fault diagnosis. Refer to the team leader if the outage is not visible in the tools.",
+    "customer_script": "The issue may be related to a general outage. I will check its status and official update time. If the issue continues afterward, I will continue with individual troubleshooting.",
+    "sla": "According to the official Outage notice; do not estimate a resolution time",
+    "options": []
+  },
+  "voice_start": {
+    "question": "Is the landline voice/heat affected on its own, or together with the internet?",
+    "options": [
+      { "label": "Landline voice only", "next_step": "voice_down_terminal" },
+      { "label": "Both voice and internet", "next_step": "data_down_logs" },
+      { "label": "Voice is overlapping or unstable", "next_step": "voice_down_terminal" }
+    ]
+  },
+  "voice_down_terminal": {
+    "question": "A landline voice case has been identified.",
+    "action": "Complete the required customer verification. Record whether this is Voice Down or Voice Overlapping, check visit/wiring history and Outages, then create or update the IU/specialist-team ticket according to the process. Record the customer's confirmation.",
+    "customer_script": "I have recorded the landline issue and the verification results. I will send it to the specialist team for follow-up and contact you according to the case SLA.",
+    "sla": "24 hours for the listed IU cases; verify the actual case SLA",
+    "options": []
+  },
+  "request_start": {
+    "question": "Which installation request or follow-up is this?",
+    "options": [
+      { "label": "Check availability or place a new line request", "next_step": "availability_check" },
+      { "label": "Follow up on an existing installation", "next_step": "order_followup" },
+      { "label": "Installation is delayed or failed", "next_step": "installation_delay" }
+    ]
+  },
+  "availability_check": {
+    "question": "Which technology is required or available at the address?",
+    "options": [
+      { "label": "MSAN or TDM line", "next_step": "copper_install_terminal" },
+      { "label": "FTTH fiber", "next_step": "fiber_install_terminal" },
+      { "label": "Availability is unclear", "next_step": "availability_terminal" }
+    ]
+  },
+  "copper_install_terminal": {
+    "question": "An MSAN/TDM line request was identified.",
+    "action": "Check address and availability in the approved tool, then submit through the correct channel. Quote the reference installation time only after confirming line type and order status.",
+    "customer_script": "Once availability is confirmed and the request is submitted, the reference installation time for an MSAN/TDM line is up to 5 working days.",
+    "sla": "5 working days after the request is completed, subject to availability",
+    "options": []
+  },
+  "fiber_install_terminal": {
+    "question": "An FTTH request was identified.",
+    "action": "Check address, compound availability, and current subscription requirements in the approved systems. Do not confirm a fee or final date before checking the approved tool.",
+    "customer_script": "I will first check fiber availability and the requirements for your address. After the request is accepted, the reference period is 7 days in Cairo, Giza, and Alexandria, and 10 days in other governorates.",
+    "sla": "7 days in Cairo/Giza/Alexandria; 10 days in other governorates",
+    "options": []
+  },
+  "availability_terminal": {
+    "question": "Availability must be confirmed before giving the customer a commitment.",
+    "action": "Check the address and service number in the availability tool. Explain the Available/Valid result or the reason for unavailability, and submit an availability check request if the result is unclear. Do not promise an installation date before the result is available.",
+    "customer_script": "I will check technical availability for your address. Once the result appears, I can explain the next step and expected time.",
+    "sla": "Depends on the request type and channel; check the system SLA",
+    "options": []
+  },
+  "order_followup": {
+    "question": "Does the customer have an order or ticket number?",
+    "options": [
+      { "label": "Yes, check the current order status and activity", "next_step": "order_status_check" },
+      { "label": "No, search for orders on the account", "next_step": "order_status_check" }
+    ]
+  },
+  "order_status_check": {
+    "question": "How does the order status compare with the SLA shown in the system?",
+    "options": [
+      { "label": "Within SLA, with no visible error", "next_step": "order_within_sla" },
+      { "label": "SLA exceeded or status is Failed/Abnormal", "next_step": "installation_delay" },
+      { "label": "Order is complete but service is not working", "next_step": "installation_delay" }
+    ]
+  },
+  "order_within_sla": {
+    "question": "The order is still within its SLA.",
+    "action": "Tell the customer the current status and activity shown in the system. Do not create a duplicate request. Record the inquiry and check again if a new error appears.",
+    "customer_script": "I checked your order, and it is still within the expected timeframe. Its current status is [status from the system], and we will follow any new update.",
+    "sla": "Remaining time shown in the system",
+    "options": []
+  },
+  "installation_delay": {
+    "question": "The installation order is delayed or has an error.",
+    "action": "Review Order Query, the sub-activity, and the failure reason. Check whether a Delay TT was created automatically; do not duplicate it. If the SLA has expired or an error is present, create the required follow-up/escalation for the responsible team and include the order number, status, and notes.",
+    "customer_script": "I found a delay/error in the order activity and recorded it for the responsible team. I will update you according to the timeframe shown in the system.",
+    "sla": "Depends on the order type and activity; use the timeframe shown in the system",
+    "options": []
+  },
+  "inquiry_start": {
+    "question": "What is the customer asking about?",
+    "options": [
+      { "label": "Package price or details", "next_step": "package_inquiry_terminal" },
+      { "label": "Router, light, or setting", "next_step": "device_inquiry_terminal" },
+      { "label": "Activate or cancel an add-on service/package", "next_step": "service_request_terminal" },
+      { "label": "Bill, balance, or payment", "next_step": "billing_inquiry_start" },
+      { "label": "Cancel or change a service/number", "next_step": "account_change_terminal" }
+    ]
+  },
+  "package_inquiry_terminal": {
+    "question": "Package or offer inquiry.",
+    "action": "Check current packages, prices, taxes, and eligibility in the approved system/sales channel. Do not use prices or offer values in training PDFs because they may have changed. Explain the benefits and expected line speed, then record the customer's choice.",
+    "customer_script": "I will check the latest available packages and your eligibility, then confirm the tax-inclusive price and expected speed before submitting any request.",
+    "sla": "Immediate inquiry; fulfillment depends on the service",
+    "options": []
+  },
+  "device_inquiry_terminal": {
+    "question": "Technical inquiry about a CPE or one of its lights.",
+    "action": "Identify the device model and service type, then use the approved device guide to explain the light or setting. Do not ask for the router admin password or change unrelated settings.",
+    "customer_script": "I will identify the router model and the light you see, then explain its meaning and the appropriate step from the device guide.",
+    "sla": "Immediate inquiry",
+    "options": []
+  },
+  "service_request_terminal": {
+    "question": "Request to activate or cancel an add-on service.",
+    "action": "Complete the required verification and confirm the service name, customer request, and eligibility. Check current fees and SLA before activation/cancellation, then record the request and result.",
+    "customer_script": "I will confirm the requested service, eligibility, and current fees before submitting it. I will then provide a reference number if one is generated.",
+    "sla": "Depends on the service and channel; check the system",
+    "options": []
+  },
+  "billing_inquiry_start": {
+    "question": "Is this about the bill/balance/usage, or a payment that has not appeared?",
+    "options": [
+      { "label": "Bill, balance, or usage", "next_step": "billing_inquiry_terminal" },
+      { "label": "Payment is unclear or missing", "next_step": "payment_not_clear_terminal" }
+    ]
+  },
+  "payment_not_clear_terminal": {
+    "question": "The payment has not appeared or is unclear.",
+    "action": "Check the payment channel, transaction reference, and time. Distinguish a bill payment from a transfer to the company account. Review the receipt and system transaction. Never ask for the full card number or verification code. Select the complaint type for the payment channel and check its SLA.",
+    "customer_script": "I will check the payment channel, reference, and time, then record the correct follow-up after verifying the receipt. Please do not send your card details or verification code.",
+    "sla": "Depends on the payment channel; check the system timeframe",
+    "options": []
+  },
+  "billing_inquiry_terminal": {
+    "question": "Bill, balance, or usage inquiry.",
+    "action": "Complete customer verification before disclosing information. Review the bill, usage, and payment record in the system. For a payment complaint, verify the channel and transaction reference, then select the correct complaint type.",
+    "customer_script": "After verifying the account, I will review the bill/balance details and explain the items or next step.",
+    "sla": "Immediate inquiry; complaints depend on the transaction type",
+    "options": []
+  },
+  "account_change_terminal": {
+    "question": "Request to change or cancel a service/number.",
+    "action": "Complete the required verification and check current policy before making any change. Review outstanding balance, eligibility, fees, and timeframe, then record customer consent and the request. Do not make an irreversible change without confirmation.",
+    "customer_script": "I will check the current requirements, any outstanding amount, and the timeframe, then explain them before making a change.",
+    "sla": "Depends on the request type; check the current SLA",
+    "options": []
+  },
+  "complaint_start": {
+    "question": "What is the complaint about?",
+    "options": [
+      { "label": "Technical service issue", "next_step": "technical_complaint_terminal" },
+      { "label": "Technician visit or staff conduct", "next_step": "conduct_complaint_terminal" },
+      { "label": "Customer is dissatisfied and requests a supervisor", "next_step": "escalation_request_terminal" }
+    ]
+  },
+  "technical_complaint_terminal": {
+    "question": "Technical complaint.",
+    "action": "Record the customer's description, time, completed checks, and results. Link the complaint to an existing technical ticket if available. Select the escalation team and SLA for the issue. Do not promise a timeframe that is not shown in the system.",
+    "customer_script": "I am sorry about the issue. I have recorded the details and checks completed, and I will follow it with the specialist team according to the stated timeframe.",
+    "sla": "Depends on the complaint type and assigned team",
+    "options": []
+  },
+  "conduct_complaint_terminal": {
+    "question": "Complaint about a technician visit or staff conduct.",
+    "action": "Record the time, location, visit details, reason for the complaint, and only the contact details needed. Create the complaint for the responsible team. Do not add unnecessary personal information.",
+    "customer_script": "I have recorded the necessary details of your complaint and will send it to the responsible team for review and follow-up according to its SLA.",
+    "sla": "Check the complaint team's SLA in the system",
+    "options": []
+  },
+  "escalation_request_terminal": {
+    "question": "The customer requests contact with a supervisor.",
+    "action": "Offer a callback or immediate supervisor path according to current policy. Record the reason for dissatisfaction and confirm only the timeframe permitted by the procedure.",
+    "customer_script": "I will record your request to speak with a supervisor and explain the approved follow-up method and timeframe before we end the call.",
+    "sla": "According to the escalation path in the system",
+    "options": []
+  },
+  "device_terminal": {
+    "question": "The issue is limited to one device or browser.",
+    "action": "Guide the customer to check the affected device or browser and retest on another device. Do not change general network settings when other devices work.",
+    "customer_script": "Because the service works on another device, the issue appears limited to this device or browser. Let us check its settings or try another browser.",
+    "sla": "Immediate after verification",
+    "options": []
+  },
+  "resolved_terminal": {
+    "question": "The customer confirmed that service returned after troubleshooting.",
+    "action": "Retest the service, record the step that solved the issue and the customer's confirmation, then close the ticket with the correct resolution code.",
+    "customer_script": "Great. Is the service working normally now? I have recorded the step that fixed the issue. Thank you for confirming.",
+    "sla": "Resolved during the call",
+    "options": []
+  }
+}

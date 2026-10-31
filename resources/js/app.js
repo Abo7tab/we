@@ -114,7 +114,7 @@ function normalizeSearch(value = '', language = 'ar') {
 
 const COPY = {
     ar: {
-        brand: 'مساعد الدعم الفني', title: 'دليل الدعم الفني', fresh: 'جديد', loading: 'جاري تحميل شجرة القرارات…', retry: 'إعادة المحاولة',
+        brand: 'مساعد WE للدعم الفني', title: 'دليل الدعم الفني', fresh: 'جديد', loading: 'جاري تحميل شجرة القرارات…', retry: 'إعادة المحاولة',
         missing: 'الخطوة الحالية غير موجودة في الشجرة.', step: 'الخطوة', back: 'رجوع خطوة', sla: 'المهلة:', action: 'إجراء الموظف',
         customerScript: 'نص تقوله للعميل', copy: 'نسخ نص العميل', newInquiry: 'بدء استعلام جديد', choose: 'اختيار', footer: 'تُحمّل الشجرة من Laravel، وتتم خطوات المسار داخل المتصفح.',
         copied: 'تم نسخ نص العميل.', noScript: 'لا يوجد نص عميل لنسخه في هذه الخطوة.', copyError: 'تعذر النسخ تلقائيًا. يمكنك تحديد النص ونسخه يدويًا.',
@@ -130,10 +130,10 @@ const COPY = {
         refNone: 'لم تُنشأ تذكرة', refTT: 'TT', refSR: 'SR', refOrder: 'رقم الطلب', refIR: 'IR داخلي',
         copyComment: 'نسخ التعليق', commentCopied: 'تم نسخ التعليق. راجعه قبل لصقه في النظام.',
         quickSearch: 'بحث سريع', quickSearchPlaceholder: 'ابحث عن إجراء أو كود أو مهلة…', noSearchResults: 'لا توجد نتيجة مطابقة مؤكدة؛ راجع النظام الحالي قبل الاعتماد عليها.', dark: 'الوضع الداكن', light: 'الوضع الفاتح',
-        checkBeforeQuote: 'تحقّق قبل ما تعرض السعر', toolsHub: 'أدلة مساعدة', operations: 'رقم البحث والتسجيل في النظام', searchTitle: 'أبحث بأي رقم؟', recordTitle: 'أسجل إيه؟', codesTitle: 'أكواد الإغلاق الظاهرة في دليل التدريب', codesSearch: 'ابحث برقم الكود أو الوصف', codeLabel: 'الكود', reasonLabel: 'الوصف',
+        checkBeforeQuote: 'تحقّق قبل ما تعرض السعر', toolsHub: 'أدلة مساعدة', exceed: 'EXCEED', internalTool: 'أداة دعم داخلية', operations: 'رقم البحث والتسجيل في النظام', searchTitle: 'أبحث بأي رقم؟', recordTitle: 'أسجل إيه؟', codesTitle: 'أكواد الإغلاق الظاهرة في دليل التدريب', codesSearch: 'ابحث برقم الكود أو الوصف', codeLabel: 'الكود', reasonLabel: 'الوصف',
     },
     en: {
-        brand: 'Technical Support Assistant', title: 'Support Guide', fresh: 'New', loading: 'Loading decision tree…', retry: 'Try again',
+        brand: 'WE Technical Support Assistant', title: 'Support Guide', fresh: 'New', loading: 'Loading decision tree…', retry: 'Try again',
         missing: 'The current step is missing from the tree.', step: 'Step', back: 'Go back', sla: 'SLA:', action: 'Agent action',
         customerScript: 'What to tell the customer', copy: 'Copy customer script', newInquiry: 'Start a new inquiry', choose: 'Choose', footer: 'The tree is loaded from Laravel; steps run in your browser.',
         copied: 'Customer script copied.', noScript: 'There is no customer script to copy at this step.', copyError: 'Automatic copy failed. Select and copy the text manually.',
@@ -149,7 +149,7 @@ const COPY = {
         refNone: 'No ticket created', refTT: 'TT', refSR: 'SR', refOrder: 'Order number', refIR: 'Internal IR',
         copyComment: 'Copy comment', commentCopied: 'Comment copied. Review it before pasting into the system.',
         quickSearch: 'Quick search', quickSearchPlaceholder: 'Search a procedure, code, or SLA…', noSearchResults: 'No confirmed matching result. Check the current system before relying on it.', dark: 'Dark mode', light: 'Light mode',
-        checkBeforeQuote: 'Check before quoting', toolsHub: 'Quick guides', operations: 'Which ID and record should I use?', searchTitle: 'What should I search by?', recordTitle: 'What should I record?', codesTitle: 'Close codes listed in training guide', codesSearch: 'Search by code or reason', codeLabel: 'Code', reasonLabel: 'Reason',
+        checkBeforeQuote: 'Check before quoting', toolsHub: 'Quick guides', exceed: 'EXCEED', internalTool: 'Internal support tool', operations: 'Which ID and record should I use?', searchTitle: 'What should I search by?', recordTitle: 'What should I record?', codesTitle: 'Close codes listed in training guide', codesSearch: 'Search by code or reason', codeLabel: 'Code', reasonLabel: 'Reason',
     },
 };
 
@@ -299,6 +299,7 @@ const App = {
                 language.value = nextLanguage;
                 document.documentElement.lang = nextLanguage;
                 document.documentElement.dir = nextLanguage === 'ar' ? 'rtl' : 'ltr';
+                document.title = nextLanguage === 'ar' ? 'WE EXCEED | مساعد الدعم الفني' : 'WE EXCEED | Technical Support Assistant';
                 notice.value = '';
             } catch (error) {
                 loadError.value = error instanceof Error ? error.message : COPY[nextLanguage].supportIssue;
@@ -383,17 +384,17 @@ const App = {
 
 
         return () => h('main', {
-                class: `app-shell ${theme.value === 'dark' ? 'app-dark' : ''} relative isolate min-h-screen w-full overflow-x-clip bg-slate-50 px-4 py-6 pb-28 text-gray-800 sm:px-6 sm:py-10`,
+                class: `app-shell we-brand ${theme.value === 'dark' ? 'app-dark' : ''} relative isolate min-h-screen w-full overflow-x-clip bg-slate-50 px-4 py-6 pb-28 text-gray-800 sm:px-6 sm:py-10`,
         }, [
             h('div', { class: 'wave-backdrop pointer-events-none absolute inset-x-0 bottom-0 z-0 h-48 overflow-hidden sm:h-64', 'aria-hidden': 'true' }, [
                 h('svg', { class: 'wave wave-one absolute bottom-0 h-full w-[200%]', viewBox: '0 0 2880 320', preserveAspectRatio: 'none' }, [
-                    h('path', { d: 'M0 160 C240 220 480 90 720 145 C960 200 1200 90 1440 150 V320 H0 Z M1440 150 C1680 210 1920 80 2160 135 C2400 190 2640 80 2880 140 V320 H1440 Z', fill: '#60a5fa', opacity: '.20' }),
+                    h('path', { d: 'M0 160 C240 220 480 90 720 145 C960 200 1200 90 1440 150 V320 H0 Z M1440 150 C1680 210 1920 80 2160 135 C2400 190 2640 80 2880 140 V320 H1440 Z', fill: '#5b2c91', opacity: '.12' }),
                 ]),
                 h('svg', { class: 'wave wave-two absolute bottom-0 h-[85%] w-[200%]', viewBox: '0 0 2880 320', preserveAspectRatio: 'none' }, [
-                    h('path', { d: 'M0 190 C220 120 440 240 700 180 C960 120 1180 235 1440 175 V320 H0 Z M1440 175 C1660 105 1880 225 2140 165 C2400 105 2620 220 2880 160 V320 H1440 Z', fill: '#818cf8', opacity: '.18' }),
+                    h('path', { d: 'M0 190 C220 120 440 240 700 180 C960 120 1180 235 1440 175 V320 H0 Z M1440 175 C1660 105 1880 225 2140 165 C2400 105 2620 220 2880 160 V320 H1440 Z', fill: '#d21b8c', opacity: '.10' }),
                 ]),
                 h('svg', { class: 'wave wave-three absolute bottom-0 h-[70%] w-[200%]', viewBox: '0 0 2880 320', preserveAspectRatio: 'none' }, [
-                    h('path', { d: 'M0 220 C260 160 470 270 730 210 C990 150 1180 275 1440 215 V320 H0 Z M1440 215 C1700 155 1910 265 2170 205 C2430 145 2620 270 2880 210 V320 H1440 Z', fill: '#c4b5fd', opacity: '.28' }),
+                    h('path', { d: 'M0 220 C260 160 470 270 730 210 C990 150 1180 275 1440 215 V320 H0 Z M1440 215 C1700 155 1910 265 2170 205 C2430 145 2620 270 2880 210 V320 H1440 Z', fill: '#8e59bd', opacity: '.14' }),
                 ]),
             ]),
             h('section', {
@@ -402,9 +403,13 @@ const App = {
             }, [
                 h('header', { class: 'mb-5 flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-4' }, [
                     h('div', { class: 'flex min-w-0 items-center gap-3' }, [
-                        h('button', { class: 'brand-mark inline-flex size-11 shrink-0 items-center justify-center rounded-2xl bg-blue-700 text-white shadow-lg shadow-blue-700/20 transition hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2', type: 'button', onClick: restart, 'aria-label': t('newInquiry'), title: t('newInquiry') }, [icon('router', 'size-6')]),
+                        h('button', { class: 'brand-mark inline-flex size-12 shrink-0 items-center justify-center rounded-full transition hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2', type: 'button', onClick: restart, 'aria-label': t('newInquiry'), title: t('newInquiry') }, [h('img', { src: '/we-logo.svg', class: 'size-11', alt: 'WE' })]),
                         h('div', { class: 'min-w-0' }, [
-                            h('button', { class: 'block text-start text-xs font-semibold tracking-wide text-blue-700 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500', type: 'button', onClick: restart }, t('brand')),
+                            h('div', { class: 'flex flex-wrap items-center gap-x-2 gap-y-1' }, [
+                                h('button', { class: 'block text-start text-xs font-bold tracking-wide text-purple-800 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500', type: 'button', onClick: restart }, t('brand')),
+                                h('span', { class: 'we-exceed rounded-full px-2 py-0.5 text-[10px] font-extrabold tracking-[0.14em]' }, t('exceed')),
+                                h('span', { class: 'we-internal text-[10px] font-medium' }, t('internalTool')),
+                            ]),
                             h('h1', { class: 'truncate text-xl font-bold text-gray-900 sm:text-2xl' }, t('title')),
                         ]),
                     ]),
@@ -642,7 +647,14 @@ const App = {
                     role: 'status',
                     'aria-live': 'polite',
                 }, notice.value) : null,
-                h('p', { class: 'mt-6 text-xs text-gray-400' }, t('footer')),
+                h('footer', { class: 'we-footer mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-4 text-xs' }, [
+                    h('div', { class: 'flex items-center gap-2' }, [
+                        h('img', { src: '/we-logo.svg', class: 'size-6', alt: 'WE' }),
+                        h('span', { class: 'font-semibold' }, 'WE'),
+                        h('span', { class: 'we-footer-exceed font-extrabold tracking-[0.12em]' }, t('exceed')),
+                    ]),
+                    h('p', { class: 'm-0' }, t('footer')),
+                ]),
             ]),
 
         ]);

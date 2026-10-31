@@ -3,9 +3,10 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="theme-color" content="#f8fafc">
+        <meta name="theme-color" content="#5b2c91">
+        <link rel="icon" type="image/svg+xml" href="/we-logo.svg">
         <meta name="csrf-token" content="{{ csrf_token() }}">
-        <title>مساعد الدعم الفني</title>
+        <title>WE EXCEED | مساعد الدعم الفني</title>
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body>

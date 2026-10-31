@@ -240,3 +240,59 @@ body {
         transition-duration: 0.01ms !important;
     }
 }
+
+
+.we-brand {
+    --we-purple: #5b2c91;
+    --we-magenta: #d21b8c;
+    --we-ink: #26123b;
+    background: #f7f4fa !important;
+}
+
+.we-brand .brand-mark {
+    background: #fff;
+    box-shadow: 0 7px 22px rgb(91 44 145 / 16%);
+}
+
+.we-brand .app-card {
+    border-top: 4px solid var(--we-purple);
+    box-shadow: 0 24px 70px rgb(66 35 95 / 13%);
+}
+
+.we-brand [class~="bg-blue-700"] { background-color: var(--we-purple) !important; }
+.we-brand [class~="hover:bg-blue-800"]:hover { background-color: #47206f !important; }
+.we-brand [class~="text-blue-700"],
+.we-brand [class~="text-blue-800"],
+.we-brand [class~="text-blue-900"] { color: var(--we-purple) !important; }
+.we-brand [class~="border-blue-100"] { border-color: #e6d9f2 !important; }
+.we-brand [class~="bg-blue-50"] { background-color: #f6effb !important; }
+.we-brand [class~="hover:bg-blue-50"]:hover { background-color: #f3eafb !important; }
+.we-brand [class~="hover:border-blue-300"]:hover { border-color: #b99bd4 !important; }
+
+.we-brand .question-panel {
+    background: linear-gradient(110deg, #fbf9fd 0%, #f5effa 100%);
+    border-color: #e7d9f2;
+    box-shadow: inset -3px 0 0 var(--we-magenta);
+}
+
+.we-brand .option-button { border-color: #e8e1ef; }
+.we-brand .option-button:hover {
+    border-color: #b99bd4;
+    box-shadow: 0 10px 22px rgb(91 44 145 / 9%);
+}
+
+.we-exceed { background: #fbe9f4; color: #9c126b; }
+.we-internal { color: #756783; }
+.we-brand .we-footer { border-color: #eee6f4; color: #756783; }
+.we-footer-exceed { color: var(--we-magenta); }
+.we-brand .package-catalog {
+    border-color: #e6d9f2;
+    background: linear-gradient(135deg, #faf7fd, #fff 72%);
+}
+
+.app-dark.we-brand { background: #0b1220 !important; }
+.app-dark.we-brand .app-card { border-top-color: #a578c8; }
+.app-dark .we-exceed { background: #47203d; color: #ffc5e8; }
+.app-dark .we-internal,
+.app-dark .we-footer { color: #b8abc8; }
+.app-dark.we-brand .package-catalog { background: #172338 !important; border-color: #47345b !important; }

@@ -2816,41 +2816,6 @@
       "en": "Questions from exam files"
     },
     "question": {
-      "ar": "Cst need to subscribe on new FV line (MSAN) will inform him SLA",
-      "en": "Cst need to subscribe on new FV line (MSAN) will inform him SLA"
-    },
-    "answer": {
-      "ar": "5 Days",
-      "en": "5 Days"
-    },
-    "source": "exam.pdf",
-    "verifyLive": true,
-    "options": [
-      {
-        "ar": "7 Days",
-        "en": "7 Days"
-      },
-      {
-        "ar": "10 Days",
-        "en": "10 Days"
-      },
-      {
-        "ar": "5 Days",
-        "en": "5 Days"
-      }
-    ],
-    "correctIndex": 2,
-    "explanation": {
-      "ar": "الإجابة المحددة في مفتاح ملف exam.pdf هي: 5 Days.",
-      "en": "The answer marked in exam.pdf is: 5 Days."
-    }
-  },
-  {
-    "topic": {
-      "ar": "أسئلة من ملفات الامتحانات",
-      "en": "Questions from exam files"
-    },
-    "question": {
       "ar": "Cst calling us complaint from can't make International call , CCA right actions is mernaaen العميل بيتصل و بيشتكي من انه مش بيعرف يتصل باي رقم دولي هنعمل ايه في الحاله دي ؟",
       "en": "Cst calling us complaint from can't make International call , CCA right actions is mernaaen العميل بيتصل و بيشتكي من انه مش بيعرف يتصل باي رقم دولي هنعمل ايه في الحاله دي ؟"
     },
@@ -3243,41 +3208,6 @@
     "explanation": {
       "ar": "الإجابة المحددة في مفتاح ملف exam.pdf هي: Both of them.",
       "en": "The answer marked in exam.pdf is: Both of them."
-    }
-  },
-  {
-    "topic": {
-      "ar": "أسئلة من ملفات الامتحانات",
-      "en": "Questions from exam files"
-    },
-    "question": {
-      "ar": "Which the below consider as private IP",
-      "en": "Which the below consider as private IP"
-    },
-    "answer": {
-      "ar": "192.168.1.2",
-      "en": "192.168.1.2"
-    },
-    "source": "exam.pdf",
-    "verifyLive": true,
-    "options": [
-      {
-        "ar": "168.190.1.2",
-        "en": "168.190.1.2"
-      },
-      {
-        "ar": "192.168.1.2",
-        "en": "192.168.1.2"
-      },
-      {
-        "ar": "190.168.1.10",
-        "en": "190.168.1.10"
-      }
-    ],
-    "correctIndex": 1,
-    "explanation": {
-      "ar": "الإجابة المحددة في مفتاح ملف exam.pdf هي: 192.168.1.2.",
-      "en": "The answer marked in exam.pdf is: 192.168.1.2."
     }
   },
   {
@@ -6222,7 +6152,7 @@
       "en": "Questions from exam files"
     },
     "question": {
-      "ar": "وماء جر",
+      "ar": "ما القناة التي يمكن للعميل من خلالها تغيير اسم جهة الاتصال؟",
       "en": "CST can Change Contact Name from Ai"
     },
     "answer": {
@@ -6443,7 +6373,7 @@
       "en": "Questions from exam files"
     },
     "question": {
-      "ar": "وماء جر",
+      "ar": "ما مهلة الـSLA لحالة بطء الإنترنت؟",
       "en": "Slowness case SLA will be omplete"
     },
     "answer": {
@@ -6866,7 +6796,7 @@
       "en": "Questions from exam files"
     },
     "question": {
-      "ar": "ومس",
+      "ar": "خدمة سلفني متاحة لأي نوع من عملاء الإنترنت المنزلي؟",
       "en": "In FBB: Salfny service available for"
     },
     "answer": {
@@ -7739,7 +7669,7 @@
       "en": "Questions from exam files"
     },
     "question": {
-      "ar": "ومس",
+      "ar": "من أي أداة نتحقق من أهلية نقل الخط إلى FTTH؟",
       "en": "ومس"
     },
     "answer": {
@@ -8737,41 +8667,6 @@
     "explanation": {
       "ar": "الإجابة المحددة في مفتاح الامتحان هي: False.",
       "en": "The answer marked in the quiz is: False."
-    }
-  },
-  {
-    "topic": {
-      "ar": "أسئلة من ملفات الامتحانات",
-      "en": "Questions from exam files"
-    },
-    "question": {
-      "ar": "What is the delay SLA for Browsing (all sites)?",
-      "en": "What is the delay SLA for Browsing (all sites)?"
-    },
-    "answer": {
-      "ar": "2H",
-      "en": "2H"
-    },
-    "source": "Third Quiz (completed quiz answer selections)",
-    "verifyLive": true,
-    "options": [
-      {
-        "ar": "2.5H",
-        "en": "2.5H"
-      },
-      {
-        "ar": "2H",
-        "en": "2H"
-      },
-      {
-        "ar": "72H",
-        "en": "72H"
-      }
-    ],
-    "correctIndex": 1,
-    "explanation": {
-      "ar": "الإجابة المحددة في مفتاح الامتحان هي: 2H.",
-      "en": "The answer marked in the quiz is: 2H."
     }
   },
   {

@@ -190,5 +190,345 @@
     },
     "startStepId": "preflight_start",
     "source": "storage/app/data/support.json: preflight_start, outage_precheck, billing_precheck, quota_precheck, symptom route"
+  },
+  {
+    "id": "logical-instability-repeat-drop",
+    "title": {
+      "ar": "فصل ورجوع والـDSL ثابتة",
+      "en": "Repeated drops with steady DSL"
+    },
+    "customer": {
+      "ar": "النت بيفصل ويرجع، ولمبة DSL ثابتة وقت الفصل. تم التأكد من عدم وجود عطل عام أو إيقاف حساب.",
+      "en": "Internet disconnects and reconnects while DSL stays steady. No outage or account suspension is present."
+    },
+    "goal": {
+      "ar": "حدد نتيجة Congestion وASSIA وNST Logs، ثم أكمل فرع الاستقرار أو التصعيد.",
+      "en": "Check congestion, ASSIA, and NST logs, then follow the stability or escalation branch."
+    },
+    "startStepId": "logical_instability_start",
+    "source": "storage/app/data/support.json: logical_instability_start"
+  },
+  {
+    "id": "slowness-all-devices",
+    "title": {
+      "ar": "بطء على كل الأجهزة",
+      "en": "Slowness on every device"
+    },
+    "customer": {
+      "ar": "كل الأجهزة بطيئة، والباقة لم تنتهِ. العميل يريد معرفة سبب البطء والخطوة التالية.",
+      "en": "Every device is slow and the package is not exhausted. The customer wants the cause and next step."
+    },
+    "goal": {
+      "ar": "قارن اختبار السرعة بالسرعة المسجلة، ثم افصل بطء الخدمة عن Wi-Fi أو موقع محدد.",
+      "en": "Compare the speed test with the recorded line speed, then separate service slowness from Wi-Fi or a specific site."
+    },
+    "startStepId": "slowness_start",
+    "source": "storage/app/data/support.json: slowness_start"
+  },
+  {
+    "id": "bad-line-quality-check",
+    "title": {
+      "ar": "شكوى Bad Line Quality",
+      "en": "Bad Line Quality complaint"
+    },
+    "customer": {
+      "ar": "العميل يشتكي من جودة خط سيئة. لا تفترض وجود عطل فيزيائي قبل مراجعة ASSIA وقراءات الخط.",
+      "en": "The customer reports poor line quality. Do not assume a physical fault before checking ASSIA and line readings."
+    },
+    "goal": {
+      "ar": "طابق Line ID وحداثة Clear View، ثم قارن القراءات بمصفوفة السرعة الحالية.",
+      "en": "Match the Line ID and Clear View freshness, then compare readings with the current speed matrix."
+    },
+    "startStepId": "blq_assia",
+    "source": "storage/app/data/support.json: blq_assia"
+  },
+  {
+    "id": "gaming-latency",
+    "title": {
+      "ar": "تقطيع وPing مرتفع في الألعاب",
+      "en": "Gaming lag and high ping"
+    },
+    "customer": {
+      "ar": "التصفح يعمل، لكن العميل يلاحظ Ping مرتفعًا وتقطيعًا أثناء اللعب.",
+      "en": "Browsing works, but the customer reports high ping and lag while gaming."
+    },
+    "goal": {
+      "ar": "ابدأ بفحص ASSIA، وحدد هل الحالة Ping أم توافق لعبة قبل خطوات DNS المسموح بها.",
+      "en": "Start with ASSIA and classify the issue as ping or game compatibility before allowed DNS steps."
+    },
+    "startStepId": "gaming_start",
+    "source": "storage/app/data/support.json: gaming_start"
+  },
+  {
+    "id": "single-site-browsing",
+    "title": {
+      "ar": "موقع واحد لا يفتح",
+      "en": "Only one website will not load"
+    },
+    "customer": {
+      "ar": "موقع واحد لا يفتح بينما بقية المواقع تعمل على أكثر من جهاز.",
+      "en": "One website fails while other sites work on multiple devices."
+    },
+    "goal": {
+      "ar": "حدد هل المشكلة بالموقع وحده أم بالشبكة، واستخدم نتيجة الفحص لتحديد المسار.",
+      "en": "Determine whether the issue is limited to the site or the network, then follow the matching branch."
+    },
+    "startStepId": "browsing_check",
+    "source": "storage/app/data/support.json: browsing_check"
+  },
+  {
+    "id": "speed-variance-record",
+    "title": {
+      "ar": "اختلاف السرعة بين النظام والبروفايل",
+      "en": "Speed differs between system and profile"
+    },
+    "customer": {
+      "ar": "قراءة السرعة في النظام لا تبدو مطابقة للـProfile أو السرعة المتعاقد عليها.",
+      "en": "The system speed reading appears inconsistent with the profile or contracted speed."
+    },
+    "goal": {
+      "ar": "قارن القراءات المطلوبة وسجل النتيجة قبل اختيار مسار البطء أو Speed Variance.",
+      "en": "Compare the required readings and record the result before choosing slowness or Speed Variance."
+    },
+    "startStepId": "logical_check_speed_variance",
+    "source": "storage/app/data/support.json: logical_check_speed_variance"
+  },
+  {
+    "id": "dsl-no-sync-after-main-wire",
+    "title": {
+      "ar": "لمبة DSL لا تثبت بعد التوصيل الرئيسي",
+      "en": "DSL will not sync after direct connection"
+    },
+    "customer": {
+      "ar": "العميل فصل التفرعات ووصل الراوتر بالسلك الرئيسي، لكن لمبة DSL لا تثبت.",
+      "en": "The customer removed extensions and connected the router to the main line, but DSL will not stabilize."
+    },
+    "goal": {
+      "ar": "تأكد من حالة اللمبات والتوصيل، ثم اتبع فحوص Physical المناسبة قبل التصعيد.",
+      "en": "Confirm the lights and wiring, then follow the relevant physical checks before escalation."
+    },
+    "startStepId": "physical_start",
+    "source": "storage/app/data/support.json: physical_start"
+  },
+  {
+    "id": "instability-after-technician",
+    "title": {
+      "ar": "عدم استقرار بعد زيارة فني",
+      "en": "Instability after a technician visit"
+    },
+    "customer": {
+      "ar": "بدأ فصل الخط بعد زيارة فني أو تغيير التوصيلات. حدد ما الذي تغير وهل ما زال العطل قائمًا.",
+      "en": "Drops began after a technician visit or wiring change. Identify what changed and whether the fault remains."
+    },
+    "goal": {
+      "ar": "راجع نتيجة الزيارة والتوصيلات، ثم أعد الفحص الفيزيائي قبل الانتقال لأي مسار آخر.",
+      "en": "Review the visit and wiring, then repeat physical checks before moving to another path."
+    },
+    "startStepId": "instability_visit",
+    "source": "storage/app/data/support.json: instability_visit"
+  },
+  {
+    "id": "night-callback-availability",
+    "title": {
+      "ar": "متابعة ليلية من NOC",
+      "en": "Night NOC callback availability"
+    },
+    "customer": {
+      "ar": "التصعيد يحتاج متابعة خلال الفترة من 10 مساءً إلى 8 صباحًا. العميل قد لا يكون متاحًا.",
+      "en": "The escalation may need follow-up between 10 p.m. and 8 a.m. The customer may not be available."
+    },
+    "goal": {
+      "ar": "تحقق من إتاحة العميل لهذه الفترة، ثم اختر فرع المتابعة المناسب ولا تعد باتصال غير مؤكد.",
+      "en": "Check the customer’s availability for this window, then choose the right follow-up branch without promising an unconfirmed call."
+    },
+    "startStepId": "noc_oncall_availability",
+    "source": "storage/app/data/support.json: noc_oncall_availability"
+  },
+  {
+    "id": "landline-no-tone-only",
+    "title": {
+      "ar": "الخط الأرضي بلا حرارة والإنترنت يعمل",
+      "en": "No landline tone, internet works"
+    },
+    "customer": {
+      "ar": "العميل لا يسمع حرارة في الهاتف الأرضي، لكن الإنترنت يعمل.",
+      "en": "The customer has no dial tone, but internet works."
+    },
+    "goal": {
+      "ar": "حدد هل المشكلة Voice فقط أم مشتركة، ثم اتبع إجراء الصوت الظاهر في المسار.",
+      "en": "Determine whether this is voice-only or a combined fault, then follow the voice procedure in the tree."
+    },
+    "startStepId": "voice_start",
+    "source": "storage/app/data/support.json: voice_start"
+  },
+  {
+    "id": "account-suspended-before-troubleshooting",
+    "title": {
+      "ar": "الحساب Suspended قبل التشخيص الفني",
+      "en": "Account is suspended before technical checks"
+    },
+    "customer": {
+      "ar": "الخدمة لا تعمل، وحالة حساب الإنترنت في BSS تظهر Suspended.",
+      "en": "The service is down and the internet account status in BSS shows Suspended."
+    },
+    "goal": {
+      "ar": "أكد حالة الحساب والإجراء المسموح، ولا تكمل تشخيص Logical قبل معالجة سبب الإيقاف.",
+      "en": "Confirm the account state and allowed action; do not continue logical diagnosis before addressing the suspension."
+    },
+    "startStepId": "logical_verify_account",
+    "source": "storage/app/data/support.json: logical_verify_account"
+  },
+  {
+    "id": "quota-exhausted",
+    "title": {
+      "ar": "استهلاك الباقة انتهى",
+      "en": "Package quota is exhausted"
+    },
+    "customer": {
+      "ar": "العميل يقول إن الإنترنت بطيء أو متوقف، ويظهر في النظام أن الاستهلاك انتهى.",
+      "en": "The customer reports slow or unavailable internet, and the system shows the quota is exhausted."
+    },
+    "goal": {
+      "ar": "أكد الاستهلاك والصلاحية من النظام، ثم وضح النتيجة للعميل قبل بدء تشخيص العطل.",
+      "en": "Verify usage and validity in the system, then explain the result before troubleshooting a fault."
+    },
+    "startStepId": "quota_precheck",
+    "source": "storage/app/data/support.json: quota_precheck"
+  },
+  {
+    "id": "fawry-payment-delay",
+    "title": {
+      "ar": "دفعة فوري لم تظهر",
+      "en": "Fawry payment is not posted"
+    },
+    "customer": {
+      "ar": "العميل دفع عبر فوري، لكن الدفع غير ظاهر في الحساب حتى الآن.",
+      "en": "The customer paid through Fawry, but the payment has not appeared in the account yet."
+    },
+    "goal": {
+      "ar": "راجع بيانات العملية وقناة الدفع، ثم اتبع مسار الشكوى والنص والمهلة المعروضة في الدليل.",
+      "en": "Check the transaction and payment channel, then follow the complaint path and the script and timeframe shown in the guide."
+    },
+    "startStepId": "billing_inquiry_start",
+    "source": "storage/app/data/support.json: billing_inquiry_start"
+  },
+  {
+    "id": "promise-pay-consumer-postpaid",
+    "title": {
+      "ar": "طلب Promise to Pay لحساب Consumer Postpaid",
+      "en": "Promise to Pay for Consumer Postpaid"
+    },
+    "customer": {
+      "ar": "العميل يطلب إعادة الخدمة مؤقتًا، ونوع الحساب الظاهر Consumer Postpaid.",
+      "en": "The customer requests temporary service restoration, and the account type is Consumer Postpaid."
+    },
+    "goal": {
+      "ar": "تحقق من نوع الحساب أولًا، ثم وضح أهلية الحالة حسب الفرع المعروض ولا تنشئ وعدًا غير متاح.",
+      "en": "Confirm the account type, then explain eligibility from the displayed branch; do not promise an unavailable option."
+    },
+    "startStepId": "promise_to_pay_start",
+    "source": "storage/app/data/support.json: promise_to_pay_start"
+  },
+  {
+    "id": "promise-pay-nonconsumer",
+    "title": {
+      "ar": "طلب Promise to Pay لحساب Non-Consumer",
+      "en": "Promise to Pay for a Non-Consumer account"
+    },
+    "customer": {
+      "ar": "العميل يطلب إعادة الخدمة مؤقتًا، والنظام يظهر أن الحساب Non-Consumer.",
+      "en": "The customer requests temporary service restoration, and the system shows a Non-Consumer account."
+    },
+    "goal": {
+      "ar": "اتبع فرع نوع الحساب، وتحقق من الشروط والمدة المعروضة قبل إبلاغ العميل.",
+      "en": "Follow the account-type branch and verify the displayed conditions and timeframe before informing the customer."
+    },
+    "startStepId": "promise_to_pay_start",
+    "source": "storage/app/data/support.json: promise_to_pay_start"
+  },
+  {
+    "id": "payment-wrong-number-transfer",
+    "title": {
+      "ar": "الدفع على رقم آخر مع موافقة العميل على التحويل",
+      "en": "Payment on another number; customer agrees to transfer"
+    },
+    "customer": {
+      "ar": "العميل دفع على رقم خدمة آخر بالخطأ، وبعد شرح الخيار وافق على تحويل الرصيد.",
+      "en": "The customer paid the wrong service number and agrees to a balance transfer after the option is explained."
+    },
+    "goal": {
+      "ar": "تحقق من بيانات العملية وموافقة العميل، ثم اتبع فرع التحويل وسجل النتيجة ورقم الطلب إن صدر.",
+      "en": "Verify transaction details and consent, then follow the transfer branch and record the result and any generated reference number."
+    },
+    "startStepId": "wrong_number_payment_check",
+    "source": "storage/app/data/support.json: wrong_number_payment_check"
+  },
+  {
+    "id": "payment-wrong-number-refund",
+    "title": {
+      "ar": "الدفع على رقم آخر والعميل يطلب الاسترداد",
+      "en": "Payment on another number; customer requests refund"
+    },
+    "customer": {
+      "ar": "العميل دفع على رقم خدمة آخر بالخطأ ولا يوافق على تحويل المبلغ أو يطلب استرداده.",
+      "en": "The customer paid the wrong service number and declines transfer or requests a refund."
+    },
+    "goal": {
+      "ar": "راجع الإيصال والعملية، ثم اتبع فرع الاسترداد ولا تؤكد قبول الطلب قبل ظهوره بالنظام.",
+      "en": "Review the receipt and transaction, then follow the refund branch; do not confirm acceptance before it appears in the system."
+    },
+    "startStepId": "wrong_number_payment_check",
+    "source": "storage/app/data/support.json: wrong_number_payment_check"
+  },
+  {
+    "id": "ftth-migration-code-39",
+    "title": {
+      "ar": "تعديل عنوان مرتبط بطلب FTTH وكود 39",
+      "en": "Address change linked to FTTH and code 39"
+    },
+    "customer": {
+      "ar": "تظهر على تذكرة قائمة إشارة إلى Address Modification أو كود 39. تحقق هل يوجد طلب FTTH Migration مرتبط.",
+      "en": "An existing ticket mentions Address Modification or code 39. Check whether an FTTH Migration order is linked."
+    },
+    "goal": {
+      "ar": "راجع طلب الهجرة وإتاحة العنوان في النظام، ثم أكمل الفرع المناسب من غير اختيار كود بناءً على الرقم وحده.",
+      "en": "Check the migration order and address availability, then follow the matching branch; do not choose a code from the number alone."
+    },
+    "startStepId": "exception_27",
+    "source": "storage/app/data/support.json: exception_27"
+  },
+  {
+    "id": "ftth-new-address-availability",
+    "title": {
+      "ar": "طلب تركيب FTTH على عنوان جديد",
+      "en": "FTTH installation at a new address"
+    },
+    "customer": {
+      "ar": "العميل يريد تركيب FTTH في عنوان جديد ويسأل هل الخدمة متاحة ومتى يتم التركيب.",
+      "en": "The customer wants FTTH at a new address and asks whether service is available and when installation can happen."
+    },
+    "goal": {
+      "ar": "تحقق من التقنية والإتاحة أولًا، ثم اشرح الطلب والمهلة الظاهرة من النظام دون وعد مسبق.",
+      "en": "Check technology and availability first, then explain the request and system timeframe without making an early promise."
+    },
+    "startStepId": "availability_check",
+    "source": "storage/app/data/support.json: availability_check"
+  },
+  {
+    "id": "installation-order-beyond-sla",
+    "title": {
+      "ar": "طلب تركيب تجاوز المهلة الظاهرة",
+      "en": "Installation order is past its displayed SLA"
+    },
+    "customer": {
+      "ar": "يوجد رقم طلب تركيب قائم، والعميل يتواصل بعد تجاوز المهلة الظاهرة في النظام.",
+      "en": "There is an existing installation order, and the customer contacts support after the displayed timeframe has passed."
+    },
+    "goal": {
+      "ar": "راجع حالة الطلب ومهلة النظام، ثم حدد هل ينطبق تأخير أو متابعة، وسجل الرقم والنص المناسبين.",
+      "en": "Check order status and its system timeframe, then determine whether delay handling applies and record the right reference and script."
+    },
+    "startStepId": "order_status_check",
+    "source": "storage/app/data/support.json: order_status_check"
   }
 ]

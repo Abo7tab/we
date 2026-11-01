@@ -1,0 +1,961 @@
+[
+  {
+    "topic": {
+      "ar": "الأعطال والتصعيد",
+      "en": "Faults and escalation"
+    },
+    "question": {
+      "ar": "لو العميل قال إن الكابل مقطوع خارج الشقة، هل نصعّد مباشرةً من غير فحص الفاتورة؟",
+      "en": "If the customer reports a cable cut outside the flat, should you escalate before checking the bill?"
+    },
+    "answer": {
+      "ar": "لا. افحص الفاتورة أولًا، ثم اتبع مسار العطل المناسب.",
+      "en": "No. Check the bill first, then follow the matching fault path."
+    },
+    "source": "final review 1.pdf",
+    "options": [
+      {
+        "ar": "لا؛ افحص الفاتورة ثم اتبع مسار العطل",
+        "en": "No. Check the bill, then follow the fault path"
+      },
+      {
+        "ar": "نعم؛ صعّد مباشرة إلى IU",
+        "en": "Yes. Escalate directly to IU"
+      },
+      {
+        "ar": "أغلق الشكوى لأن الكابل خارج الشقة",
+        "en": "Close the complaint because the cable is outside"
+      }
+    ],
+    "correctIndex": 0,
+    "explanation": {
+      "ar": "الفاتورة جزء من التحقق قبل التصعيد؛ لا تتخطَّ فحوص الحساب.",
+      "en": "The bill is part of pre-escalation checks; do not skip account verification."
+    }
+  },
+  {
+    "topic": {
+      "ar": "الأعطال والتصعيد",
+      "en": "Faults and escalation"
+    },
+    "question": {
+      "ar": "عند تكرار تصعيد Physical Instability للمرة الثالثة، ما المهلة الظاهرة في إجابة الامتحان؟",
+      "en": "For a third Physical Instability escalation, what timeframe did the exam answer show?"
+    },
+    "answer": {
+      "ar": "يوم واحد في مادة الامتحان. اقرأ الـSLA الفعلي من التذكرة الحالية قبل إبلاغ العميل.",
+      "en": "One day in the exam material. Read the current ticket SLA before advising the customer."
+    },
+    "source": "final review 1.pdf",
+    "verifyLive": true,
+    "options": [
+      {
+        "ar": "5 أيام",
+        "en": "5 days"
+      },
+      {
+        "ar": "يوم واحد",
+        "en": "1 day"
+      },
+      {
+        "ar": "يومان",
+        "en": "2 days"
+      }
+    ],
+    "correctIndex": 1,
+    "explanation": {
+      "ar": "اليوم الواحد هو جواب مادة التدريب فقط؛ اقرأ المهلة الحالية من التذكرة.",
+      "en": "One day is only the training answer; read the current timeframe from the ticket."
+    }
+  },
+  {
+    "topic": {
+      "ar": "الأعطال والتصعيد",
+      "en": "Faults and escalation"
+    },
+    "question": {
+      "ar": "إذا كانت لمبة DSL غير مستقرة، ما تصنيف الحالة؟",
+      "en": "How should an unstable DSL light be classified?"
+    },
+    "answer": {
+      "ar": "Physical Instability.",
+      "en": "Physical Instability."
+    },
+    "source": "final review 1.pdf",
+    "options": [
+      {
+        "ar": "Data Down",
+        "en": "Data Down"
+      },
+      {
+        "ar": "Logical Instability",
+        "en": "Logical Instability"
+      },
+      {
+        "ar": "Physical Instability",
+        "en": "Physical Instability"
+      }
+    ],
+    "correctIndex": 2,
+    "explanation": {
+      "ar": "عدم ثبات لمبة DSL يندرج تحت عدم استقرار الخط المادي.",
+      "en": "An unstable DSL light falls under physical line instability."
+    }
+  },
+  {
+    "topic": {
+      "ar": "الأعطال والتصعيد",
+      "en": "Faults and escalation"
+    },
+    "question": {
+      "ar": "لو العميل لديه مشكلة صوت أثناء الاتصال، ما المسار المذكور في الامتحان؟",
+      "en": "If the customer hears abnormal audio during a call, which path did the exam specify?"
+    },
+    "answer": {
+      "ar": "تصعيد Voice Down. أكّد نتيجة فحص الصوت واتبع إجراء الصوت الحالي.",
+      "en": "Escalate as Voice Down. Confirm the voice check and follow the current voice procedure."
+    },
+    "source": "final review 1.pdf",
+    "options": [
+      {
+        "ar": "Voice Down",
+        "en": "Voice Down"
+      },
+      {
+        "ar": "Data Down",
+        "en": "Data Down"
+      },
+      {
+        "ar": "طلب تغيير باقة",
+        "en": "Package change request"
+      }
+    ],
+    "correctIndex": 0,
+    "explanation": {
+      "ar": "عطل الصوت يتبع مسار Voice Down بعد التحقق.",
+      "en": "A voice fault follows the Voice Down path after verification."
+    }
+  },
+  {
+    "topic": {
+      "ar": "الأعطال والتصعيد",
+      "en": "Faults and escalation"
+    },
+    "question": {
+      "ar": "إذا ظلّت مشكلة Voice Down بعد تحديث أن التذكرة حُلّت من الصندوق، ماذا تفعل؟",
+      "en": "What if Voice Down continues after the ticket says it was solved from the box?"
+    },
+    "answer": {
+      "ar": "أعد فحص Voice Verification حسب مسار الصوت، ولا تغلق الشكوى اعتمادًا على التحديث وحده.",
+      "en": "Repeat Voice Verification using the voice path; do not close the complaint based only on the update."
+    },
+    "source": "final review 4.pdf",
+    "options": [
+      {
+        "ar": "أغلق الشكوى من دون فحص",
+        "en": "Close the complaint without checking"
+      },
+      {
+        "ar": "أعد فحص Voice Verification",
+        "en": "Repeat Voice Verification"
+      },
+      {
+        "ar": "انتظر 24 ساعة",
+        "en": "Wait 24 hours"
+      }
+    ],
+    "correctIndex": 1,
+    "explanation": {
+      "ar": "تحديث الحل لا يكفي إذا استمرت المشكلة؛ أعد التحقق حسب الإجراء.",
+      "en": "A resolved update is not enough if the issue persists; verify using the procedure."
+    }
+  },
+  {
+    "topic": {
+      "ar": "الأعطال والتصعيد",
+      "en": "Faults and escalation"
+    },
+    "question": {
+      "ar": "لو العميل لديه BLQ وظهر أثناء الفحص أن الصوت لا يعمل، ما الشكوى التي تُصعّد؟",
+      "en": "If the customer has BLQ and voice is also down during checks, which complaint should be escalated?"
+    },
+    "answer": {
+      "ar": "صعّد Voice Down، وسجّل مشكلة BLQ وخطوات الفحص في سجل التذكرة.",
+      "en": "Escalate Voice Down and record the BLQ issue and troubleshooting steps in the ticket."
+    },
+    "source": "final review 4.pdf",
+    "options": [
+      {
+        "ar": "صعّد BLQ فقط",
+        "en": "Escalate BLQ only"
+      },
+      {
+        "ar": "أغلق البلاغ",
+        "en": "Close the complaint"
+      },
+      {
+        "ar": "صعّد Voice Down ووثّق BLQ",
+        "en": "Escalate Voice Down and record BLQ"
+      }
+    ],
+    "correctIndex": 2,
+    "explanation": {
+      "ar": "صعّد العطل الصوتي ووثّق BLQ ونتائج الفحص في سجل التذكرة.",
+      "en": "Escalate the voice fault and record BLQ and check results in the ticket."
+    }
+  },
+  {
+    "topic": {
+      "ar": "الأعطال والتصعيد",
+      "en": "Faults and escalation"
+    },
+    "question": {
+      "ar": "ماذا تفعل إذا انتهت مهلة تذكرة IU وما زالت في نفس المجموعة؟",
+      "en": "What should you do when an IU ticket is past SLA and remains in the same pool?"
+    },
+    "answer": {
+      "ar": "أنشئ تذكرة تأخير بالتصنيف الصحيح، وأبلغ العميل بالمهلة الحالية كما تظهر في النظام.",
+      "en": "Create a delay ticket with the correct classification and give the current timeframe shown in the system."
+    },
+    "source": "revewi c.pdf",
+    "verifyLive": true,
+    "options": [
+      {
+        "ar": "أنشئ تذكرة تأخير وأبلغ بالمهلة الحالية",
+        "en": "Create a delay ticket and give the current timeframe"
+      },
+      {
+        "ar": "أغلق التذكرة",
+        "en": "Close the ticket"
+      },
+      {
+        "ar": "أنشئ تذكرة عطل مكررة",
+        "en": "Create a duplicate fault ticket"
+      }
+    ],
+    "correctIndex": 0,
+    "explanation": {
+      "ar": "بعد تجاوز المهلة وثّق التأخير بالتصنيف الصحيح واستخدم الـSLA الحالي.",
+      "en": "After SLA, record the delay with the right classification and use the current SLA."
+    }
+  },
+  {
+    "topic": {
+      "ar": "الأعطال والتصعيد",
+      "en": "Faults and escalation"
+    },
+    "question": {
+      "ar": "لو ظهر تحديث Major Fault بلا وقت متوقع، والعميل ما زال متأثرًا بعد انتهاء المهلة، ما الإجراء؟",
+      "en": "If a Major Fault update has no ETA and service is still affected after SLA, what is the next action?"
+    },
+    "answer": {
+      "ar": "أعد تصعيد التذكرة إلى IU، وسجّل الحالة الحالية بدل التخمين بموعد حل.",
+      "en": "Re-escalate the ticket to IU and record the current state instead of guessing a resolution time."
+    },
+    "source": "final review 2.pdf",
+    "verifyLive": true,
+    "options": [
+      {
+        "ar": "أغلق التذكرة",
+        "en": "Close the ticket"
+      },
+      {
+        "ar": "أعد تصعيد التذكرة إلى IU",
+        "en": "Re-escalate the ticket to IU"
+      },
+      {
+        "ar": "خمّن موعد الحل",
+        "en": "Guess the resolution time"
+      }
+    ],
+    "correctIndex": 1,
+    "explanation": {
+      "ar": "استمرار العطل بعد المهلة يستلزم إعادة التصعيد، لا تخمين موعد الحل.",
+      "en": "A fault that persists past SLA should be re-escalated; do not guess a fix time."
+    }
+  },
+  {
+    "topic": {
+      "ar": "الفحص المنطقي",
+      "en": "Logical checks"
+    },
+    "question": {
+      "ar": "قبل تشخيص عطل Logical، ما خطوة الفحص البسيطة المذكورة؟",
+      "en": "Before diagnosing a logical fault, what simple check was called out?"
+    },
+    "answer": {
+      "ar": "إغلاق البرامج التي تستهلك الإنترنت، مثل التحديثات ومضاد الفيروسات وبرامج التورنت.",
+      "en": "Close internet-heavy programs such as updates, antivirus scans, and torrents."
+    },
+    "source": "revewi a.pdf",
+    "options": [
+      {
+        "ar": "غيّر DNS مباشرة",
+        "en": "Change DNS immediately"
+      },
+      {
+        "ar": "صعّد قبل الفحص",
+        "en": "Escalate before checking"
+      },
+      {
+        "ar": "أغلق البرامج التي تستهلك الإنترنت",
+        "en": "Close programs using the internet"
+      }
+    ],
+    "correctIndex": 2,
+    "explanation": {
+      "ar": "إغلاق البرامج المستهلكة للإنترنت يساعد على عزل مشكلة الخدمة.",
+      "en": "Closing internet-heavy programs helps isolate a service issue."
+    }
+  },
+  {
+    "topic": {
+      "ar": "الفحص المنطقي",
+      "en": "Logical checks"
+    },
+    "question": {
+      "ar": "في مشكلة Unable to Obtain IP، ما مجموعة الدعم المذكورة في الإجابات؟",
+      "en": "Which support group did the exam specify for Unable to Obtain IP?"
+    },
+    "answer": {
+      "ar": "NOC في مادة الامتحان؛ أكّد المجموعة والتصنيف من مسار التصعيد الحالي.",
+      "en": "NOC in the exam material; confirm the group and classification in the current escalation path."
+    },
+    "source": "final review 1.pdf",
+    "verifyLive": true,
+    "options": [
+      {
+        "ar": "NOC",
+        "en": "NOC"
+      },
+      {
+        "ar": "SLS",
+        "en": "SLS"
+      },
+      {
+        "ar": "IU",
+        "en": "IU"
+      }
+    ],
+    "correctIndex": 0,
+    "explanation": {
+      "ar": "هذه مجموعة الدعم الواردة في الامتحان؛ راجع مسار التصعيد الحالي.",
+      "en": "This is the group named in the exam; check the current escalation path."
+    }
+  },
+  {
+    "topic": {
+      "ar": "الفحص المنطقي",
+      "en": "Logical checks"
+    },
+    "question": {
+      "ar": "ما الاستثناءان المذكوران لطلب إبقاء جهاز CPE مفتوحًا أثناء التصعيد المنطقي؟",
+      "en": "Which two exceptions were listed for keeping the CPE on during logical escalation?"
+    },
+    "answer": {
+      "ar": "إذا كانت التذكرة في المجموعة الخطأ، أو لا يوجد ملف للعميل على NST.",
+      "en": "When the ticket is in the wrong pool, or the customer has no profile on NST."
+    },
+    "source": "final review 1.pdf",
+    "options": [
+      {
+        "ar": "استخدام Wi-Fi أو تعدد الأجهزة",
+        "en": "Wi-Fi use or multiple devices"
+      },
+      {
+        "ar": "المجموعة الخطأ أو عدم وجود ملف NST",
+        "en": "Wrong pool or missing NST profile"
+      },
+      {
+        "ar": "وجود فاتورة مستحقة",
+        "en": "An unpaid bill"
+      }
+    ],
+    "correctIndex": 1,
+    "explanation": {
+      "ar": "الاستثناءان المذكوران هما المجموعة الخطأ وغياب ملف العميل على NST.",
+      "en": "The listed exceptions are a wrong pool or a missing customer profile on NST."
+    }
+  },
+  {
+    "topic": {
+      "ar": "الفحص المنطقي",
+      "en": "Logical checks"
+    },
+    "question": {
+      "ar": "ماذا تعني نتيجة Clear View: No DSL physical-layer issue detected؟",
+      "en": "What does the Clear View result “No DSL physical-layer issue detected” mean?"
+    },
+    "answer": {
+      "ar": "تشير إلى أن الملاحظة لا تثبت عطلًا ماديًا بالخط؛ أكمل الفحوص المنطقية المناسبة.",
+      "en": "It does not indicate a confirmed physical line fault; continue with the relevant logical checks."
+    },
+    "source": "final review 2.pdf",
+    "options": [
+      {
+        "ar": "تم تأكيد عطل مادي",
+        "en": "A physical fault is confirmed"
+      },
+      {
+        "ar": "يجب تغيير CPE",
+        "en": "CPE must be replaced"
+      },
+      {
+        "ar": "لا يوجد عطل مادي مكتشف؛ أكمل الفحوص المنطقية",
+        "en": "No physical fault detected; continue logical checks"
+      }
+    ],
+    "correctIndex": 2,
+    "explanation": {
+      "ar": "النتيجة لا تثبت عطلًا ماديًا؛ أكمل الفحوص المنطقية.",
+      "en": "The result does not confirm a physical fault; continue logical checks."
+    }
+  },
+  {
+    "topic": {
+      "ar": "الفحص المنطقي",
+      "en": "Logical checks"
+    },
+    "question": {
+      "ar": "ماذا تعني حالة Access denied أثناء وجود أثر لعطل أو outage؟",
+      "en": "How should Access denied be handled when there is an outage or fault context?"
+    },
+    "answer": {
+      "ar": "اتبع خطوات Access denied المعتمدة في TS؛ لا تعتبرها وحدها سببًا لتصعيد IU.",
+      "en": "Follow the approved TS Access denied steps; do not treat it alone as a reason to escalate to IU."
+    },
+    "source": "final review 3.pdf",
+    "options": [
+      {
+        "ar": "اتبع خطوات Access denied في TS",
+        "en": "Follow TS Access denied steps"
+      },
+      {
+        "ar": "صعّد IU تلقائيًا",
+        "en": "Automatically escalate to IU"
+      },
+      {
+        "ar": "اعتبرها Data Down",
+        "en": "Treat it as Data Down"
+      }
+    ],
+    "correctIndex": 0,
+    "explanation": {
+      "ar": "رسالة Access denied لها خطوات في TS؛ لا تصعّد لمجرد ظهورها.",
+      "en": "Access denied has TS steps; do not escalate solely because it appeared."
+    }
+  },
+  {
+    "topic": {
+      "ar": "الفحص المنطقي",
+      "en": "Logical checks"
+    },
+    "question": {
+      "ar": "إذا كان NST يعرض ADSL Session: No active session، ما التصنيف المتوقع؟",
+      "en": "If NST shows “ADSL Session: No active session,” what issue type is indicated?"
+    },
+    "answer": {
+      "ar": "Unable to Obtain IP، بعد استكمال خطوات التحقق المنطقي المطلوبة.",
+      "en": "Unable to Obtain IP, after completing the required logical verification."
+    },
+    "source": "final review 2.pdf",
+    "options": [
+      {
+        "ar": "Browsing",
+        "en": "Browsing"
+      },
+      {
+        "ar": "Unable to Obtain IP",
+        "en": "Unable to Obtain IP"
+      },
+      {
+        "ar": "Data Down",
+        "en": "Data Down"
+      }
+    ],
+    "correctIndex": 1,
+    "explanation": {
+      "ar": "عدم وجود جلسة ADSL نشطة يشير إلى Unable to Obtain IP بعد التحقق.",
+      "en": "No active ADSL session points to Unable to Obtain IP after verification."
+    }
+  },
+  {
+    "topic": {
+      "ar": "السرعة والألعاب",
+      "en": "Speed and gaming"
+    },
+    "question": {
+      "ar": "ما خادما Google DNS المذكوران في المراجعة؟",
+      "en": "Which Google DNS addresses were listed in the review?"
+    },
+    "answer": {
+      "ar": "8.8.8.8 و8.8.4.4.",
+      "en": "8.8.8.8 and 8.8.4.4."
+    },
+    "source": "final review 1.pdf",
+    "options": [
+      {
+        "ar": "1.1.1.1 و1.0.0.1",
+        "en": "1.1.1.1 and 1.0.0.1"
+      },
+      {
+        "ar": "4.2.2.1 و4.2.2.2",
+        "en": "4.2.2.1 and 4.2.2.2"
+      },
+      {
+        "ar": "8.8.8.8 و8.8.4.4",
+        "en": "8.8.8.8 and 8.8.4.4"
+      }
+    ],
+    "correctIndex": 2,
+    "explanation": {
+      "ar": "هذان عنوانا Google DNS المذكوران في مادة المراجعة.",
+      "en": "These are the Google DNS addresses listed in the review material."
+    }
+  },
+  {
+    "topic": {
+      "ar": "السرعة والألعاب",
+      "en": "Speed and gaming"
+    },
+    "question": {
+      "ar": "كيف تفحص مشكلة تشغيل فيديو أو streaming؟",
+      "en": "How should a streaming playback issue be checked?"
+    },
+    "answer": {
+      "ar": "جرّب الفيديو على YouTube بجودة Auto قبل تغيير إعدادات أخرى.",
+      "en": "Try the video on YouTube at Auto quality before changing other settings."
+    },
+    "source": "final review 3.pdf",
+    "options": [
+      {
+        "ar": "جرّب YouTube بجودة Auto",
+        "en": "Try YouTube at Auto quality"
+      },
+      {
+        "ar": "غيّر MTU أولًا",
+        "en": "Change MTU first"
+      },
+      {
+        "ar": "أضف DNS مباشرة",
+        "en": "Add DNS immediately"
+      }
+    ],
+    "correctIndex": 0,
+    "explanation": {
+      "ar": "جودة Auto تعطي نقطة بداية للمقارنة قبل تغيير إعدادات أخرى.",
+      "en": "Auto quality gives a baseline before changing other settings."
+    }
+  },
+  {
+    "topic": {
+      "ar": "السرعة والألعاب",
+      "en": "Speed and gaming"
+    },
+    "question": {
+      "ar": "ما الذي يجب تذكير العميل به عند تصعيد مشكلة Slowness؟",
+      "en": "What should the customer be reminded of when a Slowness case is escalated?"
+    },
+    "answer": {
+      "ar": "إبقاء جهاز CPE مفتوحًا، ما لم ينطبق استثناء موثق في الإجراء.",
+      "en": "Keep the CPE switched on unless a documented procedure exception applies."
+    },
+    "source": "revewi b.pdf",
+    "options": [
+      {
+        "ar": "أغلق CPE",
+        "en": "Turn CPE off"
+      },
+      {
+        "ar": "أبقِ CPE مفتوحًا إلا إذا نص الإجراء على استثناء",
+        "en": "Keep CPE on unless procedure says otherwise"
+      },
+      {
+        "ar": "أعد تشغيله باستمرار",
+        "en": "Keep rebooting it"
+      }
+    ],
+    "correctIndex": 1,
+    "explanation": {
+      "ar": "اتبع الإجراء بشأن إبقاء الجهاز متصلًا لتمكين الفحص المطلوب.",
+      "en": "Follow the procedure about keeping the device connected for required checks."
+    }
+  },
+  {
+    "topic": {
+      "ar": "الطلبات والحساب",
+      "en": "Requests and accounts"
+    },
+    "question": {
+      "ar": "من أين يمكن للعميل تعديل الباقة إلى قيمة أقل قبل موعد الاستحقاق؟",
+      "en": "Where can a customer request a lower package before the due date?"
+    },
+    "answer": {
+      "ar": "من خلال تطبيق WE أو E-Care أو الفروع، وفق الخيارات الظاهرة في مادة التدريب.",
+      "en": "Through the WE app, E-Care, or a branch, according to the training material."
+    },
+    "source": "final review 1.pdf",
+    "options": [
+      {
+        "ar": "NOC فقط",
+        "en": "NOC only"
+      },
+      {
+        "ar": "111 فقط",
+        "en": "111 only"
+      },
+      {
+        "ar": "تطبيق WE أو E-Care أو الفروع",
+        "en": "WE app, E-Care, or branches"
+      }
+    ],
+    "correctIndex": 2,
+    "explanation": {
+      "ar": "قنوات الطلب المذكورة هي التطبيق وE-Care والفروع.",
+      "en": "The listed request channels are the app, E-Care, and branches."
+    }
+  },
+  {
+    "topic": {
+      "ar": "الطلبات والحساب",
+      "en": "Requests and accounts"
+    },
+    "question": {
+      "ar": "إذا ظهرت نتيجة Check Availability بأنها متاحة، إلى أين يُوجّه العميل لإكمال الاشتراك؟",
+      "en": "If Check Availability shows an available result, where should the customer go to complete the subscription?"
+    },
+    "answer": {
+      "ar": "إلى CSO لإكمال الاشتراك.",
+      "en": "To a CSO to complete the subscription."
+    },
+    "source": "final review 3.pdf",
+    "options": [
+      {
+        "ar": "وجّه العميل إلى CSO لإكمال الاشتراك",
+        "en": "Direct customer to CSO to complete subscription"
+      },
+      {
+        "ar": "أبلغه أن الخدمة غير متاحة",
+        "en": "Tell them service is unavailable"
+      },
+      {
+        "ar": "صعّد الطلب إلى IU",
+        "en": "Escalate to IU"
+      }
+    ],
+    "correctIndex": 0,
+    "explanation": {
+      "ar": "نتيجة Available تعني متابعة إكمال الاشتراك لدى CSO.",
+      "en": "An Available result means the customer can complete subscription through a CSO."
+    }
+  },
+  {
+    "topic": {
+      "ar": "الطلبات والحساب",
+      "en": "Requests and accounts"
+    },
+    "question": {
+      "ar": "أين يتم فحص أهلية ترقية FTTH؟",
+      "en": "Where is FTTH migration eligibility checked?"
+    },
+    "answer": {
+      "ar": "في BSS حسب إجابات التدريب؛ اعتمد شاشة النظام الحالية للأهلية والإجراء.",
+      "en": "In BSS per the training answer; use the current system screen for eligibility and procedure."
+    },
+    "source": "final review 4.pdf",
+    "verifyLive": true,
+    "options": [
+      {
+        "ar": "Matrix",
+        "en": "Matrix"
+      },
+      {
+        "ar": "BSS",
+        "en": "BSS"
+      },
+      {
+        "ar": "OM",
+        "en": "OM"
+      }
+    ],
+    "correctIndex": 1,
+    "explanation": {
+      "ar": "الإجابة التدريبية هي BSS؛ تحقّق من الأهلية على الشاشة الحالية.",
+      "en": "BSS is the training answer; verify eligibility in the current screen."
+    }
+  },
+  {
+    "topic": {
+      "ar": "الطلبات والحساب",
+      "en": "Requests and accounts"
+    },
+    "question": {
+      "ar": "أين يمكن تغيير اسم جهة الاتصال أو الملكية حسب أسئلة المراجعة؟",
+      "en": "Where can contact-name or ownership changes be made, according to the review questions?"
+    },
+    "answer": {
+      "ar": "من خلال الفرع. تحقّق من التحقق المطلوب والقناة المعتمدة قبل تنفيذ الطلب.",
+      "en": "At a branch. Confirm the required verification and approved channel before processing."
+    },
+    "source": "final review 2.pdf",
+    "options": [
+      {
+        "ar": "تطبيق WE",
+        "en": "WE app"
+      },
+      {
+        "ar": "111",
+        "en": "111"
+      },
+      {
+        "ar": "الفرع",
+        "en": "A branch"
+      }
+    ],
+    "correctIndex": 2,
+    "explanation": {
+      "ar": "إجابة المراجعة هي الفرع؛ أكمل التحقق المطلوب قبل التغيير.",
+      "en": "The review answer is a branch; complete required verification before the change."
+    }
+  },
+  {
+    "topic": {
+      "ar": "الطلبات والحساب",
+      "en": "Requests and accounts"
+    },
+    "question": {
+      "ar": "هل يُطلب من العميل تغيير السلك الرئيسي إذا لم توجد مشكلة فنية؟",
+      "en": "Should a main wire change be raised when there is no technical problem?"
+    },
+    "answer": {
+      "ar": "لا تنشئ تصعيد عطل بلا سبب فني؛ استخدم الطلب أو القناة المعتمدة للحالة.",
+      "en": "Do not raise a fault escalation without a technical reason; use the approved request path."
+    },
+    "source": "final review 2.pdf",
+    "options": [
+      {
+        "ar": "لا تصعّد كعطل بلا سبب فني؛ استخدم مسار الطلب",
+        "en": "Do not raise a fault without a technical cause; use the request path"
+      },
+      {
+        "ar": "صعّد Voice Down دائمًا",
+        "en": "Always escalate Voice Down"
+      },
+      {
+        "ar": "اطلب تغيير السلك قبل الفحص",
+        "en": "Request a wire change before checking"
+      }
+    ],
+    "correctIndex": 0,
+    "explanation": {
+      "ar": "من دون مشكلة فنية لا تنشئ تصعيد عطل بلا مبرر.",
+      "en": "Without a technical issue, do not create an unsupported fault escalation."
+    }
+  },
+  {
+    "topic": {
+      "ar": "الأدوات ومبادئ الشبكات",
+      "en": "Tools and network basics"
+    },
+    "question": {
+      "ar": "ما البروتوكول المسؤول عن توزيع عناوين IP على الأجهزة الخاصة؟",
+      "en": "Which protocol assigns IP addresses to private devices?"
+    },
+    "answer": {
+      "ar": "DHCP.",
+      "en": "DHCP."
+    },
+    "source": "final review 3.pdf",
+    "options": [
+      {
+        "ar": "DNS",
+        "en": "DNS"
+      },
+      {
+        "ar": "DHCP",
+        "en": "DHCP"
+      },
+      {
+        "ar": "NAT",
+        "en": "NAT"
+      }
+    ],
+    "correctIndex": 1,
+    "explanation": {
+      "ar": "DHCP يوزع عناوين IP على الأجهزة في الشبكة المحلية.",
+      "en": "DHCP assigns IP addresses to devices on the local network."
+    }
+  },
+  {
+    "topic": {
+      "ar": "الأدوات ومبادئ الشبكات",
+      "en": "Tools and network basics"
+    },
+    "question": {
+      "ar": "ما المقصود بـ MTU في سؤال أساسيات الشبكات؟",
+      "en": "What does MTU control in the networking question?"
+    },
+    "answer": {
+      "ar": "الحد الأقصى لحجم حزمة البيانات المرسلة.",
+      "en": "The maximum size of a transmitted data packet."
+    },
+    "source": "final review 3.pdf",
+    "options": [
+      {
+        "ar": "عنوان خادم DNS",
+        "en": "A DNS server address"
+      },
+      {
+        "ar": "اسم جهاز التوجيه",
+        "en": "The router's device name"
+      },
+      {
+        "ar": "الحد الأقصى لحجم حزمة البيانات",
+        "en": "The maximum packet size"
+      }
+    ],
+    "correctIndex": 2,
+    "explanation": {
+      "ar": "MTU يحدد الحد الأقصى لوحدة النقل عبر الشبكة.",
+      "en": "MTU sets the maximum transmission unit across the network."
+    }
+  },
+  {
+    "topic": {
+      "ar": "الأدوات ومبادئ الشبكات",
+      "en": "Tools and network basics"
+    },
+    "question": {
+      "ar": "ما الجهاز الذي يربط مخرج الهاتف بجهاز DSL حسب سؤال الصورة؟",
+      "en": "Which device connects the telephone outlet to the DSL equipment in the picture question?"
+    },
+    "answer": {
+      "ar": "Splitter.",
+      "en": "A splitter."
+    },
+    "source": "revewi b.pdf",
+    "options": [
+      {
+        "ar": "Splitter",
+        "en": "Splitter"
+      },
+      {
+        "ar": "Filter",
+        "en": "Filter"
+      },
+      {
+        "ar": "Rosetta",
+        "en": "Rosetta"
+      }
+    ],
+    "correctIndex": 0,
+    "explanation": {
+      "ar": "Splitter يفصل إشارات الصوت والبيانات على خط الهاتف.",
+      "en": "A splitter separates voice and data signals on the phone line."
+    }
+  },
+  {
+    "topic": {
+      "ar": "الأدوات ومبادئ الشبكات",
+      "en": "Tools and network basics"
+    },
+    "question": {
+      "ar": "ماذا تفعل عند متابعة حالة NOC وتظهر ملاحظة أن الشبكة سليمة ويجب فحص CPE؟",
+      "en": "What should you do when an NOC update says the network is clear and the CPE should be checked?"
+    },
+    "answer": {
+      "ar": "افحص CPE بديلًا مع العميل حسب الإجراء، وسجّل النتيجة في التذكرة.",
+      "en": "Check with another CPE as directed by the procedure and record the result in the ticket."
+    },
+    "source": "final review 1.pdf",
+    "options": [
+      {
+        "ar": "أغلق التذكرة دون اختبار",
+        "en": "Close without testing"
+      },
+      {
+        "ar": "جرّب CPE آخر وسجّل النتيجة",
+        "en": "Try another CPE and record the result"
+      },
+      {
+        "ar": "صعّد IU قبل اختبار الجهاز",
+        "en": "Escalate before ruling out the device"
+      }
+    ],
+    "correctIndex": 1,
+    "explanation": {
+      "ar": "تجربة CPE بديل تساعد على تحديد إن كان الجهاز سبب المشكلة.",
+      "en": "A test with another CPE helps identify whether the device is causing the issue."
+    }
+  },
+  {
+    "topic": {
+      "ar": "مهل وإرشادات متغيرة",
+      "en": "Time-sensitive guidance"
+    },
+    "question": {
+      "ar": "أي مرجع يُقدّم عند اختلاف مهلة أو خطوات outage؟",
+      "en": "Which source takes precedence when outage timing or steps differ?"
+    },
+    "answer": {
+      "ar": "رسالة outage الحالية المعتمدة في النظام وفق مادة التدريب؛ راجع التحديث الفعلي قبل إبلاغ العميل.",
+      "en": "The current approved outage notice per the training material; check the live update before advising the customer."
+    },
+    "source": "final review 3.pdf",
+    "verifyLive": true,
+    "options": [
+      {
+        "ar": "ملف امتحان قديم",
+        "en": "An old exam file"
+      },
+      {
+        "ar": "تقدير شخصي لموعد الحل",
+        "en": "A personal estimate"
+      },
+      {
+        "ar": "التحديث الرسمي الحالي للـoutage",
+        "en": "The current official outage update"
+      }
+    ],
+    "correctIndex": 2,
+    "explanation": {
+      "ar": "التحديث الرسمي الحالي هو المرجع؛ لا تعتمد على ملف قديم أو تخمين.",
+      "en": "The current official update takes precedence; do not rely on an old file or guess."
+    }
+  },
+  {
+    "topic": {
+      "ar": "مهل وإرشادات متغيرة",
+      "en": "Time-sensitive guidance"
+    },
+    "question": {
+      "ar": "هل تستخدم أرقام SLA المحفوظة من الامتحان كوعود حالية للعميل؟",
+      "en": "Should exam SLA values be used as current promises to customers?"
+    },
+    "answer": {
+      "ar": "لا. اعتبرها أسئلة تدريبية فقط، واقرأ المهلة الحالية من التذكرة والنظام المعتمد.",
+      "en": "No. Treat them as training material and read the current timeframe from the ticket and approved system."
+    },
+    "source": "final review 1.pdf",
+    "verifyLive": true,
+    "options": [
+      {
+        "ar": "لا؛ راجع SLA الحالي في النظام",
+        "en": "No. Check the current SLA in the system"
+      },
+      {
+        "ar": "نعم؛ استخدم رقم الامتحان كتعهد",
+        "en": "Yes. Promise the exam value"
+      },
+      {
+        "ar": "نعم؛ افترض أن كل الحالات 24 ساعة",
+        "en": "Yes. Assume every case is 24 hours"
+      }
+    ],
+    "correctIndex": 0,
+    "explanation": {
+      "ar": "إجابات الامتحان للتدريب؛ يجب أن يطابق ما تقوله للعميل الـSLA الحالي.",
+      "en": "Exam answers are for study; customer guidance must match the current SLA."
+    }
+  }
+]

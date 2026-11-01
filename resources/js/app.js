@@ -1,5 +1,6 @@
 import './bootstrap';
 import { computed, createApp, h, onMounted, nextTick, ref, Transition, TransitionGroup } from 'vue';
+import examQuestions from './exam-questions.json';
 
 const MAX_STEPS_PER_CALL = 100;
 const DEFAULT_TREE = 'support';
@@ -208,7 +209,7 @@ const COPY = {
         missing: 'الخطوة الحالية غير موجودة في الشجرة.', step: 'الخطوة', back: 'رجوع خطوة', sla: 'المهلة:', action: 'إجراء الموظف',
         customerScript: 'نص تقوله للعميل', copy: 'نسخ نص العميل', newInquiry: 'بدء استعلام جديد', choose: 'اختيار', footer: 'تُحمّل الشجرة من Laravel، وتتم خطوات المسار داخل المتصفح.',
         copied: 'تم نسخ نص العميل.', noScript: 'لا يوجد نص عميل لنسخه في هذه الخطوة.', copyError: 'تعذر النسخ تلقائيًا. يمكنك تحديد النص ونسخه يدويًا.',
-        invalidStep: 'هذا الاختيار مرتبط بخطوة غير موجودة. أبلغ المسؤول عن الشجرة.', stepLimit: 'وصل المسار إلى الحد الآمن للتنقل. أعد البدء أو راجع الشجرة.',
+        invalidStep: 'هذا الاختيار مرتبط بخطوة غير موجودة. أبلغ المسؤول عن الشجرة.', stepLimit: 'وصل المسار للحد الآمن. ارجع لبداية المسار وابدأ مكالمة جديدة.',
         incomplete: 'بيانات الخطوة التالية غير مكتملة. أبلغ المسؤول عن الشجرة.', loadError: 'تعذر تحميل شجرة القرارات.', invalidTree: 'ملف شجرة القرارات غير مكتمل.',
         askCustomer: 'اسأل العميل', referenceGuidance: 'رقم المتابعة الذي تقوله للعميل', staffCheck: 'أعرف منين وأعمل إيه؟',
         sourceReference: 'مصدر الإجراء وحدود الاعتماد',
@@ -218,8 +219,8 @@ const COPY = {
         slaSortBy: 'ترتيب حسب', slaSortDuration: 'مدة المهلة', slaSortCase: 'اسم الحالة', slaAscending: 'تصاعدي', slaDescending: 'تنازلي', slaCaseColumn: 'الحالة', slaDurationColumn: 'المهلة',
         quickChangePackage: 'تغيير باقة',
         quickAccess: 'الوصول السريع', closeDrawer: 'إغلاق',
-        homeEyebrow: 'مساحة دعم فني تفاعلية', homeTitleA: 'كل مكالمة لها ', homeTitleB: 'مسار واضح.', homeLead: 'اختار مساحة العمل المناسبة: وجّه المكالمة خطوة بخطوة، استكشف شجرة القرارات، أو راجع الإجراءات على راحتك.', homeSearch: 'ابحث عن عرض أو مشكلة أو خطوة دعم…', homeRoomsLabel: 'اختر وجهتك', homeRoomsTitle: 'ادخل مساحة العمل', homeRoomsHint: 'كل مساحة لها طريقة مختلفة للتعامل مع نفس قاعدة المعرفة.', homeLive: 'وقت المكالمة', homeLiveText: 'خطوات عملية واضحة: اسأل، افحص في النظام، ثم أكمل حسب النتيجة.', homeExplore: 'استكشاف الحالات', homeExploreText: 'افتح الفروع وشاهد كيف تتغير النتيجة مع كل قرار حتى تصل للنهاية.', homeLearn: 'وقت المراجعة', homeLearnText: 'شرائح قصيرة تشرح الحالات والأدوات والإجراءات بشكل متدرج.', homeEnter: 'ادخل المساحة', homeSlaHint: 'ابحث في المهل ورتبها', homeCodesHint: 'ابحث بالكود وشوف الإجراء', homePackagesHint: 'اعثر على الباقة بسرعة',
-        guidedMode: 'مساعد المكالمة', treeMode: 'خريطة الشجرة', reviewMode: 'مراجعة وتعلّم', reviewTitle: 'مكتبة المراجعة', reviewIntro: 'اختار موضوعًا وافتحه ككتاب مرجعي. تنقّل صفحة صفحة أو افتح أي عنوان من الفهرس.', reviewChooseTopic: 'ابحث عن موضوع أو فصل', reviewStart: 'افتح الفصل', reviewContinue: 'تابع القراءة', reviewTopics: 'موضوعات', reviewSlides: 'صفحة', reviewBackSlide: 'الصفحة السابقة', reviewNextSlide: 'الصفحة التالية', reviewFinish: 'نهاية الفصل', reviewBackTopics: 'رجوع للمكتبة', reviewOpenAssistant: 'افتح الخطوة في مساعد المكالمة', reviewBranch: 'انتقل لهذه الحالة', reviewCaseMap: 'فروع الحالة', reviewStudy: 'دليل مرجعي', reviewDeckProgress: 'التنقل بين الصفحات', mapTitle: 'خريطة القرار', mapIntro: 'اختار فرعًا من الرسم؛ كل قرار يفتح عقدة جديدة لحد ما توصل للإجراء والـSLA.', mapSearch: 'ابحث عن حالة أو أداة أو عرض…', mapSearchHint: 'البحث يشمل الأسئلة والإجراءات والنهايات في كل الشجرة.', mapTrail: 'المسار الذي استكشفته', mapRoot: 'بداية الشجرة', mapBranches: 'النتائج الممكنة من هذه الخطوة', mapBranch: 'تابع المسار', mapTry: 'جرّب في المساعد', mapOpenCurrent: 'ابدأ هذه الخطوة في المساعد', mapBackBranch: 'ارجع للتفرع السابق', mapReset: 'ابدأ استكشافًا جديدًا', mapTerminal: 'نهاية المسار', mapSla: 'SLA المسار', mapSearchEmpty: 'لا توجد حالة مطابقة.', mapOptionsCount: 'فروع متاحة', mapVisits: 'خطوات اتخذتها', mapProgress: 'اللي تم في المسار', mapNext: 'الخطوة الحالية', mapNoPath: 'لا يوجد مسار متاح لهذه الخطوة.', mapFound: 'النتيجة التي وصلنا لها',
+        homeEyebrow: 'مساحة دعم فني تفاعلية', homeTitleA: 'كل مكالمة لها ', homeTitleB: 'مسار واضح.', homeLead: 'اختار مساحة العمل المناسبة: ساعد العميل أثناء المكالمة أو اختبر معلوماتك في الامتحان.', homeSearch: 'ابحث عن عرض أو مشكلة أو خطوة دعم…', homeRoomsLabel: 'اختر وجهتك', homeRoomsTitle: 'ادخل مساحة العمل', homeRoomsHint: 'كل مساحة لها طريقة مختلفة للتعامل مع نفس قاعدة المعرفة.', homeLive: 'وقت المكالمة', homeLiveText: 'خطوات عملية واضحة: اسأل، افحص في النظام، ثم أكمل حسب النتيجة.', homeExam: 'امتحان تدريبي', homeExamText: '28 سؤال اختيار من متعدد، مع الإجابة والشرح بعد كل إجابة.', homeEnter: 'ابدأ الامتحان', homeSlaHint: 'ابحث في المهل ورتبها', homeCodesHint: 'ابحث بالكود وشوف الإجراء', homePackagesHint: 'اعثر على الباقة بسرعة',
+        guidedMode: 'مساعد المكالمة', callProgress: 'المسار الحالي', callNext: 'الخطوة التالية',
         quickProblem: 'تشخيص مشكلة', quickInquiry: 'استفسار خدمة', quickRequest: 'طلب أو متابعة تركيب', quickBilling: 'فاتورة أو سداد', quickComplaint: 'شكوى أو تصعيد',
         openReference: 'مرجع الدعم', returnGuided: 'العودة لمساعد المكالمة',
         slaSearchPlaceholder: 'الحالة أو رقم الساعات/الأيام…', packageSearchPlaceholder: 'اسم الباقة أو السرعة أو السعة…', packagesNote: 'البحث يشمل السعة والسرعة والاسم والأسعار الموجودة في الجداول. عدد الأشخاص ليس تصنيفًا رسميًا في البيانات؛ استخدم الاستهلاك وعدد الأجهزة ولا تفترض سعة مناسبة من عدد الأفراد وحده.',
@@ -242,7 +243,7 @@ const COPY = {
         missing: 'The current step is missing from the tree.', step: 'Step', back: 'Go back', sla: 'SLA:', action: 'Agent action',
         customerScript: 'What to tell the customer', copy: 'Copy customer script', newInquiry: 'Start a new inquiry', choose: 'Choose', footer: 'The tree is loaded from Laravel; steps run in your browser.',
         copied: 'Customer script copied.', noScript: 'There is no customer script to copy at this step.', copyError: 'Automatic copy failed. Select and copy the text manually.',
-        invalidStep: 'This option points to a missing step. Notify the tree administrator.', stepLimit: 'The safe step limit was reached. Restart or review the tree.',
+        invalidStep: 'This option points to a missing step. Notify the tree administrator.', stepLimit: 'The safe step limit was reached. Return to the start and begin a new call.',
         incomplete: 'The next step data is incomplete. Notify the tree administrator.', loadError: 'Could not load the decision tree.', invalidTree: 'The decision tree file is incomplete.',
         askCustomer: 'Ask the customer', referenceGuidance: 'Reference number to give the customer', staffCheck: 'How do I verify this and what should I do?',
         sourceReference: 'Procedure source and verification note',
@@ -252,8 +253,8 @@ const COPY = {
         slaSortBy: 'Sort by', slaSortDuration: 'SLA duration', slaSortCase: 'Case name', slaAscending: 'Ascending', slaDescending: 'Descending', slaCaseColumn: 'Case', slaDurationColumn: 'SLA',
         quickChangePackage: 'Change package',
         quickAccess: 'Quick access', closeDrawer: 'Close',
-        homeEyebrow: 'Interactive support space', homeTitleA: 'A clear path for ', homeTitleB: 'every call.', homeLead: 'Choose your workspace: guide a live call, explore the decision tree, or review support procedures at your own pace.', homeSearch: 'Search a service, issue, or support step…', homeRoomsLabel: 'Choose your destination', homeRoomsTitle: 'Enter a workspace', homeRoomsHint: 'Each space gives you a different way to use the same support knowledge.', homeLive: 'Live call', homeLiveText: 'Clear steps: ask, check the system, and continue based on what you find.', homeExplore: 'Explore cases', homeExploreText: 'Open branches and see how each decision leads to a different outcome.', homeLearn: 'Learning time', homeLearnText: 'Short slides explain cases, tools, and procedures step by step.', homeEnter: 'Enter workspace', homeSlaHint: 'Search and sort response times', homeCodesHint: 'Find a code and see what to do', homePackagesHint: 'Find a package quickly',
-        guidedMode: 'Call assistant', treeMode: 'Decision map', reviewMode: 'Review & learn', reviewTitle: 'Support library', reviewIntro: 'Choose a topic and open it as a reference book. Turn pages in order or jump from the contents.', reviewChooseTopic: 'Search topics and chapters', reviewStart: 'Open chapter', reviewContinue: 'Continue reading', reviewTopics: 'Topics', reviewSlides: 'pages', reviewBackSlide: 'Previous page', reviewNextSlide: 'Next page', reviewFinish: 'End chapter', reviewBackTopics: 'Back to library', reviewOpenAssistant: 'Open in call assistant', reviewBranch: 'Jump to this case', reviewCaseMap: 'Case branches', reviewStudy: 'Reference guide', reviewDeckProgress: 'Page navigation', mapTitle: 'Decision map', mapIntro: 'Choose a branch in the drawing. Each decision opens a new node until you reach the action and SLA.', mapSearch: 'Search a case, tool, or symptom…', mapSearchHint: 'Searches questions, actions, and end states across the full tree.', mapTrail: 'Explored path', mapRoot: 'Tree start', mapBranches: 'Possible results from this step', mapBranch: 'Continue path', mapTry: 'Try in assistant', mapOpenCurrent: 'Open this step in assistant', mapBackBranch: 'Back to previous branch', mapReset: 'Start a new exploration', mapTerminal: 'End of path', mapSla: 'Path SLA', mapSearchEmpty: 'No matching case.', mapOptionsCount: 'branches', mapVisits: 'Steps taken', mapProgress: 'What you have done', mapNext: 'Current step', mapNoPath: 'No path is available for this step.', mapFound: 'Outcome reached',
+        homeEyebrow: 'Interactive support space', homeTitleA: 'A clear path for ', homeTitleB: 'every call.', homeLead: 'Choose a workspace: assist during a customer call or test your knowledge in the exam.', homeSearch: 'Search a service, issue, or support step…', homeRoomsLabel: 'Choose your destination', homeRoomsTitle: 'Enter a workspace', homeRoomsHint: 'Each space gives you a different way to use the same support knowledge.', homeLive: 'Live call', homeLiveText: 'Clear steps: ask, check the system, and continue based on what you find.', homeExam: 'Exam', homeExamText: '28 multiple-choice questions, with an answer and explanation after each response.', homeEnter: 'Start exam', homeSlaHint: 'Search and sort response times', homeCodesHint: 'Find a code and see what to do', homePackagesHint: 'Find a package quickly',
+        guidedMode: 'Call assistant', callProgress: 'Call path', callNext: 'Next step',
         quickProblem: 'Troubleshoot a problem', quickInquiry: 'Service inquiry', quickRequest: 'Installation request or follow-up', quickBilling: 'Bill or payment', quickComplaint: 'Complaint or escalation',
         openReference: 'Support reference', returnGuided: 'Return to call guide',
         slaSearchPlaceholder: 'Case or hours/days…', packageSearchPlaceholder: 'Package name, speed, or quota…', packagesNote: 'Search covers the names, speeds, quotas, and prices in the available tables. Number of people is not an official package field; use actual usage and device count, and do not infer a quota from household size alone.',
@@ -293,11 +294,9 @@ const App = {
         const packageSearch = ref('');
         const quickDrawerOpen = ref(false);
         const workspaceMode = ref('guided');
-        const treeMapPath = ref([]);
-        const treeMapSearch = ref('');
-        const reviewDeckId = ref(null);
-        const reviewSlideIndex = ref(0);
-        const reviewSearch = ref('');
+        const examQuestionIndex = ref(0);
+        const examSelectedIndex = ref(null);
+        const examAnswers = ref([]);
         const packagePeriod = ref('monthly');
         const packageAccountMode = ref('');
         const selectedPackage = ref(null);
@@ -311,83 +310,8 @@ const App = {
             if (!tree.value || !currentStepId.value) return null;
             return tree.value[currentStepId.value] ?? null;
         });
-        const treeMapFocusId = computed(() => treeMapPath.value.at(-1)?.nextStep || tree.value?.start || null);
-        const treeMapFocusStep = computed(() => tree.value?.[treeMapFocusId.value] ?? null);
-        const treeMapTrail = computed(() => treeMapPath.value.map((entry) => ({
-            ...entry,
-            step: tree.value?.[entry.stepId],
-            option: tree.value?.[entry.stepId]?.options?.[entry.optionIndex],
-            next: tree.value?.[entry.nextStep],
-        })));
-        const treeMapBranches = computed(() => (treeMapFocusStep.value?.options || []).map((option, index) => ({
-            option,
-            index,
-            step: tree.value?.[option.next_step],
-            stepId: option.next_step,
-            terminal: tree.value?.[option.next_step]?.options?.length === 0,
-        })));
-        const reviewDecks = computed(() => {
-            const startOptions = tree.value?.[tree.value?.start]?.options || [];
-            const guidedDecks = startOptions.map((option) => {
-                const visited = new Set();
-                const slides = [];
-                const queue = [option.next_step];
-                while (queue.length) {
-                    const id = queue.shift();
-                    if (!id || visited.has(id) || !tree.value?.[id] || id === 'operations_guide') continue;
-                    visited.add(id);
-                    const step = tree.value[id];
-                    if (typeof step.question === 'string') slides.push({ id, step });
-                    for (const child of step.options || []) queue.push(child.next_step);
-                }
-                return { id: option.next_step, title: option.label, slides };
-            }).filter((deck) => deck.slides.length);
-            const curated = [
-                {
-                    id: 'review_installation',
-                    title: language.value === 'ar' ? 'التركيب ومتابعة الطلب' : 'Installation and order follow-up',
-                    icon: 'ticket',
-                    slides: ['request_start', 'availability_check', 'copper_install_terminal', 'fiber_install_terminal', 'availability_terminal', 'order_followup', 'order_status_check', 'order_within_sla', 'installation_delay'],
-                },
-                {
-                    id: 'review_sla_noc',
-                    title: language.value === 'ar' ? 'الفرق بين SLA وNOC' : 'SLA vs NOC',
-                    icon: 'clock',
-                    slides: ['physical_escalation', 'physical_iu_terminal', 'noc_escalation', 'noc_oncall_availability', 'noc_oncall_available_terminal', 'noc_oncall_unavailable_terminal', 'noc_standard_terminal'],
-                },
-            ].map((deck) => ({
-                ...deck,
-                slides: deck.slides.filter((id) => tree.value?.[id]?.question).map((id) => ({ id, step: tree.value[id] })),
-            })).filter((deck) => deck.slides.length);
-            return [...curated, ...guidedDecks];
-        });
-        const activeReviewDeck = computed(() => reviewDecks.value.find((deck) => deck.id === reviewDeckId.value) || null);
-        const reviewSlide = computed(() => activeReviewDeck.value?.slides?.[reviewSlideIndex.value] || null);
-        const visibleReviewDecks = computed(() => {
-            const query = normalizeSearch(reviewSearch.value, language.value);
-            if (!query) return reviewDecks.value;
-            return reviewDecks.value.filter((deck) => normalizeSearch(deck.title, language.value).includes(query)
-                || deck.slides.some(({ step }) => normalizeSearch([step.question, step.finding, step.action, step.check_guidance, step.sla, step.customer_script, ...(step.options || []).map((item) => item.label)].filter(Boolean).join(' '), language.value).includes(query)));
-        });
-        const treeMapSearchResults = computed(() => {
-            const query = normalizeSearch(treeMapSearch.value, language.value);
-            if (!query || !tree.value) return [];
-            const tokens = query.split(' ');
-            return Object.entries(tree.value)
-                .filter(([id, step]) => id !== 'operations_guide' && step && typeof step === 'object')
-                .map(([id, step]) => {
-                    const searchable = normalizeSearch([
-                        id, step.question, step.finding, step.action, step.check_guidance, step.customer_prompt,
-                        step.customer_script, step.sla, step.reference_guidance, step.clear_description,
-                        ...(step.options || []).map((option) => option.label),
-                    ].filter(Boolean).join(' '), language.value);
-                    const score = tokens.reduce((total, token) => total + (searchable.includes(token) ? 1 : 0), 0);
-                    return { id, step, score };
-                })
-                .filter((result) => result.score === tokens.length)
-                .sort((a, b) => b.score - a.score || (a.step.question || a.id).localeCompare(b.step.question || b.id, language.value))
-                .slice(0, 12);
-        });
+        const examScore = computed(() => examAnswers.value.reduce((score, answer, index) =>
+            score + (answer === examQuestions[index]?.correctIndex ? 1 : 0), 0));
         const completedPath = computed(() => pathSelections.value.map(({ stepId, optionIndex }) => ({
             step: tree.value?.[stepId],
             option: tree.value?.[stepId]?.options?.[optionIndex],
@@ -605,65 +529,40 @@ const App = {
             afterStepChange();
         }
 
-        function openTreeMap() {
-            if (!tree.value) return;
+        function enterExam() {
             quickToolsOpen.value = '';
             quickDrawerOpen.value = false;
-            const route = pathSelections.value.map(({ stepId, optionIndex }) => ({
-                stepId,
-                optionIndex,
-                nextStep: tree.value?.[stepId]?.options?.[optionIndex]?.next_step,
-            })).filter((entry) => entry.nextStep);
-            treeMapPath.value = currentStepId.value && currentStepId.value !== tree.value.start
-                ? (route.length && route.at(-1).nextStep === currentStepId.value ? route : findTreePath(currentStepId.value) || [])
-                : [];
-            treeMapSearch.value = '';
-            workspaceMode.value = 'map';
-            afterStepChange();
+            examQuestionIndex.value = 0;
+            examSelectedIndex.value = null;
+            examAnswers.value = [];
+            workspaceMode.value = 'exam';
         }
 
-        function exploreTreeBranch(optionIndex) {
-            const option = treeMapFocusStep.value?.options?.[optionIndex];
-            if (!option || !tree.value?.[option.next_step]) return;
-            treeMapPath.value = [...treeMapPath.value, { stepId: treeMapFocusId.value, optionIndex, nextStep: option.next_step }];
+        function chooseExamAnswer(optionIndex) {
+            if (examSelectedIndex.value !== null) return;
+            examSelectedIndex.value = optionIndex;
+            examAnswers.value = [...examAnswers.value, optionIndex];
         }
 
-        function backTreeBranch() {
-            if (!treeMapPath.value.length) return;
-            treeMapPath.value = treeMapPath.value.slice(0, -1);
+        function advanceExam() {
+            examQuestionIndex.value += 1;
+            examSelectedIndex.value = null;
         }
 
-        function openMapFocusInGuide() {
-            if (!treeMapFocusId.value || !tree.value?.[treeMapFocusId.value]) return;
-            applyPathToGuide(treeMapPath.value, treeMapFocusId.value);
-        }
-
-        function openMapSearchResult(stepId) {
-            const path = findTreePath(stepId);
-            if (!path) return;
-            treeMapPath.value = path;
-            treeMapSearch.value = '';
-        }
-
-        function enterReview() {
-            quickToolsOpen.value = '';
-            quickDrawerOpen.value = false;
-            reviewDeckId.value = null;
-            reviewSlideIndex.value = 0;
-            reviewSearch.value = '';
-            workspaceMode.value = 'review';
+        function restartExam() {
+            examQuestionIndex.value = 0;
+            examSelectedIndex.value = null;
+            examAnswers.value = [];
         }
 
         function goHome() {
             quickToolsOpen.value = '';
             quickDrawerOpen.value = false;
             workspaceMode.value = 'guided';
-            reviewDeckId.value = null;
             if (tree.value?.start) {
                 currentStepId.value = tree.value.start;
                 history.value = [];
                 pathSelections.value = [];
-                treeMapPath.value = [];
                 resetPackageControls();
             }
             afterStepChange();
@@ -678,8 +577,7 @@ const App = {
         function renderHome() {
             const rooms = [
                 { id: 'guided', icon: 'chat', number: '01', eyebrow: t('homeLive'), title: t('guidedMode'), detail: t('homeLiveText'), action: enterGuided, className: 'portal-live' },
-                { id: 'map', icon: 'tree', number: '02', eyebrow: t('homeExplore'), title: t('treeMode'), detail: t('homeExploreText'), action: openTreeMap, className: 'portal-map' },
-                { id: 'review', icon: 'grid', number: '03', eyebrow: t('homeLearn'), title: t('reviewMode'), detail: t('homeLearnText'), action: enterReview, className: 'portal-learn' },
+                { id: 'exam', icon: 'grid', number: '02', eyebrow: t('homeExam'), title: t('examMode'), detail: t('homeExamText'), action: enterExam, className: 'portal-exam' },
             ];
             const searchResults = quickSearch.value.trim() ? quickSearchResults.value.slice(0, 4).map((result, index) => h('button', {
                 class: 'home-search-result', type: 'button', key: result.id || result.title, onClick: () => { if (result.kind === 'step') jumpToStep(result.id); else if (result.kind === 'code') { codeSearch.value = String(result.id); openQuickTool('codes'); } else { workspaceMode.value = 'reference'; quickSearch.value = result.title; } },
@@ -696,7 +594,7 @@ const App = {
                             h('input', { type: 'search', value: quickSearch.value, placeholder: t('homeSearch'), onInput: (event) => { quickSearch.value = event.target.value; } }),
                             h('kbd', '⌕'),
                         ]),
-                        searchResults ? h('div', { class: 'home-search-results' }, searchResults.length ? searchResults : [h('p', { class: 'decision-empty' }, t('noSearchResults'))]) : null,
+                        searchResults ? h('div', { class: 'home-search-results' }, searchResults.length ? searchResults : [h('p', { class: 'search-empty' }, t('noSearchResults'))]) : null,
                     ]),
                     h('div', { class: 'home-visual', 'aria-hidden': 'true' }, [
                         h('div', { class: 'home-visual-glow' }),
@@ -704,7 +602,7 @@ const App = {
                         h('div', { class: 'home-orbit home-orbit-b' }),
                         h('div', { class: 'home-orbit home-orbit-c' }),
                         h('div', { class: 'home-core' }, [h('img', { src: '/we-logo.svg', alt: '', class: 'home-logo' })]),
-                        ...[['chat', 'home-node-a'], ['tree', 'home-node-b'], ['grid', 'home-node-c']].map(([name, cls]) => h('div', { class: 'home-node ' + cls }, [icon(name, 'size-5')])),
+                        ...[['chat', 'home-node-a'], ['question', 'home-node-c']].map(([name, cls]) => h('div', { class: 'home-node ' + cls }, [icon(name, 'size-5')])),
                         h('span', { class: 'home-spark home-spark-a' }),
                         h('span', { class: 'home-spark home-spark-b' }),
                     ]),
@@ -730,274 +628,92 @@ const App = {
             ]);
         }
 
-        function selectReviewDeck(deckId) {
-            reviewDeckId.value = deckId;
-            reviewSlideIndex.value = 0;
-        }
+        function renderExam() {
+            const total = examQuestions.length;
+            const index = examQuestionIndex.value;
+            const isArabic = language.value === 'ar';
+            const verifyNote = isArabic
+                ? 'معلومة تدريبية متغيرة: راجع الـSLA أو الإجراء الحالي في النظام قبل استخدامه مع عميل.'
+                : 'Time-sensitive training item: check the current SLA or procedure before using it with a customer.';
 
-        function reviewJumpToStep(stepId) {
-            const index = activeReviewDeck.value?.slides.findIndex(({ id }) => id === stepId) ?? -1;
-            if (index >= 0) reviewSlideIndex.value = index;
-        }
-
-        function renderReview() {
-            if (!activeReviewDeck.value) {
-                return h('section', { class: 'review-library' }, [
-                    h('header', { class: 'review-library-head' }, [
-                        h('div', [h('span', { class: 'review-kicker' }, t('reviewMode')), h('h2', { class: 'review-title' }, t('reviewTitle')), h('p', { class: 'review-intro' }, t('reviewIntro'))]),
-                        h('div', { class: 'review-library-mark' }, [icon('grid', 'size-6'), h('span', t('reviewStudy'))]),
+            if (index >= total) {
+                return h('section', { class: 'exam-panel exam-results' }, [
+                    h('span', { class: 'exam-kicker' }, isArabic ? 'انتهى الامتحان' : 'EXAM COMPLETE'),
+                    h('h2', { class: 'exam-title' }, isArabic ? 'نتيجتك' : 'Your result'),
+                    h('p', { class: 'exam-score' }, `${examScore.value} / ${total}`),
+                    h('p', { class: 'exam-intro' }, isArabic
+                        ? `أجبت إجابة صحيحة عن ${examScore.value} من ${total} سؤالًا.`
+                        : `You answered ${examScore.value} of ${total} questions correctly.`),
+                    h('div', { class: 'exam-result-actions' }, [
+                        h('button', { class: 'exam-primary-button', type: 'button', onClick: restartExam }, isArabic ? 'أعد الامتحان' : 'Try again'),
+                        h('button', { class: 'exam-secondary-button', type: 'button', onClick: () => { workspaceMode.value = 'home'; } }, isArabic ? 'العودة للرئيسية' : 'Back to home'),
                     ]),
-                    h('input', { class: 'review-topic-search', type: 'search', value: reviewSearch.value, placeholder: t('reviewChooseTopic'), onInput: (event) => { reviewSearch.value = event.target.value; } }),
-                    h('div', { class: 'review-topic-grid' }, visibleReviewDecks.value.length ? visibleReviewDecks.value.map((deck, index) => h('button', { class: 'review-topic-card', type: 'button', key: deck.id, onClick: () => selectReviewDeck(deck.id) }, [
-                        h('div', { class: 'review-topic-art', 'aria-hidden': 'true' }, [
-                            icon(deck.icon || (deck.id === 'request_start' ? 'ticket' : deck.id === 'inquiry_start' ? 'search' : 'router'), 'size-7'),
-                            h('svg', { viewBox: '0 0 112 40' }, [h('path', { d: 'M8 20h34m0 0c18 0 14-12 29-12h32m-32 12c18 0 14 12 29 12h32', class: 'review-topic-wire' }), ...[[8,20],[42,20],[71,8],[103,8],[71,32],[103,32]].map(([cx, cy], dot) => h('circle', { key: deck.id + '-topic-dot-' + dot, cx: String(cx), cy: String(cy), r: dot < 2 ? '4' : '3', class: 'review-topic-dot' }))]),
-                        ]),
-                        h('span', { class: 'review-topic-number' }, String(index + 1).padStart(2, '0')),
-                        h('span', { class: 'review-topic-title' }, deck.title),
-                        h('span', { class: 'review-topic-meta' }, deck.slides.length + ' ' + t('reviewSlides')),
-                        h('span', { class: 'review-topic-start' }, [t('reviewStart'), icon('arrow', 'size-4')]),
-                    ])) : h('p', { class: 'decision-empty' }, t('mapSearchEmpty'))),
-                    h('aside', { class: 'review-study-note' }, [icon('question', 'size-5'), h('span', t('reviewIntro'))]),
                 ]);
             }
 
-            const row = reviewSlide.value;
-            if (!row) return h('p', { class: 'decision-empty' }, t('mapNoPath'));
-            const step = row.step;
-            const total = activeReviewDeck.value.slides.length;
-            const progress = Math.round(((reviewSlideIndex.value + 1) / total) * 100);
-            const options = (step.options || []).map((option, index) => h('button', { class: 'review-branch-link', type: 'button', key: row.id + '-' + index, onClick: () => reviewJumpToStep(option.next_step) }, [
-                h('span', { class: 'review-branch-dot' }),
-                h('span', [h('strong', option.label), h('small', tree.value?.[option.next_step]?.question || '')]),
-                icon('arrow', 'size-4'),
-            ]));
-            const lessonCards = [
-                step.customer_prompt ? { icon: 'chat', label: t('askCustomer'), text: step.customer_prompt, kind: 'ask' } : null,
-                step.check_guidance ? { icon: 'search', label: t('checkGuidance'), text: step.check_guidance, kind: 'check' } : null,
-                step.action ? { icon: 'ticket', label: t('whatToDo'), text: step.action, kind: 'act' } : null,
-            ].filter(Boolean);
-            const actionTakeaways = {
-                installation_delay: language.value === 'ar' ? 'Order Query ← المرحلة وسبب الفشل ← تحقق من Delay TT ← حدّث أو صعّد بدون تكرار.' : 'Order Query → stage and failure reason → check Delay TT → update/escalate without duplication.',
-                physical_escalation: language.value === 'ar' ? 'Clear View + Outage/Hayah Karima ← حدّد IU أو NOC ← حدّث TT وأبلغ بالرقم والـSLA.' : 'Clear View + Outage/Hayah Karima → select IU or NOC → update the TT and share its number and SLA.',
-                physical_iu_terminal: language.value === 'ar' ? 'ASSIA وOutage أولًا ← شكوى TT الصحيحة ← اقرأ SLA الحالة من النظام.' : 'Check ASSIA and Outage → use the correct complaint TT → read its SLA from the system.',
-                noc_escalation: language.value === 'ar' ? 'سجّل الفحوص وحدّث TT ← افحص وقت 10م–8ص وإتاحة العميل ← IR داخلي عند انطباق On Call.' : 'Record checks and update TT → check the 10pm–8am window and customer availability → internal IR for On Call when applicable.',
-                noc_standard_terminal: language.value === 'ar' ? 'حدّث TT. اذكر مهلة الحل كما تظهر، وافصل عنها اتصال NOC بعد الحل.' : 'Update the TT. Give the displayed resolution SLA separately from the NOC callback after resolution.',
-                noc_oncall_availability: language.value === 'ar' ? '10 مساءً–8 صباحًا: موافق؟ سجّل On Call في IR؛ غير متاح؟ متابعة بعد 8 صباحًا.' : '10pm–8am: if available, record On Call in IR; if unavailable, follow up after 8am.',
-                noc_oncall_available_terminal: language.value === 'ar' ? 'بموافقة العميل: سجّل On Call (To SLS) في IR، واحتفظ برقم IR داخليًا. اتصال NOC خلال ساعتين من الحل؛ اقرأ SLA الحل من TT.' : 'With consent, record On Call (To SLS) in IR and keep its number internal. NOC calls within 2h after resolution; read the repair SLA from the TT.',
-                noc_oncall_unavailable_terminal: language.value === 'ar' ? 'لا تسجّل On Call بدون موافقة. حدّث TT وبلّغ العميل بمتابعة بعد 8 صباحًا.' : 'Do not record On Call without consent. Update the TT and tell the customer to expect follow-up after 8am.',
-                order_within_sla: language.value === 'ar' ? 'الطلب داخل المهلة: اشرح المرحلة الحالية ولا تنشئ طلبًا مكررًا.' : 'Order is within SLA: explain the current stage; do not create a duplicate order.',
-            };
-            const slaNocReview = reviewDeckId.value === 'review_sla_noc';
-            const showOnCallWindow = slaNocReview && ['noc_escalation', 'noc_oncall_availability', 'noc_oncall_available_terminal', 'noc_oncall_unavailable_terminal'].includes(row.id);
-            const branchCount = Math.min(step.options?.length || 0, 4);
-            const diagramTargets = branchCount ? Array.from({ length: branchCount }, (_, index) => {
-                const x = 50 + ((index - (branchCount - 1) / 2) * Math.min(24, 72 / Math.max(1, branchCount - 1)));
-                return h('g', { key: 'lesson-branch-' + index }, [
-                    h('path', { class: 'review-diagram-wire', d: `M50 30 C50 58 ${x} 58 ${x} 82` }),
-                    h('circle', { class: 'review-diagram-node is-branch', cx: String(x), cy: '82', r: '5' }),
-                ]);
-            }) : [h('path', { class: 'review-diagram-wire is-complete', d: 'M50 30 V82' }), h('circle', { class: 'review-diagram-node is-complete', cx: '50', cy: '82', r: '6' })];
+            const question = examQuestions[index];
+            const selected = examSelectedIndex.value;
+            const answered = selected !== null;
+            const isCorrect = answered && selected === question.correctIndex;
+            const progress = Math.round(((index + 1) / total) * 100);
+            const optionLetters = isArabic ? ['أ', 'ب', 'ج', 'د'] : ['A', 'B', 'C', 'D'];
 
-            return h('section', { class: 'review-presenter' }, [
-                h('header', { class: 'review-presenter-head' }, [
-                    h('button', { class: 'review-back-topics', type: 'button', onClick: () => { reviewDeckId.value = null; reviewSlideIndex.value = 0; } }, [icon('back', 'size-4'), t('reviewBackTopics')]),
-                    h('div', { class: 'review-deck-heading' }, [h('span', t('reviewMode')), h('strong', activeReviewDeck.value.title)]),
-                    h('span', { class: 'review-counter' }, (reviewSlideIndex.value + 1) + ' / ' + total),
-                ]),
-                h('div', { class: 'review-progress-track' }, [h('span', { style: { width: progress + '%' } })]),
-                h('div', { class: 'review-reader-layout' }, [
-                    h('aside', { class: 'review-page-index' }, [
-                        h('div', { class: 'review-page-index-heading' }, [icon('grid', 'size-4'), h('strong', language.value === 'ar' ? 'فهرس الفصل' : 'CHAPTER INDEX'), h('span', `${total} ${t('reviewSlides')}`)]),
-                        h('nav', { class: 'review-page-list', 'aria-label': language.value === 'ar' ? 'صفحات الفصل' : 'Chapter pages' }, activeReviewDeck.value.slides.map((page, index) => h('button', {
-                            class: 'review-page-index-item' + (index === reviewSlideIndex.value ? ' is-current' : ''),
-                            type: 'button',
-                            key: 'page-index-' + page.id,
-                            onClick: () => { reviewSlideIndex.value = index; },
-                            'aria-current': index === reviewSlideIndex.value ? 'page' : undefined,
-                        }, [h('span', String(index + 1).padStart(2, '0')), h('strong', page.step.question)]))),
-                    ]),
-                    h('div', { class: 'review-page-stage' }, [
-                h(Transition, { name: 'map-node', mode: 'out-in' }, { default: () => h('article', { class: 'review-slide review-document-page', key: row.id }, [
-                    h('div', { class: 'review-slide-topline' }, [h('span', t('reviewStudy')), h('span', step.options?.length ? step.options.length + ' ' + t('mapOptionsCount') : t('mapTerminal'))]),
-                    h('h2', { class: 'review-slide-title' }, step.question),
-                    h('section', { class: 'review-slide-visual' }, [
-                        h('div', { class: 'review-diagram-copy' }, [
-                            h('span', { class: 'review-diagram-kicker' }, language.value === 'ar' ? 'خريطة الخطوة' : 'STEP MAP'),
-                            h('strong', step.options?.length ? (language.value === 'ar' ? 'النتيجة تحدد الفرع التالي' : 'Your finding selects the next branch') : (language.value === 'ar' ? 'وصلت لنهاية الإجراء' : 'You reached the resolution')),
-                            h('small', language.value === 'ar' ? `${step.options?.length || 0} اختيارات · ${step.sla ? 'SLA محدد' : 'راجع الإجراء قبل الإغلاق'}` : `${step.options?.length || 0} choices · ${step.sla ? 'SLA recorded' : 'Check action before closing'}`),
-                        ]),
-                        h('svg', { class: 'review-slide-diagram', viewBox: '0 0 100 100', role: 'img', 'aria-label': language.value === 'ar' ? 'مخطط تفرع الإجراء' : 'Action branch diagram' }, [
-                            h('path', { class: 'review-diagram-wire', d: 'M50 16 V30' }),
-                            ...diagramTargets,
-                            h('circle', { class: 'review-diagram-node is-start', cx: '50', cy: '16', r: '10' }),
-                            h('circle', { class: 'review-diagram-core', cx: '50', cy: '16', r: '3' }),
-                        ]),
-                        h('div', { class: 'review-diagram-legend' }, [
-                            h('span', [h('i', { class: 'legend-start' }), language.value === 'ar' ? 'افحص' : 'CHECK']),
-                            h('span', [h('i', { class: 'legend-branch' }), language.value === 'ar' ? 'اختَر النتيجة' : 'CHOOSE']),
-                            h('span', [h('i', { class: 'legend-end' }), language.value === 'ar' ? 'الإجراء' : 'ACTION']),
-                        ]),
-                    ]),
-                    slaNocReview ? h('section', { class: 'review-time-comparison', 'aria-label': language.value === 'ar' ? 'الفرق بين مهلة الحل ومتابعة NOC' : 'Resolution SLA versus NOC follow-up' }, [
-                        h('article', { class: 'review-time-card is-sla' }, [
-                            h('span', { class: 'review-time-icon' }, icon('clock', 'size-5')),
-                            h('span', { class: 'review-time-name' }, language.value === 'ar' ? 'SLA حل الحالة' : 'CASE RESOLUTION SLA'),
-                            h('strong', language.value === 'ar' ? 'حسب TT' : 'From the TT'),
-                            h('p', language.value === 'ar' ? 'في شكوى Physical Instability إلى IU: المرجع التدريبي 24 ساعة. اقرأ المهلة الفعلية وأي استثناء من النظام.' : 'For Physical Instability to IU, the training reference is 24 hours. Read the actual SLA and exceptions from the system.'),
-                            h('div', { class: 'review-time-line' }, [h('i'), h('span', language.value === 'ar' ? 'تسجيل الشكوى' : 'CASE LOGGED'), h('b'), h('span', language.value === 'ar' ? 'حل ضمن المهلة' : 'RESOLVE BY SLA')]),
-                        ]),
-                        h('article', { class: 'review-time-card is-noc' }, [
-                            h('span', { class: 'review-time-icon' }, icon('chat', 'size-5')),
-                            h('span', { class: 'review-time-name' }, language.value === 'ar' ? 'متابعة NOC' : 'NOC FOLLOW-UP'),
-                            h('strong', language.value === 'ar' ? 'خلال ساعتين بعد الحل' : 'Within 2h after resolution'),
-                            h('p', language.value === 'ar' ? 'موعد مكالمة متابعة عند انطباق مسار NOC؛ ليس مهلة إصلاح العطل.' : 'A follow-up call when the NOC route applies; it is not the repair SLA.'),
-                            h('div', { class: 'review-time-line' }, [h('i'), h('span', language.value === 'ar' ? 'حل المشكلة' : 'ISSUE RESOLVED'), h('b'), h('span', language.value === 'ar' ? 'اتصال NOC' : 'NOC CALL')]),
-                        ]),
-                    ]) : null,
-                    showOnCallWindow ? h('section', { class: 'review-oncall-window' }, [
-                        h('div', { class: 'oncall-clock-face' }, [icon('clock', 'size-6'), h('strong', language.value === 'ar' ? '10م–8ص' : '10pm–8am')]),
-                        h('div', [h('b', language.value === 'ar' ? 'تحقق من إتاحة العميل' : 'Check customer availability'), h('p', actionTakeaways[row.id] || '')]),
-                        h('small', language.value === 'ar' ? 'IR للتسجيل الداخلي؛ لا تشارك رقمه مع العميل.' : 'IR is internal; do not share its number with the customer.'),
-                    ]) : null,
-                    step.finding ? h('section', { class: 'review-takeaway' }, [icon('alert', 'size-5'), h('div', [h('b', t('mapFound')), h('p', step.finding)])]) : null,
-                    lessonCards.length ? h('section', { class: 'review-lesson-sequence', 'aria-label': language.value === 'ar' ? 'تسلسل التنفيذ' : 'Action sequence' }, lessonCards.map((card, index) => h('article', { class: 'review-lesson-card is-' + card.kind, key: card.kind }, [
-                        h('span', { class: 'review-lesson-number' }, String(index + 1).padStart(2, '0')),
-                        h('span', { class: 'review-lesson-icon' }, icon(card.icon, 'size-5')),
-                        h('b', card.label),
-                        h('p', card.kind === 'act' ? (actionTakeaways[row.id] || (card.text.length > 190 ? card.text.slice(0, 190).trim() + '…' : card.text)) : card.text),
-                        card.kind === 'act' && card.text.length > 190 ? h('details', { class: 'review-lesson-details' }, [h('summary', language.value === 'ar' ? 'اقرأ الإجراء الكامل' : 'Read full procedure'), h('p', card.text)]) : null,
-                        index < lessonCards.length - 1 ? h('span', { class: 'review-lesson-connector', 'aria-hidden': 'true' }, language.value === 'ar' ? '←' : '→') : null,
-                    ]))) : null,
-                    step.options?.length ? h('section', { class: 'review-branches' }, [h('h3', t('reviewCaseMap')), ...options]) : h('section', { class: 'review-endings' }, [
-                        step.sla ? h('div', { class: 'review-slide-panel review-sla' }, [icon('clock', 'size-5'), h('span', [h('b', t('sla')), h('strong', step.sla)])]) : null,
-                        step.customer_script ? h('div', { class: 'review-slide-panel review-customer-script' }, [h('b', t('customerScript')), h('p', step.customer_script)]) : null,
-                        step.clear_description ? h('div', { class: 'review-slide-panel review-check' }, [h('b', t('clearDescription')), h('p', step.clear_description)]) : null,
-                    ]),
-                    step.reference_guidance ? h('section', { class: 'review-slide-panel review-reference' }, [h('b', t('referenceGuidance')), h('p', step.reference_guidance)]) : null,
-                    step.source_reference ? h('details', { class: 'review-slide-source' }, [h('summary', t('sourceReference')), h('p', step.source_reference)]) : null,
-                    h('footer', { class: 'review-document-footer' }, [
-                        h('span', [h('img', { src: '/we-logo.svg', alt: '', class: 'review-document-logo' }), activeReviewDeck.value.title]),
-                        h('span', `${String(reviewSlideIndex.value + 1).padStart(2, '0')} / ${String(total).padStart(2, '0')}`),
-                    ]),
-                ]) }),
-                    ]),
-                ]),
-                h('nav', { class: 'review-slide-controls', 'aria-label': t('reviewDeckProgress') }, [
-                    h('button', { class: 'review-nav-button', type: 'button', onClick: () => { reviewSlideIndex.value = Math.max(0, reviewSlideIndex.value - 1); }, disabled: reviewSlideIndex.value === 0 }, [icon('back', 'size-4'), t('reviewBackSlide')]),
-                    h('span', { class: 'review-progress-label' }, progress + '% · ' + activeReviewDeck.value.title),
-                    h('button', { class: 'review-nav-button is-primary', type: 'button', onClick: () => { if (reviewSlideIndex.value < total - 1) reviewSlideIndex.value += 1; else { reviewDeckId.value = null; reviewSlideIndex.value = 0; } } }, [reviewSlideIndex.value < total - 1 ? t('reviewNextSlide') : t('reviewFinish'), icon('arrow', 'size-4')]),
-                ]),
-                h('button', { class: 'review-open-assistant', type: 'button', onClick: () => applyPathToGuide(findTreePath(row.id) || [], row.id) }, [icon('chat', 'size-4'), t('reviewOpenAssistant')]),
-            ]);
-        }
-
-        function renderDecisionMap() {
-            const focusId = treeMapFocusId.value;
-            const focus = treeMapFocusStep.value;
-            if (!focus) return h('p', { class: 'text-red-700', role: 'alert' }, t('missing'));
-
-            function chooseAtLevel(levelIndex, stepId, optionIndex) {
-                const option = tree.value?.[stepId]?.options?.[optionIndex];
-                if (!option || !tree.value?.[option.next_step]) return;
-                treeMapPath.value = [
-                    ...treeMapPath.value.slice(0, levelIndex),
-                    { stepId, optionIndex, nextStep: option.next_step },
-                ];
-                nextTick(() => document.querySelector('.decision-level.is-current')?.scrollIntoView({ behavior: 'auto', block: 'nearest' }));
-            }
-
-            const levels = [
-                ...treeMapPath.value.map((entry, index) => ({
-                    id: entry.stepId,
-                    step: tree.value?.[entry.stepId],
-                    selectedIndex: entry.optionIndex,
-                    index,
-                    current: false,
-                })),
-                { id: focusId, step: focus, selectedIndex: null, index: treeMapPath.value.length, current: true },
-            ];
-
-            const renderedLevels = levels.filter((level) => level.step).map((level) => {
-                const options = level.step.options || [];
-                const count = options.length;
-                const connector = count ? h('svg', { class: 'decision-level-connectors', viewBox: '0 0 1000 100', preserveAspectRatio: 'none', 'aria-hidden': 'true' }, options.map((option, optionIndex) => {
-                    const column = language.value === 'ar' ? count - optionIndex - 0.5 : optionIndex + 0.5;
-                    const x = count === 1 ? 500 : (column / count) * 1000;
-                    return h('g', { key: level.id + '-wire-' + optionIndex }, [
-                        h('path', { class: 'decision-level-wire' + (level.selectedIndex === optionIndex ? ' is-selected' : ''), d: 'M500 0 C500 45 ' + x + ' 45 ' + x + ' 94' }),
-                        h('circle', { class: 'decision-level-dot' + (level.selectedIndex === optionIndex ? ' is-selected' : ''), cx: String(x), cy: '94', r: '6' }),
-                    ]);
-                })) : null;
-                const optionCards = options.map((option, optionIndex) => {
-                    const next = tree.value?.[option.next_step];
-                    const selected = level.selectedIndex === optionIndex;
-                    const isEnd = next?.options?.length === 0;
-                    return h('button', {
-                        class: 'decision-choice-node' + (selected ? ' is-selected' : '') + (isEnd ? ' is-ending' : ''),
-                        type: 'button',
-                        key: level.id + '-choice-' + optionIndex,
-                        onClick: () => chooseAtLevel(level.index, level.id, optionIndex),
-                        'aria-pressed': selected,
-                    }, [
-                        h('span', { class: 'decision-node-kicker' }, selected ? (language.value === 'ar' ? 'المسار المختار' : 'Chosen route') : (isEnd ? t('mapTerminal') : t('mapBranch') + ' ' + String(optionIndex + 1).padStart(2, '0'))),
-                        h('span', { class: 'decision-node-title' }, option.label || t('choose')),
-                        h('span', { class: 'decision-node-next' }, next?.question || t('incomplete')),
-                        isEnd && next?.action ? h('span', { class: 'decision-node-outcome' }, t('action') + ' ' + next.action) : null,
-                        isEnd && next?.sla ? h('span', { class: 'decision-node-sla' }, t('sla') + ' ' + next.sla) : null,
-                        h('span', { class: 'decision-node-enter' }, [selected ? (language.value === 'ar' ? 'المسار الحالي' : 'Current route') : (language.value === 'ar' ? 'اعرض هذا الفرع' : 'Follow this branch'), icon('arrow', 'size-4')]),
-                    ]);
-                });
-                const terminal = count === 0;
-                return h('section', { class: 'decision-level' + (level.current ? ' is-current' : ' is-past') + (terminal ? ' is-terminal' : ''), key: level.id + '-' + level.index }, [
-                    h('div', { class: 'decision-level-heading' }, [
-                        h('span', { class: 'decision-level-index' }, level.current ? icon(terminal ? 'alert' : 'question', 'size-5') : String(level.index + 1).padStart(2, '0')),
-                        h('div', { class: 'decision-level-question-wrap' }, [
-                            h('span', { class: 'decision-level-kicker' }, level.current ? (terminal ? t('mapTerminal') : count + ' ' + t('mapOptionsCount')) : (language.value === 'ar' ? 'السؤال السابق' : 'Previous decision')),
-                            h('h3', { class: 'decision-level-question' }, level.step.question),
-                        ]),
-                    ]),
-                    !terminal && (level.step.check_guidance || level.step.action || level.step.customer_prompt) ? h('details', { class: 'decision-slide-notes' }, [
-                        h('summary', [icon('question', 'size-4'), language.value === 'ar' ? 'دليل سريع للخطوة' : 'Step guide']),
-                        level.step.check_guidance ? h('div', { class: 'decision-note-item is-check' }, [h('b', language.value === 'ar' ? 'افحص' : 'Check'), h('p', level.step.check_guidance)]) : null,
-                        level.step.action ? h('div', { class: 'decision-note-item is-action' }, [h('b', t('whatToDo')), h('p', level.step.action)]) : null,
-                        level.step.customer_prompt ? h('div', { class: 'decision-note-item is-customer' }, [h('b', t('askCustomer')), h('p', level.step.customer_prompt)]) : null,
-                    ]) : null,
-                    terminal ? h('div', { class: 'decision-ending-panel' }, [
-                        level.step.finding ? h('div', { class: 'decision-ending-finding' }, [h('b', t('mapFound')), h('p', level.step.finding)]) : null,
-                        level.step.action ? h('div', { class: 'decision-ending-action' }, [h('b', t('action')), h('p', level.step.action)]) : null,
-                        level.step.sla ? h('div', { class: 'decision-ending-sla' }, [icon('clock', 'size-5'), h('span', [h('b', t('sla')), h('strong', level.step.sla)])]) : null,
-                        level.step.customer_script ? h('div', { class: 'decision-ending-script' }, [h('b', t('customerScript')), h('p', level.step.customer_script)]) : null,
-                        level.step.source_reference ? h('details', { class: 'decision-ending-source' }, [h('summary', t('sourceReference')), h('p', level.step.source_reference)]) : null,
-                    ]) : h('div', { class: 'decision-level-branches' }, [
-                        connector,
-                        h('div', { class: 'decision-branch-grid', style: { gridTemplateColumns: 'repeat(' + Math.min(count, 4) + ', minmax(0, 1fr))' } }, optionCards),
-                    ]),
-                ]);
-            });
-
-            return h('section', { class: 'decision-map', 'aria-label': t('mapTitle') }, [
-                h('div', { class: 'decision-map-head' }, [
+            return h('section', { class: 'exam-panel' }, [
+                h('header', { class: 'exam-heading' }, [
                     h('div', [
-                        h('p', { class: 'decision-eyebrow' }, t('treeMode')),
-                        h('h2', { class: 'decision-map-title' }, t('mapTitle')),
-                        h('p', { class: 'decision-map-caption' }, language.value === 'ar' ? 'المسار السابق يظل ظاهرًا. اختار أي فرع لتبديل اتجاهه، أو كمل من آخر سؤال.' : 'Earlier decisions stay visible. Choose any branch to change direction, or continue from the latest question.'),
+                        h('span', { class: 'exam-kicker' }, isArabic ? 'امتحان تدريبي' : 'PRACTICE EXAM'),
+                        h('h2', { class: 'exam-title' }, isArabic ? 'امتحان تدريبي' : 'Practice exam'),
+                        h('p', { class: 'exam-intro' }, isArabic
+                            ? 'اختار إجابة واحدة؛ هتظهر الإجابة الصحيحة والشرح فورًا.'
+                            : 'Choose one answer to see the correct answer and explanation immediately.'),
                     ]),
-                    h('div', { class: 'decision-map-tools' }, [
-                        h('button', { class: 'decision-tool-button', type: 'button', onClick: backTreeBranch, disabled: !treeMapPath.value.length }, [icon('back', 'size-4'), t('mapBackBranch')]),
-                        h('button', { class: 'decision-tool-button', type: 'button', onClick: () => { treeMapPath.value = []; treeMapSearch.value = ''; } }, [icon('home', 'size-4'), t('mapReset')]),
+                    h('span', { class: 'exam-counter' }, isArabic ? `السؤال ${index + 1} من ${total}` : `Question ${index + 1} of ${total}`),
+                ]),
+                h('div', { class: 'exam-progress-track', 'aria-label': `${progress}%` }, [h('span', { style: { width: `${progress}%` } })]),
+                h('article', { class: 'exam-question-card' }, [
+                    h('div', { class: 'exam-question-topic' }, [
+                        h('span', question.topic[language.value]),
+                        question.verifyLive ? h('span', isArabic ? 'تحقق من النظام' : 'Verify live') : null,
                     ]),
+                    h('h3', question.question[language.value]),
+                    h('div', { class: 'exam-options', role: 'group', 'aria-label': question.question[language.value] }, question.options.map((option, optionIndex) => {
+                        const correctOption = answered && optionIndex === question.correctIndex;
+                        const wrongSelection = answered && optionIndex === selected && !isCorrect;
+                        const classes = ['exam-choice', correctOption ? 'is-correct' : '', wrongSelection ? 'is-wrong' : '', answered && optionIndex === selected ? 'is-selected' : ''].filter(Boolean).join(' ');
+                        return h('button', {
+                            class: classes,
+                            type: 'button',
+                            disabled: answered,
+                            'aria-pressed': optionIndex === selected,
+                            onClick: () => chooseExamAnswer(optionIndex),
+                        }, [
+                            h('span', { class: 'exam-choice-letter' }, optionLetters[optionIndex]),
+                            h('span', option[language.value]),
+                        ]);
+                    })),
+                    answered ? h('aside', {
+                        class: `exam-feedback ${isCorrect ? 'is-correct' : 'is-wrong'}`,
+                        'aria-live': 'polite',
+                    }, [
+                        h('strong', isCorrect
+                            ? (isArabic ? 'إجابة صحيحة' : 'Correct answer')
+                            : (isArabic ? 'الإجابة غير صحيحة' : 'Not quite')),
+                        h('p', [h('b', isArabic ? 'الإجابة الصحيحة: ' : 'Correct answer: '), question.options[question.correctIndex][language.value]]),
+                        h('p', [h('b', isArabic ? 'الشرح: ' : 'Explanation: '), question.explanation[language.value]]),
+                        question.verifyLive ? h('small', verifyNote) : null,
+                    ]) : null,
                 ]),
-                h('div', { class: 'decision-search-wrap' }, [
-                    icon('search', 'size-4'),
-                    h('input', { id: 'tree-map-search', class: 'decision-search', type: 'search', value: treeMapSearch.value, placeholder: t('mapSearch'), onInput: (event) => { treeMapSearch.value = event.target.value; } }),
-                    treeMapSearch.value ? h('button', { class: 'decision-search-clear', type: 'button', onClick: () => { treeMapSearch.value = ''; }, 'aria-label': t('closeDrawer') }, '×') : null,
-                ]),
-                treeMapSearch.value.trim() ? h('div', { class: 'decision-search-results', 'aria-live': 'polite' }, treeMapSearchResults.value.length ? treeMapSearchResults.value.map(({ id, step }) => h('button', { class: 'decision-search-result', key: id, type: 'button', onClick: () => openMapSearchResult(id) }, [h('span', [h('strong', step.question || id), h('small', step.action || step.finding || '')]), icon('arrow', 'size-4')])) : h('p', { class: 'decision-empty' }, t('mapSearchEmpty'))) : null,
-                h(TransitionGroup, { name: 'tree-branch', tag: 'div', class: 'decision-tree-board' }, { default: () => renderedLevels }),
-                h('div', { class: 'decision-map-footer' }, [
-                    h('span', { class: 'decision-progress' }, treeMapPath.value.length ? treeMapPath.value.length + ' ' + t('mapVisits') : t('mapRoot')),
-                    h('button', { class: 'decision-open-guide', type: 'button', onClick: openMapFocusInGuide }, [icon('chat', 'size-4'), t('mapOpenCurrent')]),
+                h('footer', { class: 'exam-footer' }, [
+                    h('span', isArabic
+                        ? 'الأسئلة مستخرجة من ملفات تدريبية؛ قد تختلف الإجراءات والمهل الحالية.'
+                        : 'Questions come from training files; current procedures and timeframes may differ.'),
+                    answered ? h('button', {
+                        class: 'exam-primary-button',
+                        type: 'button',
+                        onClick: advanceExam,
+                    }, index === total - 1
+                        ? (isArabic ? 'عرض النتيجة' : 'See result')
+                        : (isArabic ? 'السؤال التالي' : 'Next question')) : null,
                 ]),
             ]);
         }
@@ -1027,8 +743,8 @@ const App = {
                 jumpToStep('package_change_quick');
                 return;
             }
-            if (key === 'review') {
-                enterReview();
+            if (key === 'exam') {
+                enterExam();
                 return;
             }
             if (key === 'reference') {
@@ -1083,8 +799,7 @@ const App = {
                     currentStepId.value = startId;
                     history.value = [];
                     pathSelections.value = [];
-                    treeMapPath.value = [];
-                }
+                    }
                 language.value = nextLanguage;
                 document.documentElement.lang = nextLanguage;
                 document.documentElement.dir = nextLanguage === 'ar' ? 'rtl' : 'ltr';
@@ -1145,9 +860,7 @@ const App = {
             currentStepId.value = tree.value.start;
             history.value = [];
             pathSelections.value = [];
-            treeMapPath.value = [];
-            treeMapSearch.value = '';
-            workspaceMode.value = 'map';
+            workspaceMode.value = 'guided';
             commentDetails.value = '';
             commentRefType.value = 'none';
             commentRefNumber.value = '';
@@ -1211,8 +924,7 @@ const App = {
                     ]),
                     h('nav', { class: 'world-nav order-3 flex w-full items-center gap-1 rounded-xl border border-slate-200 bg-slate-50 p-1 sm:order-none sm:w-auto', 'aria-label': language.value === 'ar' ? 'أوضاع العمل' : 'Work modes' }, [
                         h('button', { class: `inline-flex min-h-9 flex-1 items-center justify-center gap-1.5 rounded-lg px-3 text-xs font-bold transition sm:flex-none ${workspaceMode.value === 'guided' || workspaceMode.value === 'reference' ? 'bg-white text-purple-800 shadow-sm' : 'text-slate-600 hover:bg-white'}`, type: 'button', onClick: enterGuided, 'aria-pressed': workspaceMode.value === 'guided' || workspaceMode.value === 'reference' }, [icon('chat', 'size-4'), t('guidedMode')]),
-                        h('button', { class: `inline-flex min-h-9 flex-1 items-center justify-center gap-1.5 rounded-lg px-3 text-xs font-bold transition sm:flex-none ${workspaceMode.value === 'map' ? 'bg-white text-purple-800 shadow-sm' : 'text-slate-600 hover:bg-white'}`, type: 'button', onClick: openTreeMap, 'aria-pressed': workspaceMode.value === 'map' }, [icon('tree', 'size-4'), t('treeMode')]),
-                        h('button', { class: `inline-flex min-h-9 flex-1 items-center justify-center gap-1.5 rounded-lg px-3 text-xs font-bold transition sm:flex-none ${workspaceMode.value === 'review' ? 'bg-white text-purple-800 shadow-sm' : 'text-slate-600 hover:bg-white'}`, type: 'button', onClick: enterReview, 'aria-pressed': workspaceMode.value === 'review' }, [icon('grid', 'size-4'), t('reviewMode')]),
+                        h('button', { class: `inline-flex min-h-9 flex-1 items-center justify-center gap-1.5 rounded-lg px-3 text-xs font-bold transition sm:flex-none ${workspaceMode.value === 'exam' ? 'bg-white text-purple-800 shadow-sm' : 'text-slate-600 hover:bg-white'}`, type: 'button', onClick: enterExam, 'aria-pressed': workspaceMode.value === 'exam' }, [icon('grid', 'size-4'), t('examMode')]),
                     ]),
                     h('div', { class: 'flex shrink-0 items-center gap-2' }, [
                         h('button', { class: 'app-control rounded-xl border px-3 py-2 text-sm font-semibold', type: 'button', onClick: () => switchLanguage(language.value === 'ar' ? 'en' : 'ar'), 'aria-label': language.value === 'ar' ? 'Switch to English' : 'التغيير إلى العربية' }, language.value === 'ar' ? 'EN' : 'عربي'),
@@ -1283,7 +995,7 @@ const App = {
                         item.source ? h('p', { class: 'mt-2 text-[10px] text-slate-500' }, item.source) : null,
                     ])) : h('p', { class: 'rounded-lg bg-slate-50 p-3 text-sm text-slate-600' }, t('noQuickMatches'))),
                 ]) : null,
-                workspaceMode.value === 'map' || workspaceMode.value === 'review' || workspaceMode.value === 'home' ? null : h('section', { class: 'quick-search-panel mb-5 rounded-2xl border border-slate-200 bg-white p-3 sm:p-4' }, [
+                workspaceMode.value === 'exam' || workspaceMode.value === 'home' ? null : h('section', { class: 'quick-search-panel mb-5 rounded-2xl border border-slate-200 bg-white p-3 sm:p-4' }, [
                     h('label', { class: 'mb-2 flex items-center gap-2 text-sm font-bold text-slate-800', for: 'quick-support-search' }, [icon('search', 'size-4 text-blue-700'), t('quickSearch')]),
                     h('div', { class: 'flex gap-2' }, [
                         h('input', {
@@ -1325,17 +1037,8 @@ const App = {
                 ]),
                 workspaceMode.value === 'home'
                     ? renderHome()
-                    : workspaceMode.value === 'map'
-                    ? loading.value
-                        ? h('p', { class: 'py-8 text-center text-slate-500', role: 'status' }, t('loading'))
-                        : loadError.value
-                            ? h('div', { class: 'space-y-4 rounded-2xl border border-rose-200 bg-rose-50 p-5', role: 'alert' }, [
-                                h('p', { class: 'text-rose-900' }, loadError.value),
-                                h('button', { class: 'inline-flex min-h-11 items-center gap-2 rounded-xl bg-purple-800 px-4 py-2 font-bold text-white', type: 'button', onClick: loadTree }, t('retry')),
-                            ])
-                            : renderDecisionMap()
-                    : workspaceMode.value === 'review'
-                    ? (loading.value ? h('p', { class: 'py-8 text-center text-slate-500', role: 'status' }, t('loading')) : loadError.value ? h('div', { class: 'space-y-4 rounded-2xl border border-rose-200 bg-rose-50 p-5', role: 'alert' }, [h('p', { class: 'text-rose-900' }, loadError.value), h('button', { class: 'inline-flex min-h-11 items-center gap-2 rounded-xl bg-purple-800 px-4 py-2 font-bold text-white', type: 'button', onClick: loadTree }, t('retry'))]) : renderReview())
+                    : workspaceMode.value === 'exam'
+                    ? renderExam()
                     : workspaceMode.value === 'reference'
                     ? h('section', { class: 'rounded-2xl border border-blue-100 bg-blue-50/60 p-4 text-sm leading-6 text-slate-700' }, [
                         h('p', { class: 'font-semibold text-slate-900' }, t('referenceIntro')),
@@ -1369,14 +1072,14 @@ const App = {
                                     }, [icon('home', 'size-4'), t('newInquiry')]) : null,
                                 ]),
                                 completedPath.value.length ? h('details', { class: 'mb-4 overflow-hidden rounded-2xl border border-purple-100 bg-purple-50/60' }, [
-                                    h('summary', { class: 'cursor-pointer list-none px-4 py-3 text-xs font-bold text-purple-900' }, t('mapProgress') + ': ' + completedPath.value.length + ' ' + t('mapVisits')),
+                                    h('summary', { class: 'cursor-pointer list-none px-4 py-3 text-xs font-bold text-purple-900' }, t('callProgress') + ': ' + completedPath.value.length + ' ' + t('step')),
                                     h(TransitionGroup, { name: 'tree-branch', tag: 'ol', class: 'm-0 space-y-2 px-4 pb-4' }, {
                                         default: () => completedPath.value.map(({ step, option }, index) => h('li', { class: 'flex items-start gap-2 text-xs leading-5', key: step.question + '-' + index }, [
                                             h('span', { class: 'inline-flex size-5 shrink-0 items-center justify-center rounded-full bg-white font-bold text-purple-800' }, String(index + 1)),
                                             h('span', { class: 'text-slate-700' }, [h('span', { class: 'font-semibold' }, step.question), h('span', { class: 'mx-1 text-purple-700' }, '→'), h('span', { class: 'font-bold text-purple-900' }, option.label)]),
                                         ])),
                                     }),
-                                    h('p', { class: 'm-0 border-t border-purple-100 px-4 py-2 text-xs text-purple-900' }, t('mapNext') + ': ' + currentStep.value.question),
+                                    h('p', { class: 'm-0 border-t border-purple-100 px-4 py-2 text-xs text-purple-900' }, t('callNext') + ': ' + currentStep.value.question),
                                 ]) : null,
                                 h('div', { class: 'question-panel mb-5 rounded-2xl border border-blue-100 bg-blue-50/70 px-4 py-4 sm:px-5 sm:py-5' }, [
                                     h('h2', { class: 'current-question text-xl font-bold leading-8 text-gray-900 sm:text-2xl sm:leading-9' }, currentStep.value.question),
@@ -1622,7 +1325,7 @@ const App = {
                     ]),
                     h('p', { class: 'mb-4 text-sm leading-6 text-slate-600' }, language.value === 'ar' ? 'اختار الأداة مباشرة من أي خطوة في المكالمة.' : 'Open a support tool directly from any call step.'),
                     h('div', { class: 'grid grid-cols-2 gap-2 sm:grid-cols-4' }, [
-                        ...[['sla', t('quickSla'), 'clock'], ['codes', t('quickCodes'), 'ticket'], ['packages', t('quickPackages'), 'search'], ['change', t('quickChangePackage'), 'ticket'], ['review', t('reviewMode'), 'grid'], ['reference', t('openReference'), 'search'], ['problem', t('quickProblem'), 'alert'], ['inquiry', t('quickInquiry'), 'chat'], ['request', t('quickRequest'), 'ticket'], ['billing', t('quickBilling'), 'search'], ['complaint', t('quickComplaint'), 'chat']].map(([key, label, iconName]) => h('button', {
+                        ...[['sla', t('quickSla'), 'clock'], ['codes', t('quickCodes'), 'ticket'], ['packages', t('quickPackages'), 'search'], ['change', t('quickChangePackage'), 'ticket'], ['exam', t('examMode'), 'question'], ['reference', t('openReference'), 'search'], ['problem', t('quickProblem'), 'alert'], ['inquiry', t('quickInquiry'), 'chat'], ['request', t('quickRequest'), 'ticket'], ['billing', t('quickBilling'), 'search'], ['complaint', t('quickComplaint'), 'chat']].map(([key, label, iconName]) => h('button', {
                             class: 'app-control inline-flex min-h-20 flex-col items-center justify-center gap-2 rounded-2xl border px-3 py-3 text-center text-sm font-bold transition hover:border-blue-300 hover:bg-blue-50 active:scale-[0.98]',
                             type: 'button', onClick: () => openQuickTool(key),
                         }, [icon(iconName, 'size-5 text-blue-700'), label])),

@@ -23,6 +23,8 @@ This is a source map for the local training set in `we data/`. The OCR files are
 | `exam.pdf` | Mixed knowledge checks across the training material | Used only as a cross-check, not as an independent procedure or source of truth. |
 | `second  quize.pdf` | Voice Down and ticket-update questions | Cross-check only; the applicable IU/TTS update controls actual follow-up. |
 | `third quiz .pdf` | Package changes, phone-number changes and SLA questions | Cross-check only; do not use an exam answer instead of the current system. |
+| `final review 1.pdf`–`final review 4.pdf` | Scored pre-assessment questions 1–80: physical/logical cases, escalations, requests, tools, and account handling | Main source for the 28 bilingual multiple-choice questions, correct answers, and explanations in the exam section. Values that can change, especially SLAs and eligibility, are marked for live verification. |
+| `revewi a.pdf`, `revewi b.pdf`, `revewi c.pdf`, `revewi e.pdf` | Overlapping pre-assessment question blocks covering the same training topics | OCR cross-checks for the question bank; repeated questions are not duplicated. Training answers remain study aids, not current policy. |
 | `SLA.pdf` | Training SLA tables for NOC, Logical Instability, Slowness, BLQ and other cases | SLA references are shown with verification notes. Separate agent follow-up from the timeframe promised to the customer; read the exact TT/TTS SLA before promising it. |
 | `iu update.pdf` | IU Physical Instability and Voice Down/overlapping updates | Use the latest IU ticket status and current callback/update instructions; do not assume every physical case has the same customer promise. |
 | `noc update.pdf` | NOC Logical Instability, utilization scripts and CPE follow-up | Reflected in Logical end actions and source notes; current outage/update status and ticket instructions override training examples. |
@@ -34,6 +36,8 @@ This is a source map for the local training set in `we data/`. The OCR files are
 - Intermediate Physical findings stop the Logical path and direct the CCA back to the Physical flow, avoiding a loop between the two trees.
 - Ticket/IR numbers are placeholders for the actual number returned by the system. The customer script distinguishes the employee's follow-up SLA from the customer's official ticket timeframe.
 - Search now recognizes Arabic/English variants for Logical Instability, BLQ, Gaming, Ping, and latency. The reference mode searches the local support tree and does not claim to be a generative AI or a live-system lookup.
+- The exam section presents one multiple-choice question at a time. Selecting an option immediately shows whether it is correct, the correct answer, and an explanation; the final screen shows the score and allows a restart.
+- The exam section loads independently of the decision tree so a tree-loading error cannot block the exam.
 - Each guided step shows separate "how to check" and "what to do" guidance; where a step has no case-specific check text yet, the UI gives a safe instruction to verify the named customer/system result and avoid guessing.
 - The main screen has quick searchable SLA, close-code, and package panels. Package rows are searchable by published name, speed, quota, and other table fields; the source data does not define packages by number of household members, so the UI does not invent that mapping.
 
@@ -42,3 +46,4 @@ This is a source map for the local training set in `we data/`. The OCR files are
 - Several training PDFs show legacy screens, values, categories, or procedures. In particular, the 3-minute Multiple Login definition conflicts within `day13.pdf`; older ADSL/VDSL speed thresholds in `day 9.pdf` are not current policy by themselves.
 - A PDF review cannot establish that every procedure is still active or prove that every possible company case is represented. Validate changed policies with the current Wiki/TTS and the process owner before using them live.
 - The PDFs and OCR are local source material and are not included in GitHub. This file records the review map, not a claim that every screenshot or quiz item is an executable workflow.
+- Exam pages are scans, so the text was read with local OCR and checked against the overlapping review copies. Image-based wording and answers can still contain recognition errors; the question bank preserves only clear items and does not elevate quiz answers over current procedures.

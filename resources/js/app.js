@@ -453,11 +453,8 @@ const App = {
             selectedProduct.value = { row, sectionIndex, rowIndex };
         }
 
-        const quickSearchResults = computed(() => {
-            const query = normalizeSearch(quickSearch.value, language.value);
-            if (!query || !tree.value) return [];
-            const groups = searchGroups(query, language.value);
-            if (!groups.length) return [];
+        const quickSearchIndex = computed(() => {
+            if (!tree.value) return [];
             const entries = [];
             for (const [id, step] of Object.entries(tree.value)) {
                 if (id === 'start' || id === 'operations_guide' || id === 'tools_hub' || !step || typeof step !== 'object') continue;
@@ -465,9 +462,10 @@ const App = {
                 const catalogText = catalog ? [catalog.title, ...catalog.monthly_rows.map((row) => `${row.speed} ${row.quota} ${row.price}`), ...catalog.yearly_rows.map((row) => `${row.plan} ${row.quota} ${row.price}`), ...catalog.addon_rows.map((row) => `${row.kind} ${row.quota} ${row.price} ${row.term}`)].join(' ') : '';
                 const productCatalog = step.product_catalog;
                 const productCatalogText = productCatalog ? [productCatalog.title, productCatalog.scope_note, ...productCatalog.sections.flatMap((section) => [section.title, ...section.rows.flatMap((row) => Object.values(row))]), ...productCatalog.notes].join(' ') : '';
-                const content = [step.question, step.customer_prompt, step.action, step.customer_script, step.reference_guidance, step.source_reference, step.clear_description, step.sla, catalogText, productCatalogText,
+                const body = [step.question, step.customer_prompt, step.action, step.customer_script, step.reference_guidance, step.source_reference, step.clear_description, step.sla, catalogText, productCatalogText,
                     ...(step.options ?? []).map((option) => option.label)].filter(Boolean).join(' ');
-                entries.push({ kind: 'step', id, title: step.question, body: content, source: step.source_reference || (language.value === 'ar' ? 'شجرة الدعم' : 'Support tree') });
+                const title = step.question || id;
+                entries.push({ kind: 'step', id, title, body, source: step.source_reference || (language.value === 'ar' ? 'شجرة الدعم' : 'Support tree') });
             }
             for (const row of tree.value.operations_guide?.closure_codes ?? []) {
                 entries.push({ kind: 'code', id: row.code, title: `${t('codeLabel')} ${row.code}`, body: row.reason, source: language.value === 'ar' ? 'جدول تدريب الإغلاق' : 'Training close-code table' });
@@ -475,14 +473,24 @@ const App = {
             for (const fact of QUICK_FACTS[language.value]) {
                 entries.push({ kind: 'fact', id: fact.id, title: fact.title, body: fact.body, terms: fact.terms, template: fact.template, source: fact.source });
             }
-            return entries.map((entry) => {
-                const title = normalizeSearch(entry.title, language.value);
-                const searchable = normalizeSearch(`${entry.title} ${entry.body} ${entry.terms ?? ''}`, language.value);
+            return entries.map((entry) => ({
+                ...entry,
+                titleSearch: normalizeSearch(entry.title, language.value),
+                searchable: normalizeSearch(`${entry.title} ${entry.body} ${entry.terms ?? ''}`, language.value),
+            }));
+        });
+
+        const quickSearchResults = computed(() => {
+            const query = normalizeSearch(quickSearch.value, language.value);
+            if (!query) return [];
+            const groups = searchGroups(query, language.value);
+            if (!groups.length) return [];
+            return quickSearchIndex.value.map((entry) => {
                 let score = 0;
                 let matched = 0;
                 for (const group of groups) {
-                    const titleHit = group.find((term) => title.includes(term));
-                    const bodyHit = group.find((term) => searchable.includes(term));
+                    const titleHit = group.find((term) => entry.titleSearch.includes(term));
+                    const bodyHit = group.find((term) => entry.searchable.includes(term));
                     if (titleHit || bodyHit) {
                         matched += 1;
                         score += titleHit ? (titleHit === group[0] ? 4 : 2.5) : (bodyHit === group[0] ? 1.6 : 1);
@@ -967,6 +975,10 @@ const App = {
                 ]);
             }
 
+            const usedQuestionIds = new Set(examUsedQuestionIds.value);
+            const remainingQuestionCount = examQuestions.filter((question, questionId) => !usedQuestionIds.has(questionId)
+                && (examMode.value === 'mixed'
+                    || (examMode.value === 'true-false' ? isTrueFalseQuestion(question) : !isTrueFalseQuestion(question)))).length;
             const batchQuestion = examBatch.value[index];
             const trueFalse = isTrueFalseQuestion(batchQuestion);
             const selected = examSelectedIndex.value;
@@ -988,7 +1000,7 @@ const App = {
                 ]),
                     h('div', { class: 'exam-round-meta' }, [
                     h('span', { class: 'exam-round-label' }, isArabic ? `المجموعة ${examBatchNumber.value}` : `Set ${examBatchNumber.value}`),
-                    h('span', { class: 'exam-round-label' }, isArabic ? `باقي ${examQuestions.length - examUsedQuestionIds.value.length} سؤال` : `${examQuestions.length - examUsedQuestionIds.value.length} questions left`),
+                    h('span', { class: 'exam-round-label' }, isArabic ? `باقي ${remainingQuestionCount} سؤال` : `${remainingQuestionCount} questions left`),
                     h('span', { class: 'exam-round-label exam-kind-label' }, trueFalse ? (isArabic ? 'صح / غلط' : 'TRUE / FALSE') : (isArabic ? 'اختيار من متعدد' : 'MULTIPLE CHOICE')),
                 ]),
                 h('div', { class: 'exam-progress-track', 'aria-label': `${progress}%` }, [h('span', { style: { width: `${progress}%` } })]),
@@ -1034,13 +1046,14 @@ const App = {
                     h('p', [h('b', isArabic ? 'ليه؟ ' : 'Why? '), batchQuestion.explanation?.[language.value] || (isArabic
                         ? 'ملف المصدر لا يوضح سبب الإجابة؛ المعروض هو مفتاح الإجابة فقط.'
                         : 'The source does not explain why; this is the answer key only.')]),
+                        batchQuestion.sourceNote?.[language.value] ? h('small', { class: 'exam-source-note' }, batchQuestion.sourceNote[language.value]) : null,
                         batchQuestion.verifyLive ? h('small', verifyNote) : null,
                     ]) : null,
                 ]),
                 h('footer', { class: 'exam-footer' }, [
                     h('span', isArabic
-                        ? 'كل جولة فيها ٢٠ سؤالًا من أنواع مختلفة. إجابة كل سؤال تظهر فورًا.'
-                        : 'Each round has 20 mixed question types. Feedback appears after every answer.'),
+                        ? (examMode.value === 'mixed' ? 'كل جولة متنوعة؛ تظهر الإجابة والشرح بعد كل اختيار.' : 'الجولة تعرض النوع الذي اخترته؛ تظهر الإجابة والشرح بعد كل اختيار.')
+                        : (examMode.value === 'mixed' ? 'Mixed round. The answer and explanation appear after each choice.' : 'This round uses your selected question type. Feedback appears after each choice.')),
                     answered ? h('button', {
                         class: 'exam-primary-button',
                         type: 'button',

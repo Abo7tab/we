@@ -1,6 +1,7 @@
 import './bootstrap';
 import { computed, createApp, h, onMounted, nextTick, ref, Transition, TransitionGroup } from 'vue';
 import examQuestions from './exam-questions.json';
+import callScenarios from './call-scenarios.json';
 
 const MAX_STEPS_PER_CALL = 100;
 const DEFAULT_TREE = 'support';
@@ -21,6 +22,7 @@ function icon(name, className = 'size-5') {
             h('circle', { cx: '12', cy: '12', r: '9' }),
             h('path', { d: 'M9.5 9a2.5 2.5 0 1 1 4.2 1.8c-1.1 1-1.7 1.4-1.7 2.7M12 17h.01' }),
         ],
+        check: [h('path', { d: 'm5 12 4 4L19 6' })],
         arrow: [h('path', { d: 'M19 12H5m7 7-7-7 7-7' })],
         back: [h('path', { d: 'm15 18-6-6 6-6' })],
         home: [
@@ -219,8 +221,9 @@ const COPY = {
         slaSortBy: 'ترتيب حسب', slaSortDuration: 'مدة المهلة', slaSortCase: 'اسم الحالة', slaAscending: 'تصاعدي', slaDescending: 'تنازلي', slaCaseColumn: 'الحالة', slaDurationColumn: 'المهلة',
         quickChangePackage: 'تغيير باقة',
         quickAccess: 'الوصول السريع', closeDrawer: 'إغلاق',
-        homeEyebrow: 'مساحة دعم فني تفاعلية', homeTitleA: 'كل مكالمة لها ', homeTitleB: 'مسار واضح.', homeLead: 'اختار مساحة العمل المناسبة: ساعد العميل أثناء المكالمة أو اختبر معلوماتك في الامتحان.', homeSearch: 'ابحث عن عرض أو مشكلة أو خطوة دعم…', homeRoomsLabel: 'اختر وجهتك', homeRoomsTitle: 'ادخل مساحة العمل', homeRoomsHint: 'كل مساحة لها طريقة مختلفة للتعامل مع نفس قاعدة المعرفة.', homeLive: 'وقت المكالمة', homeLiveText: 'خطوات عملية واضحة: اسأل، افحص في النظام، ثم أكمل حسب النتيجة.', homeExam: 'امتحان تدريبي', homeExamText: '285 سؤال اختيار من متعدد من ملفات الامتحانات، مع الإجابة والشرح بعد كل إجابة.', homeEnter: 'ابدأ الامتحان', homeSlaHint: 'ابحث في المهل ورتبها', homeCodesHint: 'ابحث بالكود وشوف الإجراء', homePackagesHint: 'اعثر على الباقة بسرعة',
+        homeEyebrow: 'مساحة دعم فني تفاعلية', homeTitleA: 'كل مكالمة لها ', homeTitleB: 'مسار واضح.', homeLead: 'اختار مساحة العمل: مساعد المكالمات، امتحان على دفعات، أو حالات عملية للتدريب على المواقف.', homeSearch: 'ابحث عن عرض أو مشكلة أو خطوة دعم…', homeRoomsLabel: 'اختر وجهتك', homeRoomsTitle: 'ادخل مساحة العمل', homeRoomsHint: 'كل مساحة لها طريقة مختلفة للتعامل مع نفس قاعدة المعرفة.', homeLive: 'مساعد المكالمات', homeLiveText: 'خطوات عملية واضحة: اسأل، افحص في النظام، ثم أكمل حسب النتيجة.', homeExam: 'امتحان تدريبي', homeExamText: '285 سؤالًا؛ حل 20 سؤالًا في الجولة، ثم ابدأ مجموعة جديدة.', caseSimulator: 'حالات عملية', caseSimulatorText: 'مواقف عملاء واقعية. اتبع مسار الفحص وشاهد الإجراء والحل من دليل المكالمات.', homeEnter: 'ابدأ الامتحان', homeSlaHint: 'ابحث في المهل ورتبها', homeCodesHint: 'ابحث بالكود وشوف الإجراء', homePackagesHint: 'اعثر على الباقة بسرعة',
         guidedMode: 'مساعد المكالمة', callProgress: 'المسار الحالي', callNext: 'الخطوة التالية',
+        simulatorMode: 'حالات عملية', simulatorTitle: 'محاكي المكالمات', simulatorIntro: 'اختار موقفًا وامشِ فيه خطوة بخطوة. الأسئلة والإجراءات مأخوذة من مسارات مساعد المكالمات.', simulatorStart: 'ابدأ الحالة', simulatorBack: 'كل الحالات', simulatorCustomer: 'العميل يقول', simulatorGoal: 'هدف التدريب', simulatorStep: 'محاكاة مكالمة', simulatorDone: 'وصلت لنهاية المسار. راجع الإجراء ونص العميل، ثم جرّب موقفًا آخر.', simulatorRestart: 'أعد الحالة', simulatorSource: 'المسار المستخدم',
         quickProblem: 'تشخيص مشكلة', quickInquiry: 'استفسار خدمة', quickRequest: 'طلب أو متابعة تركيب', quickBilling: 'فاتورة أو سداد', quickComplaint: 'شكوى أو تصعيد',
         openReference: 'مرجع الدعم', returnGuided: 'العودة لمساعد المكالمة',
         slaSearchPlaceholder: 'الحالة أو رقم الساعات/الأيام…', packageSearchPlaceholder: 'اسم الباقة أو السرعة أو السعة…', packagesNote: 'البحث يشمل السعة والسرعة والاسم والأسعار الموجودة في الجداول. عدد الأشخاص ليس تصنيفًا رسميًا في البيانات؛ استخدم الاستهلاك وعدد الأجهزة ولا تفترض سعة مناسبة من عدد الأفراد وحده.',
@@ -253,8 +256,9 @@ const COPY = {
         slaSortBy: 'Sort by', slaSortDuration: 'SLA duration', slaSortCase: 'Case name', slaAscending: 'Ascending', slaDescending: 'Descending', slaCaseColumn: 'Case', slaDurationColumn: 'SLA',
         quickChangePackage: 'Change package',
         quickAccess: 'Quick access', closeDrawer: 'Close',
-        homeEyebrow: 'Interactive support space', homeTitleA: 'A clear path for ', homeTitleB: 'every call.', homeLead: 'Choose a workspace: assist during a customer call or test your knowledge in the exam.', homeSearch: 'Search a service, issue, or support step…', homeRoomsLabel: 'Choose your destination', homeRoomsTitle: 'Enter a workspace', homeRoomsHint: 'Each space gives you a different way to use the same support knowledge.', homeLive: 'Live call', homeLiveText: 'Clear steps: ask, check the system, and continue based on what you find.', homeExam: 'Exam', homeExamText: '285 multiple-choice questions from the exam files, with an answer and explanation after each response.', homeEnter: 'Start exam', homeSlaHint: 'Search and sort response times', homeCodesHint: 'Find a code and see what to do', homePackagesHint: 'Find a package quickly',
+        homeEyebrow: 'Interactive support space', homeTitleA: 'A clear path for ', homeTitleB: 'every call.', homeLead: 'Choose a workspace: call assistant, 20-question exam rounds, or practical call simulations.', homeSearch: 'Search a service, issue, or support step…', homeRoomsLabel: 'Choose your destination', homeRoomsTitle: 'Enter a workspace', homeRoomsHint: 'Each workspace uses the same support knowledge in a different way.', homeLive: 'Call assistant', homeLiveText: 'Clear steps: ask, check the system, and continue based on what you find.', homeExam: 'Practice exam', homeExamText: 'A pool of 285 questions. Answer 20 per round, then start another set.', caseSimulator: 'Practical cases', caseSimulatorText: 'Realistic customer situations. Follow the checks and see the action from the call guide.', homeEnter: 'Start exam', homeSlaHint: 'Search and sort response times', homeCodesHint: 'Find a code and see what to do', homePackagesHint: 'Find a package quickly',
         guidedMode: 'Call assistant', callProgress: 'Call path', callNext: 'Next step',
+        simulatorMode: 'Practical cases', simulatorTitle: 'Call simulator', simulatorIntro: 'Choose a customer situation and work through it step by step using the call assistant procedure.', simulatorStart: 'Start case', simulatorBack: 'All cases', simulatorCustomer: 'Customer says', simulatorGoal: 'Training goal', simulatorStep: 'Call simulation', simulatorDone: 'You reached the end of this path. Review the action and customer script, then try another case.', simulatorRestart: 'Restart case', simulatorSource: 'Procedure path',
         quickProblem: 'Troubleshoot a problem', quickInquiry: 'Service inquiry', quickRequest: 'Installation request or follow-up', quickBilling: 'Bill or payment', quickComplaint: 'Complaint or escalation',
         openReference: 'Support reference', returnGuided: 'Return to call guide',
         slaSearchPlaceholder: 'Case or hours/days…', packageSearchPlaceholder: 'Package name, speed, or quota…', packagesNote: 'Search covers the names, speeds, quotas, and prices in the available tables. Number of people is not an official package field; use actual usage and device count, and do not infer a quota from household size alone.',
@@ -294,7 +298,13 @@ const App = {
         const packageSearch = ref('');
         const quickDrawerOpen = ref(false);
         const workspaceMode = ref('guided');
+        const simulationCase = ref(null);
         const examQuestionIndex = ref(0);
+        const examBatch = ref([]);
+        const examUsedQuestionIds = ref([]);
+        const examBatchNumber = ref(0);
+        const examTotalCorrect = ref(0);
+        const examTotalAnswered = ref(0);
         const examSelectedIndex = ref(null);
         const examAnswers = ref([]);
         const packagePeriod = ref('monthly');
@@ -311,7 +321,7 @@ const App = {
             return tree.value[currentStepId.value] ?? null;
         });
         const examScore = computed(() => examAnswers.value.reduce((score, answer, index) =>
-            score + (answer === examQuestions[index]?.correctIndex ? 1 : 0), 0));
+            score + (answer === examBatch.value[index]?.correctIndex ? 1 : 0), 0));
         const completedPath = computed(() => pathSelections.value.map(({ stepId, optionIndex }) => ({
             step: tree.value?.[stepId],
             option: tree.value?.[stepId]?.options?.[optionIndex],
@@ -517,6 +527,7 @@ const App = {
         }
 
         function applyPathToGuide(path, stepId) {
+            simulationCase.value = null;
             currentStepId.value = stepId;
             history.value = path.map((entry) => entry.stepId);
             pathSelections.value = path.map(({ stepId: parentId, optionIndex }) => ({ stepId: parentId, optionIndex }));
@@ -532,10 +543,55 @@ const App = {
         function enterExam() {
             quickToolsOpen.value = '';
             quickDrawerOpen.value = false;
+            simulationCase.value = null;
             examQuestionIndex.value = 0;
             examSelectedIndex.value = null;
             examAnswers.value = [];
+            examUsedQuestionIds.value = [];
+            examBatchNumber.value = 0;
+            examTotalCorrect.value = 0;
+            examTotalAnswered.value = 0;
+            startNextExamBatch();
             workspaceMode.value = 'exam';
+        }
+
+        function isTrueFalseQuestion(question) {
+            const options = (question?.options ?? []).map((option) => String(option.en ?? option.ar ?? '').trim().toLowerCase());
+            return options.length === 2 && options.includes('true') && options.includes('false');
+        }
+
+        function shuffled(items) {
+            const result = [...items];
+            for (let index = result.length - 1; index > 0; index -= 1) {
+                const swapIndex = Math.floor(Math.random() * (index + 1));
+                [result[index], result[swapIndex]] = [result[swapIndex], result[index]];
+            }
+            return result;
+        }
+
+        function startNextExamBatch() {
+            const used = new Set(examUsedQuestionIds.value);
+            const available = examQuestions.map((question, id) => ({ question, id })).filter(({ id }) => !used.has(id));
+            const trueFalse = shuffled(available.filter(({ question }) => isTrueFalseQuestion(question)));
+            const multipleChoice = shuffled(available.filter(({ question }) => !isTrueFalseQuestion(question)));
+            const selected = [
+                ...trueFalse.slice(0, 5),
+                ...multipleChoice.slice(0, 15),
+            ];
+            if (selected.length < 20) {
+                const selectedIds = new Set(selected.map(({ id }) => id));
+                selected.push(...shuffled(available.filter(({ id }) => !selectedIds.has(id))).slice(0, 20 - selected.length));
+            }
+            examBatch.value = shuffled(selected).map(({ question, id }) => ({ ...question, bankId: id }));
+            examUsedQuestionIds.value = [...examUsedQuestionIds.value, ...selected.map(({ id }) => id)];
+            examBatchNumber.value += 1;
+            examQuestionIndex.value = 0;
+            examSelectedIndex.value = null;
+            examAnswers.value = [];
+        }
+
+        function hasMoreExamQuestions() {
+            return examUsedQuestionIds.value.length < examQuestions.length;
         }
 
         function chooseExamAnswer(optionIndex) {
@@ -545,19 +601,73 @@ const App = {
         }
 
         function advanceExam() {
-            examQuestionIndex.value += 1;
-            examSelectedIndex.value = null;
+            if (examQuestionIndex.value + 1 < examBatch.value.length) {
+                examQuestionIndex.value += 1;
+                examSelectedIndex.value = null;
+                return;
+            }
+            examTotalCorrect.value += examScore.value;
+            examTotalAnswered.value += examBatch.value.length;
+            examQuestionIndex.value = examBatch.value.length;
+        }
+
+        function continueExam() {
+            if (!hasMoreExamQuestions()) return;
+            startNextExamBatch();
         }
 
         function restartExam() {
             examQuestionIndex.value = 0;
-            examSelectedIndex.value = null;
-            examAnswers.value = [];
+            examBatch.value = [];
+            examUsedQuestionIds.value = [];
+            examBatchNumber.value = 0;
+            examTotalCorrect.value = 0;
+            examTotalAnswered.value = 0;
+            startNextExamBatch();
+        }
+
+        function enterSimulator() {
+            quickToolsOpen.value = '';
+            quickDrawerOpen.value = false;
+            simulationCase.value = null;
+            workspaceMode.value = 'simulator';
+        }
+
+        function startScenario(scenario) {
+            if (!tree.value?.[scenario.startStepId]) {
+                notice.value = t('missing');
+                return;
+            }
+            simulationCase.value = scenario;
+            currentStepId.value = scenario.startStepId;
+            history.value = [];
+            pathSelections.value = [];
+            resetPackageControls();
+            commentDetails.value = '';
+            commentRefType.value = 'none';
+            commentRefNumber.value = '';
+            quickSearch.value = '';
+            quickToolsOpen.value = '';
+            notice.value = '';
+            workspaceMode.value = 'simulator';
+            afterStepChange();
+        }
+
+        function showScenarioList() {
+            simulationCase.value = null;
+            history.value = [];
+            pathSelections.value = [];
+            workspaceMode.value = 'simulator';
+        }
+
+        function restartScenario() {
+            if (simulationCase.value) startScenario(simulationCase.value);
         }
 
         function goHome() {
             quickToolsOpen.value = '';
             quickDrawerOpen.value = false;
+            simulationCase.value = null;
             workspaceMode.value = 'guided';
             if (tree.value?.start) {
                 currentStepId.value = tree.value.start;
@@ -570,6 +680,13 @@ const App = {
 
         function enterGuided() {
             quickToolsOpen.value = '';
+            simulationCase.value = null;
+            if (tree.value?.start) {
+                currentStepId.value = tree.value.start;
+                history.value = [];
+                pathSelections.value = [];
+                resetPackageControls();
+            }
             workspaceMode.value = 'guided';
             afterStepChange();
         }
@@ -578,6 +695,7 @@ const App = {
             const rooms = [
                 { id: 'guided', icon: 'chat', number: '01', eyebrow: t('homeLive'), title: t('guidedMode'), detail: t('homeLiveText'), action: enterGuided, className: 'portal-live' },
                 { id: 'exam', icon: 'grid', number: '02', eyebrow: t('homeExam'), title: t('examMode'), detail: t('homeExamText'), action: enterExam, className: 'portal-exam' },
+                { id: 'simulator', icon: 'question', number: '03', eyebrow: t('simulatorMode'), title: t('caseSimulator'), detail: t('caseSimulatorText'), action: enterSimulator, className: 'portal-simulator' },
             ];
             const searchResults = quickSearch.value.trim() ? quickSearchResults.value.slice(0, 4).map((result, index) => h('button', {
                 class: 'home-search-result', type: 'button', key: result.id || result.title, onClick: () => { if (result.kind === 'step') jumpToStep(result.id); else if (result.kind === 'code') { codeSearch.value = String(result.id); openQuickTool('codes'); } else { workspaceMode.value = 'reference'; quickSearch.value = result.title; } },
@@ -628,59 +746,107 @@ const App = {
             ]);
         }
 
+        function renderSimulator() {
+            const isArabic = language.value === 'ar';
+            return h('section', { class: 'case-simulator' }, [
+                h('header', { class: 'case-simulator-hero' }, [
+                    h('div', [
+                        h('span', { class: 'exam-kicker' }, isArabic ? 'تدريب بالممارسة' : 'PRACTICE BY DOING'),
+                        h('h2', { class: 'exam-title' }, t('simulatorTitle')),
+                        h('p', { class: 'exam-intro' }, t('simulatorIntro')),
+                    ]),
+                    h('span', { class: 'case-count-pill' }, `${callScenarios.length} ${isArabic ? 'مواقف' : 'cases'}`),
+                ]),
+                h('div', { class: 'case-scenario-grid' }, callScenarios.map((scenario) => h('article', { class: 'case-scenario-card', key: scenario.id }, [
+                    h('div', { class: 'case-scenario-icon' }, [icon(scenario.id.includes('dsl') || scenario.id.includes('internet') ? 'alert' : 'chat', 'size-5')]),
+                    h('h3', scenario.title[language.value]),
+                    h('p', { class: 'case-customer-quote' }, [h('strong', `${t('simulatorCustomer')}: `), scenario.customer[language.value]]),
+                    h('p', { class: 'case-scenario-goal' }, [h('strong', `${t('simulatorGoal')}: `), scenario.goal[language.value]]),
+                    scenario.image ? h('img', { class: 'case-scenario-image', src: scenario.image, alt: scenario.imageAlt?.[language.value] || scenario.title[language.value], loading: 'lazy' }) : null,
+                    h('button', { class: 'exam-primary-button case-start-button', type: 'button', onClick: () => startScenario(scenario) }, [t('simulatorStart'), icon('arrow', 'size-4')]),
+                ]))),
+                h('p', { class: 'case-simulator-note' }, isArabic
+                    ? 'المواقف تستخدم مسارات الدليل نفسه. لا تدخل بيانات عميل حقيقي؛ المهلات والإجراءات المتغيرة تُراجع من النظام الحالي.'
+                    : 'Cases use the same support guide. Do not enter real customer data; verify changing SLAs and procedures in the current system.'),
+            ]);
+        }
+
         function renderExam() {
-            const total = examQuestions.length;
+            const total = examBatch.value.length;
             const index = examQuestionIndex.value;
             const isArabic = language.value === 'ar';
+            const batchScore = examScore.value;
+            const percent = total ? Math.round((batchScore / total) * 100) : 0;
             const verifyNote = isArabic
                 ? 'معلومة تدريبية متغيرة: راجع الـSLA أو الإجراء الحالي في النظام قبل استخدامه مع عميل.'
                 : 'Time-sensitive training item: check the current SLA or procedure before using it with a customer.';
 
             if (index >= total) {
+                const moreQuestions = hasMoreExamQuestions();
+                const nextBatchSize = Math.min(20, examQuestions.length - examUsedQuestionIds.value.length);
                 return h('section', { class: 'exam-panel exam-results' }, [
-                    h('span', { class: 'exam-kicker' }, isArabic ? 'انتهى الامتحان' : 'EXAM COMPLETE'),
-                    h('h2', { class: 'exam-title' }, isArabic ? 'نتيجتك' : 'Your result'),
-                    h('p', { class: 'exam-score' }, `${examScore.value} / ${total}`),
+                    h('div', { class: 'exam-result-mark' }, [icon(percent >= 70 ? 'check' : 'question', 'size-7')]),
+                    h('span', { class: 'exam-kicker' }, isArabic ? `الجولة ${examBatchNumber.value} اكتملت` : `ROUND ${examBatchNumber.value} COMPLETE`),
+                    h('h2', { class: 'exam-title' }, isArabic ? 'نتيجة الجولة' : 'Round result'),
+                    h('p', { class: 'exam-score' }, `${batchScore} / ${total}`),
+                    h('p', { class: 'exam-percentage' }, `${percent}%`),
                     h('p', { class: 'exam-intro' }, isArabic
-                        ? `أجبت إجابة صحيحة عن ${examScore.value} من ${total} سؤالًا.`
-                        : `You answered ${examScore.value} of ${total} questions correctly.`),
+                        ? `أجبت صح عن ${batchScore} من ${total} سؤال. ${examTotalAnswered.value ? `إجمالي نتيجتك حتى الآن ${examTotalCorrect.value} من ${examTotalAnswered.value}.` : ''}`
+                        : `You got ${batchScore} of ${total} correct. ${examTotalAnswered.value ? `Overall so far: ${examTotalCorrect.value} of ${examTotalAnswered.value}.` : ''}`),
                     h('div', { class: 'exam-result-actions' }, [
+                        moreQuestions ? h('button', { class: 'exam-primary-button', type: 'button', onClick: continueExam }, isArabic ? `ابدأ مجموعة جديدة · ${nextBatchSize} سؤال` : `Start next set · ${nextBatchSize} questions`) : null,
                         h('button', { class: 'exam-primary-button', type: 'button', onClick: restartExam }, isArabic ? 'أعد الامتحان' : 'Try again'),
                         h('button', { class: 'exam-secondary-button', type: 'button', onClick: () => { workspaceMode.value = 'home'; } }, isArabic ? 'العودة للرئيسية' : 'Back to home'),
                     ]),
+                    !moreQuestions ? h('p', { class: 'exam-intro' }, isArabic ? 'خلصت كل الأسئلة المتاحة؛ ابدأ من جديد لو حابب تعيد التدريب.' : 'You have answered every available question. Restart to practice again.') : null,
                 ]);
             }
 
-            const question = examQuestions[index];
+            const batchQuestion = examBatch.value[index];
+            const trueFalse = isTrueFalseQuestion(batchQuestion);
             const selected = examSelectedIndex.value;
             const answered = selected !== null;
-            const isCorrect = answered && selected === question.correctIndex;
-            const progress = Math.round(((index + 1) / total) * 100);
+            const isCorrect = answered && selected === batchQuestion.correctIndex;
+            const progress = Math.round(((index + 1) / Math.max(total, 1)) * 100);
             const optionLetters = isArabic ? ['أ', 'ب', 'ج', 'د'] : ['A', 'B', 'C', 'D'];
 
             return h('section', { class: 'exam-panel' }, [
                 h('header', { class: 'exam-heading' }, [
                     h('div', [
-                        h('span', { class: 'exam-kicker' }, isArabic ? 'امتحان تدريبي' : 'PRACTICE EXAM'),
+                        h('span', { class: 'exam-kicker' }, isArabic ? `الجولة ${examBatchNumber.value} · ${total} سؤال` : `ROUND ${examBatchNumber.value} · ${total} QUESTIONS`),
                         h('h2', { class: 'exam-title' }, isArabic ? 'امتحان تدريبي' : 'Practice exam'),
                         h('p', { class: 'exam-intro' }, isArabic
                             ? 'اختار إجابة واحدة؛ هتظهر الإجابة الصحيحة والشرح فورًا.'
                             : 'Choose one answer to see the correct answer and explanation immediately.'),
                     ]),
-                    h('span', { class: 'exam-counter' }, isArabic ? `السؤال ${index + 1} من ${total}` : `Question ${index + 1} of ${total}`),
+                    h('span', { class: 'exam-counter' }, isArabic ? `السؤال ${index + 1} / ${total}` : `Question ${index + 1} / ${total}`),
+                ]),
+                    h('div', { class: 'exam-round-meta' }, [
+                    h('span', { class: 'exam-round-label' }, isArabic ? `المجموعة ${examBatchNumber.value}` : `Set ${examBatchNumber.value}`),
+                    h('span', { class: 'exam-round-label' }, isArabic ? `باقي ${examQuestions.length - examUsedQuestionIds.value.length} سؤال` : `${examQuestions.length - examUsedQuestionIds.value.length} questions left`),
+                    h('span', { class: 'exam-round-label exam-kind-label' }, trueFalse ? (isArabic ? 'صح / غلط' : 'TRUE / FALSE') : (isArabic ? 'اختيار من متعدد' : 'MULTIPLE CHOICE')),
                 ]),
                 h('div', { class: 'exam-progress-track', 'aria-label': `${progress}%` }, [h('span', { style: { width: `${progress}%` } })]),
                 h('article', { class: 'exam-question-card' }, [
                     h('div', { class: 'exam-question-topic' }, [
-                        h('span', question.topic[language.value]),
-                        question.verifyLive ? h('span', isArabic ? 'تحقق من النظام' : 'Verify live') : null,
+                        h('span', batchQuestion.topic[language.value]),
+                        batchQuestion.verifyLive ? h('span', isArabic ? 'تحقق من النظام' : 'Verify live') : null,
                     ]),
-                    h('h3', question.question[language.value]),
-                    h('p', { class: 'exam-source' }, `${isArabic ? 'المصدر: ' : 'Source: '}${question.source}`),
-                    h('div', { class: 'exam-options', role: 'group', 'aria-label': question.question[language.value] }, question.options.map((option, optionIndex) => {
-                        const correctOption = answered && optionIndex === question.correctIndex;
+                    h('div', { class: 'exam-question-number' }, isArabic ? `سؤال ${index + 1}` : `QUESTION ${index + 1}`),
+                    h('h3', batchQuestion.question[language.value]),
+                    batchQuestion.image ? h('figure', { class: 'exam-question-figure' }, [
+                        h('img', { src: batchQuestion.image, alt: batchQuestion.imageAlt?.[language.value] || batchQuestion.question[language.value], loading: 'lazy' }),
+                        batchQuestion.imageCaption ? h('figcaption', batchQuestion.imageCaption[language.value]) : null,
+                    ]) : null,
+                    h('p', { class: 'exam-source' }, `${isArabic ? 'المصدر: ' : 'Source: '}${batchQuestion.source}`),
+                    h('div', { class: `exam-options ${trueFalse ? 'exam-options-binary' : ''}`, role: 'group', 'aria-label': batchQuestion.question[language.value] }, batchQuestion.options.map((option, optionIndex) => {
+                        const correctOption = answered && optionIndex === batchQuestion.correctIndex;
                         const wrongSelection = answered && optionIndex === selected && !isCorrect;
                         const classes = ['exam-choice', correctOption ? 'is-correct' : '', wrongSelection ? 'is-wrong' : '', answered && optionIndex === selected ? 'is-selected' : ''].filter(Boolean).join(' ');
+                        const optionEnglish = String(option.en ?? '').trim().toLowerCase();
+                        const displayOption = isArabic && trueFalse
+                            ? (optionEnglish === 'true' ? 'صح' : 'غلط')
+                            : option[language.value];
                         return h('button', {
                             class: classes,
                             type: 'button',
@@ -688,8 +854,8 @@ const App = {
                             'aria-pressed': optionIndex === selected,
                             onClick: () => chooseExamAnswer(optionIndex),
                         }, [
-                            h('span', { class: 'exam-choice-letter' }, optionLetters[optionIndex]),
-                            h('span', option[language.value]),
+                            h('span', { class: 'exam-choice-letter' }, trueFalse ? (optionEnglish === 'true' ? '✓' : '×') : (optionLetters[optionIndex] || String(optionIndex + 1))),
+                            h('span', displayOption),
                         ]);
                     })),
                     answered ? h('aside', {
@@ -699,15 +865,15 @@ const App = {
                         h('strong', isCorrect
                             ? (isArabic ? 'إجابة صحيحة' : 'Correct answer')
                             : (isArabic ? 'الإجابة غير صحيحة' : 'Not quite')),
-                        h('p', [h('b', isArabic ? 'الإجابة الصحيحة: ' : 'Correct answer: '), question.options[question.correctIndex][language.value]]),
-                        h('p', [h('b', isArabic ? 'الشرح: ' : 'Explanation: '), question.explanation[language.value]]),
-                        question.verifyLive ? h('small', verifyNote) : null,
+                        h('p', [h('b', isArabic ? 'الإجابة الصحيحة: ' : 'Correct answer: '), isArabic && trueFalse ? (batchQuestion.options[batchQuestion.correctIndex].en.toLowerCase() === 'true' ? 'صح' : 'غلط') : batchQuestion.options[batchQuestion.correctIndex][language.value]]),
+                        h('p', [h('b', isArabic ? 'الشرح: ' : 'Explanation: '), batchQuestion.explanation[language.value]]),
+                        batchQuestion.verifyLive ? h('small', verifyNote) : null,
                     ]) : null,
                 ]),
                 h('footer', { class: 'exam-footer' }, [
                     h('span', isArabic
-                        ? 'الأسئلة مستخرجة من ملفات تدريبية؛ قد تختلف الإجراءات والمهل الحالية.'
-                        : 'Questions come from training files; current procedures and timeframes may differ.'),
+                        ? 'كل جولة فيها ٢٠ سؤالًا من أنواع مختلفة. إجابة كل سؤال تظهر فورًا.'
+                        : 'Each round has 20 mixed question types. Feedback appears after every answer.'),
                     answered ? h('button', {
                         class: 'exam-primary-button',
                         type: 'button',
@@ -857,6 +1023,10 @@ const App = {
         }
 
         function restart() {
+            if (workspaceMode.value === 'simulator' && simulationCase.value) {
+                restartScenario();
+                return;
+            }
             if (!tree.value) return;
             currentStepId.value = tree.value.start;
             history.value = [];
@@ -926,6 +1096,7 @@ const App = {
                     h('nav', { class: 'world-nav order-3 flex w-full items-center gap-1 rounded-xl border border-slate-200 bg-slate-50 p-1 sm:order-none sm:w-auto', 'aria-label': language.value === 'ar' ? 'أوضاع العمل' : 'Work modes' }, [
                         h('button', { class: `inline-flex min-h-9 flex-1 items-center justify-center gap-1.5 rounded-lg px-3 text-xs font-bold transition sm:flex-none ${workspaceMode.value === 'guided' || workspaceMode.value === 'reference' ? 'bg-white text-purple-800 shadow-sm' : 'text-slate-600 hover:bg-white'}`, type: 'button', onClick: enterGuided, 'aria-pressed': workspaceMode.value === 'guided' || workspaceMode.value === 'reference' }, [icon('chat', 'size-4'), t('guidedMode')]),
                         h('button', { class: `inline-flex min-h-9 flex-1 items-center justify-center gap-1.5 rounded-lg px-3 text-xs font-bold transition sm:flex-none ${workspaceMode.value === 'exam' ? 'bg-white text-purple-800 shadow-sm' : 'text-slate-600 hover:bg-white'}`, type: 'button', onClick: enterExam, 'aria-pressed': workspaceMode.value === 'exam' }, [icon('grid', 'size-4'), t('examMode')]),
+                        h('button', { class: `inline-flex min-h-9 flex-1 items-center justify-center gap-1.5 rounded-lg px-3 text-xs font-bold transition sm:flex-none ${workspaceMode.value === 'simulator' ? 'bg-white text-purple-800 shadow-sm' : 'text-slate-600 hover:bg-white'}`, type: 'button', onClick: enterSimulator, 'aria-pressed': workspaceMode.value === 'simulator' }, [icon('question', 'size-4'), t('simulatorMode')]),
                     ]),
                     h('div', { class: 'flex shrink-0 items-center gap-2' }, [
                         h('button', { class: 'app-control rounded-xl border px-3 py-2 text-sm font-semibold', type: 'button', onClick: () => switchLanguage(language.value === 'ar' ? 'en' : 'ar'), 'aria-label': language.value === 'ar' ? 'Switch to English' : 'التغيير إلى العربية' }, language.value === 'ar' ? 'EN' : 'عربي'),
@@ -996,7 +1167,7 @@ const App = {
                         item.source ? h('p', { class: 'mt-2 text-[10px] text-slate-500' }, item.source) : null,
                     ])) : h('p', { class: 'rounded-lg bg-slate-50 p-3 text-sm text-slate-600' }, t('noQuickMatches'))),
                 ]) : null,
-                workspaceMode.value === 'exam' || workspaceMode.value === 'home' ? null : h('section', { class: 'quick-search-panel mb-5 rounded-2xl border border-slate-200 bg-white p-3 sm:p-4' }, [
+                workspaceMode.value === 'exam' || workspaceMode.value === 'home' || workspaceMode.value === 'simulator' ? null : h('section', { class: 'quick-search-panel mb-5 rounded-2xl border border-slate-200 bg-white p-3 sm:p-4' }, [
                     h('label', { class: 'mb-2 flex items-center gap-2 text-sm font-bold text-slate-800', for: 'quick-support-search' }, [icon('search', 'size-4 text-blue-700'), t('quickSearch')]),
                     h('div', { class: 'flex gap-2' }, [
                         h('input', {
@@ -1040,6 +1211,8 @@ const App = {
                     ? renderHome()
                     : workspaceMode.value === 'exam'
                     ? renderExam()
+                    : workspaceMode.value === 'simulator' && !simulationCase.value
+                    ? renderSimulator()
                     : workspaceMode.value === 'reference'
                     ? h('section', { class: 'rounded-2xl border border-blue-100 bg-blue-50/60 p-4 text-sm leading-6 text-slate-700' }, [
                         h('p', { class: 'font-semibold text-slate-900' }, t('referenceIntro')),
@@ -1059,6 +1232,15 @@ const App = {
                         : !currentStep.value
                             ? h('p', { class: 'text-red-700', role: 'alert' }, t('missing'))
                             : h(Transition, { name: 'step-fade', mode: 'out-in' }, { default: () => h('div', { key: currentStepId.value }, [
+                                simulationCase.value ? h('section', { class: 'active-scenario-card' }, [
+                                    h('div', { class: 'active-scenario-heading' }, [
+                                        h('span', { class: 'exam-kicker' }, `${t('simulatorStep')} · ${simulationCase.value.title[language.value]}`),
+                                        h('button', { class: 'exam-secondary-button', type: 'button', onClick: showScenarioList }, t('simulatorBack')),
+                                    ]),
+                                    h('p', { class: 'active-scenario-customer' }, [h('strong', `${t('simulatorCustomer')}: `), simulationCase.value.customer[language.value]]),
+                                    h('p', { class: 'active-scenario-goal' }, [h('strong', `${t('simulatorGoal')}: `), simulationCase.value.goal[language.value]]),
+                                    simulationCase.value.image ? h('img', { class: 'case-scenario-image active-scenario-image', src: simulationCase.value.image, alt: simulationCase.value.imageAlt?.[language.value] || simulationCase.value.title[language.value] }) : null,
+                                ]) : null,
                                 h('div', { class: 'mb-3 flex flex-wrap items-center justify-between gap-2' }, [
                                     h('p', { class: 'inline-flex items-center gap-2 text-xs font-semibold text-slate-500' }, [h('span', { class: 'inline-block size-2 rounded-full bg-emerald-500' }), t('step') + ' ' + (history.value.length + 1)]),
                                     history.value.length > 0 ? h('button', {
@@ -1070,7 +1252,7 @@ const App = {
                                         class: 'inline-flex items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-medium text-slate-500 transition-all hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500',
                                         type: 'button',
                                         onClick: restart,
-                                    }, [icon('home', 'size-4'), t('newInquiry')]) : null,
+                                    }, [icon('home', 'size-4'), simulationCase.value ? t('simulatorRestart') : t('newInquiry')]) : null,
                                 ]),
                                 completedPath.value.length ? h('details', { class: 'mb-4 overflow-hidden rounded-2xl border border-purple-100 bg-purple-50/60' }, [
                                     h('summary', { class: 'cursor-pointer list-none px-4 py-3 text-xs font-bold text-purple-900' }, t('callProgress') + ': ' + completedPath.value.length + ' ' + t('step')),
@@ -1243,6 +1425,16 @@ const App = {
                                             ]),
                                             h('p', { class: 'leading-7 text-green-950' }, productCustomerScript.value || packageCustomerScript.value || currentStep.value.customer_script || '—'),
                                         ]) : null,
+                                        simulationCase.value ? h('section', { class: 'simulator-complete-card' }, [
+                                            h('h3', [icon('check', 'size-5'), t('simulatorDone')]),
+                                            currentStep.value.action ? h('p', [h('strong', `${t('action')}: `), currentStep.value.action]) : null,
+                                            currentStep.value.customer_script ? h('p', [h('strong', `${t('customerScript')}: `), currentStep.value.customer_script]) : null,
+                                            h('p', [h('strong', `${t('simulatorSource')}: `), simulationCase.value.source]),
+                                            h('div', { class: 'simulator-complete-actions' }, [
+                                                h('button', { class: 'exam-primary-button', type: 'button', onClick: showScenarioList }, t('simulatorBack')),
+                                                h('button', { class: 'exam-secondary-button', type: 'button', onClick: restartScenario }, t('simulatorRestart')),
+                                            ]),
+                                        ]) : null,
                                         !isPackageInquiry.value ? h('details', { class: 'comment-generator overflow-hidden rounded-2xl border border-slate-200 bg-slate-50' }, [
                                             h('summary', { class: 'flex cursor-pointer list-none items-center gap-2 px-4 py-3 font-bold text-slate-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-blue-500' }, [icon('copy', 'size-5 text-blue-700'), t('commentGenerator')]),
                                             h('div', { class: 'space-y-3 border-t border-slate-200 p-4' }, [
@@ -1285,7 +1477,7 @@ const App = {
                                             class: 'inline-flex w-full items-center justify-center gap-2 rounded-xl border border-gray-200 px-4 py-3 font-semibold text-gray-700 transition-all hover:bg-gray-50 active:scale-95 focus:outline-none focus:ring-2 focus:ring-blue-500',
                                             type: 'button',
                                             onClick: restart,
-                                        }, [icon('home', 'size-5'), t('newInquiry')]),
+                                        }, [icon('home', 'size-5'), simulationCase.value ? t('simulatorRestart') : t('newInquiry')]),
                                     ])
                                     : h('div', { class: 'space-y-3' }, [
                                         h('div', { class: 'grid gap-3' }, currentStep.value.options.map((option, index) =>

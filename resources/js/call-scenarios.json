@@ -1,0 +1,194 @@
+[
+  {
+    "id": "stable-dsl-no-internet",
+    "title": {
+      "ar": "الإنترنت فاصل والـDSL ثابتة",
+      "en": "Internet down, DSL steady"
+    },
+    "customer": {
+      "ar": "الإنترنت فاصل على كل الأجهزة، ولمبة DSL ثابتة. مفيش عطل عام ظاهر، والحساب والباقة نشطين.",
+      "en": "Internet is down on every device, but the DSL light is steady. No outage is visible; the account and package are active."
+    },
+    "goal": {
+      "ar": "ابدأ بالتذكرة والعطل العام والحساب والباقة، ثم صنّف العرض المنطقي وافحص النتيجة قبل التصعيد.",
+      "en": "Check the ticket, outage, account, and package first; then classify the logical symptom and verify findings before escalation."
+    },
+    "startStepId": "preflight_start",
+    "source": "storage/app/data/support.json: preflight_start, outage_precheck, billing_precheck, quota_precheck, symptom route"
+  },
+  {
+    "id": "dsl-light-off",
+    "title": {
+      "ar": "لمبة DSL مطفية",
+      "en": "DSL light is off"
+    },
+    "customer": {
+      "ar": "العميل بيقول إن النت فاصل ولمبة DSL مطفية، ومصدر كهرباء الراوتر شغال.",
+      "en": "The customer says internet is down and the DSL light is off; the router has power."
+    },
+    "goal": {
+      "ar": "راجع التذكرة والعطل العام والحساب والباقة أولًا، وبعدها ابدأ فحص اللمبة والتوصيلات.",
+      "en": "Check the ticket, outage, account, and package first; then inspect the light and wiring."
+    },
+    "startStepId": "preflight_start",
+    "source": "storage/app/data/support.json: preflight_start, outage_precheck, billing_precheck, quota_precheck, symptom route"
+  },
+  {
+    "id": "all-sites-browsing",
+    "title": {
+      "ar": "كل المواقع لا تفتح",
+      "en": "No websites open"
+    },
+    "customer": {
+      "ar": "العميل فاتح أكثر من جهاز، وكل المواقع لا تفتح. لمبة DSL ثابتة؛ ابدأ بالتحقق من التذكرة والعطل العام والحساب والباقة.",
+      "en": "The customer tried multiple devices; no websites open and DSL is steady. Start by checking the ticket, outage, account, and package."
+    },
+    "goal": {
+      "ar": "حدد هل المشكلة عامة أم على جهاز أو موقع واحد، ثم اتبع فحص التصفح.",
+      "en": "Determine whether the issue is broad or limited to one device/site, then follow the browsing checks."
+    },
+    "startStepId": "preflight_start",
+    "source": "storage/app/data/support.json: preflight_start, outage_precheck, billing_precheck, quota_precheck, symptom route"
+  },
+  {
+    "id": "slow-wifi-one-room",
+    "title": {
+      "ar": "البطء على جهاز واحد",
+      "en": "Slow Wi-Fi on one device"
+    },
+    "customer": {
+      "ar": "العميل بيشتكي من بطء على موبايل واحد في غرفة بعيدة، وباقي الأجهزة طبيعية. ابدأ بفحوص ما قبل التشخيص.",
+      "en": "The customer reports slow service on one phone in a distant room; other devices work normally. Start with pre-diagnostic checks."
+    },
+    "goal": {
+      "ar": "افصل مشكلة الواي فاي/الجهاز عن بطء الخدمة على كل الاستخدامات.",
+      "en": "Separate a Wi-Fi/device issue from service-wide slowness."
+    },
+    "startStepId": "preflight_start",
+    "source": "storage/app/data/support.json: preflight_start, outage_precheck, billing_precheck, quota_precheck, symptom route"
+  },
+  {
+    "id": "gaming-ping",
+    "title": {
+      "ar": "Ping مرتفع في لعبة أونلاين",
+      "en": "High ping in an online game"
+    },
+    "customer": {
+      "ar": "العميل بيقول إن التصفح طبيعي لكن الـPing بيعلى وبيحصل تقطيع في لعبة أونلاين.",
+      "en": "Browsing is normal, but ping spikes and an online game stutters."
+    },
+    "goal": {
+      "ar": "اتبع مسار Gaming وافحص الخط قبل تغيير أي إعداد.",
+      "en": "Use the Gaming path and check the line before changing any settings."
+    },
+    "startStepId": "preflight_start",
+    "source": "storage/app/data/support.json: preflight_start, outage_precheck, billing_precheck, quota_precheck, symptom route"
+  },
+  {
+    "id": "no-ip-stable-dsl",
+    "title": {
+      "ar": "لا يوجد IP رغم ثبات DSL",
+      "en": "No IP while DSL is steady"
+    },
+    "customer": {
+      "ar": "لمبة DSL ثابتة، لكن الخدمة لا تعمل. تم التأكد من عدم وجود عطل عام أو مستحقات أو نفاد باقة.",
+      "en": "DSL is steady but service is unavailable. An outage, billing hold, and exhausted package have been ruled out."
+    },
+    "goal": {
+      "ar": "تحقق من MAC وإعدادات CPE عبر الأداة المعتمدة دون طلب كلمة مرور العميل.",
+      "en": "Check MAC and CPE settings using the approved tool; never request the customer’s password."
+    },
+    "startStepId": "no_ip_check",
+    "source": "storage/app/data/support.json: no_ip_check, cpe_reconfigure, noc_escalation"
+  },
+  {
+    "id": "port-speed-reading",
+    "title": {
+      "ar": "مراجعة قراءات Port",
+      "en": "Reviewing port readings"
+    },
+    "customer": {
+      "ar": "العميل بيشتكي من سرعة أقل من المتوقع. لقطة CST360 تعرض بيانات الـPort؛ راجع القراءة في سياق السرعة المتعاقد عليها قبل تحديد التصنيف.",
+      "en": "The customer reports lower-than-expected speed. The CST360 screenshot shows port readings; compare them with the subscribed speed before classifying the issue."
+    },
+    "goal": {
+      "ar": "استخدم القراءات لفحص Speed Variance وفق المصفوفة الحالية، ولا تعمل Restart Port لمجرد ظهور الزر.",
+      "en": "Check Speed Variance against the current matrix; do not restart the port merely because the button is visible."
+    },
+    "startStepId": "logical_check_speed_variance",
+    "image": "/exam-cases/port-status.png",
+    "imageAlt": {
+      "ar": "لقطة بيانات حالة Port من ملف التدريب",
+      "en": "Port status values from the training file"
+    },
+    "source": "storage/app/data/support.json: logical_check_speed_variance; third quiz .pdf screenshot"
+  },
+  {
+    "id": "payment-not-posted",
+    "title": {
+      "ar": "دفعة فوري لم تظهر",
+      "en": "Fawry payment not posted"
+    },
+    "customer": {
+      "ar": "العميل دفع فاتورة الخط من فوري ومعاه إيصال، لكن الخدمة ما زالت موقوفة والدفعة لم تظهر.",
+      "en": "The customer paid the landline bill through Fawry and has a receipt, but service is still stopped and the payment is not visible."
+    },
+    "goal": {
+      "ar": "راجع بيانات العملية وسجل الشكوى حسب قناة الدفع، بدون طلب بيانات البطاقة أو OTP.",
+      "en": "Verify transaction details and log the complaint for the correct payment channel; never ask for full card details or an OTP."
+    },
+    "startStepId": "billing_inquiry_start",
+    "source": "storage/app/data/support.json: billing_inquiry_start, aggregator_payment_terminal"
+  },
+  {
+    "id": "package-change",
+    "title": {
+      "ar": "العميل يريد تغيير الباقة",
+      "en": "Customer requests a package change"
+    },
+    "customer": {
+      "ar": "العميل عايز يغيّر باقة الإنترنت. لسه ما وافقش على تنفيذ الطلب، ومحتاج يعرف الاختيارات المتاحة.",
+      "en": "The customer wants to change the internet package. They have not approved a change yet and want to know the available options."
+    },
+    "goal": {
+      "ar": "حدد المنتج وأهلية الخط والسعر من المصدر الحالي، ولا تسجل طلبًا قبل موافقة العميل.",
+      "en": "Identify the product and verify line eligibility and price in the current source; do not submit before customer approval."
+    },
+    "startStepId": "inquiry_start",
+    "source": "storage/app/data/support.json: inquiry_start, package_product_start, package_inquiry_terminal"
+  },
+  {
+    "id": "new-address-availability",
+    "title": {
+      "ar": "طلب تركيب على عنوان جديد",
+      "en": "New installation at a different address"
+    },
+    "customer": {
+      "ar": "العميل بيسأل هل يقدر يركّب خط أو فايبر في عنوان جديد وعايز ميعاد مؤكد.",
+      "en": "The customer asks whether a new line or fiber is available at a new address and wants a confirmed date."
+    },
+    "goal": {
+      "ar": "تحقق من التقنية والإتاحة قبل وعد العميل بتركيب أو موعد.",
+      "en": "Check the technology and address availability before promising an installation or date."
+    },
+    "startStepId": "request_start",
+    "source": "storage/app/data/support.json: request_start, availability_check"
+  },
+  {
+    "id": "voice-no-tone",
+    "title": {
+      "ar": "الخط الأرضي بلا حرارة",
+      "en": "No dial tone on fixed voice"
+    },
+    "customer": {
+      "ar": "العميل بيقول مفيش حرارة على الخط الأرضي، والإنترنت شغال.",
+      "en": "The customer has no dial tone on fixed voice, but internet works."
+    },
+    "goal": {
+      "ar": "حدد هل العطل صوت فقط أم الصوت والإنترنت معًا.",
+      "en": "Determine whether the fault affects voice only or voice and internet together."
+    },
+    "startStepId": "preflight_start",
+    "source": "storage/app/data/support.json: preflight_start, outage_precheck, billing_precheck, quota_precheck, symptom route"
+  }
+]

@@ -9071,6 +9071,15 @@
     "explanation": {
       "ar": "الإجابة المحددة في مفتاح الامتحان هي: True.",
       "en": "The answer marked in the quiz is: True."
+    },
+    "image": "/exam-cases/port-status.png",
+    "imageAlt": {
+      "ar": "لقطة حالة المنفذ من سؤال الاختبار التدريبي",
+      "en": "Port status screenshot from the training quiz"
+    },
+    "imageCaption": {
+      "ar": "الصورة من ملف Third Quiz، وتُعرض كمرجع بصري للسؤال.",
+      "en": "Image from the Third Quiz PDF, shown as a visual reference."
     }
   },
   {

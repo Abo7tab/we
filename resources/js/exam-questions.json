@@ -1830,8 +1830,8 @@
       "en": "Questions from exam files"
     },
     "question": {
-      "ar": "The value default MTU ar",
-      "en": "The value default MTU ar"
+      "ar": "ما القيمة الافتراضية لـ MTU؟",
+      "en": "What is the default MTU value?"
     },
     "answer": {
       "ar": "1492",
@@ -1927,8 +1927,8 @@
       "en": "Questions from exam files"
     },
     "question": {
-      "ar": "Eni This لظ ذأ ....... ?",
-      "en": "Eni This لظ ذأ ....... ?"
+      "ar": "ما نوع الموصل الظاهر في الصورة؟",
+      "en": "Which connector is shown in the picture?"
     },
     "answer": {
       "ar": "RJ11",
@@ -1989,8 +1989,8 @@
       "en": "Questions from exam files"
     },
     "question": {
-      "ar": "From which tool agent can make SR&TT",
-      "en": "From which tool agent can make SR&TT"
+      "ar": "من أي نظام ينشئ الموظف طلب SR وتذكرة TT؟",
+      "en": "Which system can an agent use to create an SR and a TT?"
     },
     "answer": {
       "ar": "BSS",
@@ -2086,8 +2086,8 @@
       "en": "Questions from exam files"
     },
     "question": {
-      "ar": "5ا....... Up to 70M?",
-      "en": "5ا....... Up to 70M?"
+      "ar": "أي باقة ورد في سؤال التدريب أنها تصل إلى 70 ميجابت؟",
+      "en": "Which package is listed in the training question as reaching 70 Mbps?"
     },
     "answer": {
       "ar": "Mega",
@@ -2121,8 +2121,8 @@
       "en": "Questions from exam files"
     },
     "question": {
-      "ar": "CCA can check SR's history from",
-      "en": "CCA can check SR's history from"
+      "ar": "من أين يراجع موظف الدعم سجل طلب SR؟",
+      "en": "Where can a support agent review an SR history?"
     },
     "answer": {
       "ar": "Query Request",
@@ -2389,8 +2389,8 @@
       "en": "Questions from exam files"
     },
     "question": {
-      "ar": "sees. IS UP to",
-      "en": "sees. IS UP to"
+      "ar": "أي باقة تصل سرعتها إلى 30 ميجابت؟",
+      "en": "Which package offers speeds up to 30 Mbps?"
     },
     "answer": {
       "ar": "Super",
@@ -3352,8 +3352,8 @@
       "en": "Questions from exam files"
     },
     "question": {
-      "ar": "This RJ use to ....... ©",
-      "en": "This RJ use to ....... ©"
+      "ar": "يُستخدم موصل RJ45 لتوصيل ماذا؟",
+      "en": "What is an RJ45 connector used to connect?"
     },
     "answer": {
       "ar": "Connect from CPE to PC/Access point / Laptop",
@@ -3418,8 +3418,8 @@
       "en": "Questions from exam files"
     },
     "question": {
-      "ar": "M/b Cc. M/b",
-      "en": "M/b Cc. M/b"
+      "ar": "ما أقصى سرعة يدعمها راوتر ADSL حسب سؤال التدريب؟",
+      "en": "What maximum speed does an ADSL router support in the training question?"
     },
     "answer": {
       "ar": "24 M/b",
@@ -3546,8 +3546,8 @@
       "en": "Questions from exam files"
     },
     "question": {
-      "ar": "This is Logical Structure ? out",
-      "en": "This is Logical Structure ? out"
+      "ar": "هل يوضح المسار CPE ← DSLAM ← BRAS البنية المنطقية لاتصال DSL؟",
+      "en": "Does the CPE-to-DSLAM-to-BRAS path show the logical structure of a DSL connection?"
     },
     "answer": {
       "ar": "True",
@@ -3802,8 +3802,8 @@
       "en": "Questions from exam files"
     },
     "question": {
-      "ar": "(CST can make Farly renewal for Sumer GR",
-      "en": "(CST can make Farly renewal for Sumer GR"
+      "ar": "من أي نظام ينفذ الموظف التجديد المبكر لعرض Summer GR؟",
+      "en": "Which system is used to process an early renewal for a Summer GR offer?"
     },
     "answer": {
       "ar": "BSS",
@@ -3950,8 +3950,8 @@
       "en": "Questions from exam files"
     },
     "question": {
-      "ar": "Start speed for Super up to 301s",
-      "en": "Start speed for Super up to 301s"
+      "ar": "ما سرعة بداية باقة Super Up to 30 حسب سؤال التدريب؟",
+      "en": "What is the starting speed for the Super Up to 30 package in the training question?"
     },
     "answer": {
       "ar": "8 Mbps",
@@ -4051,29 +4051,33 @@
       "en": "Questions from exam files"
     },
     "question": {
-      "ar": "Question : Create TI + inform CST هللاا",
-      "en": "Question : Create TI + inform CST هللاا"
+      "ar": "طلب CPE Delivery على OM ما زال قائمًا بعد يومي عمل. ما الإجراء الصحيح؟",
+      "en": "An OM CPE Delivery order is still pending after two working days. What should the CCA do?"
     },
     "answer": {
-      "ar": "Create TI + inform CST هللاا",
-      "en": "Create TI + inform CST هللاا"
+      "ar": "أنشئ TT وأبلغ العميل بمهلة يوم عمل",
+      "en": "Create a TT and inform the customer of a 1-working-day timeframe"
     },
     "source": "exam.pdf",
     "verifyLive": true,
     "options": [
       {
-        "ar": "Create TT + inform CST هللاا",
-        "en": "Create TT + inform CST هللاا"
+        "ar": "أبلغ العميل بـ7 أيام عمل وأنشئ SR",
+        "en": "Inform the customer of 7 working days and create an SR"
       },
       {
-        "ar": "Create TI + inform CST هللاا",
-        "en": "Create TI + inform CST هللاا"
+        "ar": "أنشئ TT وأبلغ العميل بمهلة يوم عمل",
+        "en": "Create a TT and inform the customer of a 1-working-day timeframe"
+      },
+      {
+        "ar": "أبلغ العميل بـ15 يوم عمل وأنشئ SR",
+        "en": "Inform the customer of 15 working days and create an SR"
       }
     ],
     "correctIndex": 1,
     "explanation": {
-      "ar": "الإجابة المحددة في مفتاح ملف exam.pdf هي: Create TI + inform CST هللاا.",
-      "en": "The answer marked in exam.pdf is: Create TI + inform CST هللاا."
+      "ar": "هذا هو الاختيار المحدد في صفحة الامتحان المصورة لحالة CPE Delivery بعد يومي عمل.",
+      "en": "This is the answer marked on the scanned exam page for the CPE Delivery case after two working days."
     }
   },
   {
@@ -5220,8 +5224,8 @@
       "en": "Questions from exam files"
     },
     "question": {
-      "ar": "estion areas Need Optimization SLA",
-      "en": "estion areas Need Optimization SLA"
+      "ar": "ما مهلة SLA لحالة Need Optimization؟",
+      "en": "What is the SLA for a Need Optimization case?"
     },
     "answer": {
       "ar": "1 Hour",
@@ -5255,8 +5259,8 @@
       "en": "Questions from exam files"
     },
     "question": {
-      "ar": "estion Line code for ADSL2+ mplete",
-      "en": "estion Line code for ADSL2+ mplete"
+      "ar": "ما كود Line Code الخاص بـ ADSL2+؟",
+      "en": "What is the line code for ADSL2+?"
     },
     "answer": {
       "ar": "G-992-5",
@@ -5457,8 +5461,8 @@
       "en": "Questions from exam files"
     },
     "question": {
-      "ar": "الباقه الاضافيه المتكرره متاحه ل وهم",
-      "en": "Recurring Recharge extra quota valid for"
+      "ar": "من العملاء المؤهلون لاستخدام سعة Recurring Recharge الإضافية؟",
+      "en": "Which customers are eligible for recurring recharge extra quota?"
     },
     "answer": {
       "ar": "prepaid & postpaid",
@@ -5500,7 +5504,7 @@
       "en": "True"
     },
     "source": "Pre-Assessment (80-question quiz; repeated review PDFs deduplicated)",
-    "verifyLive": false,
+    "verifyLive": true,
     "options": [
       {
         "ar": "True",
@@ -5585,15 +5589,15 @@
       "en": "Questions from exam files"
     },
     "question": {
-      "ar": "Which tool you can get Cst land line bill Form",
-      "en": "Which tool you can get Cst land line bill Form"
+      "ar": "من أي نظام يمكن مراجعة فاتورة الخط الأرضي؟",
+      "en": "Which system can be used to review a landline bill?"
     },
     "answer": {
       "ar": "Both of them",
       "en": "Both of them"
     },
     "source": "Pre-Assessment (80-question quiz; repeated review PDFs deduplicated)",
-    "verifyLive": false,
+    "verifyLive": true,
     "options": [
       {
         "ar": "Cst 360",
@@ -5764,7 +5768,7 @@
       "en": "True"
     },
     "source": "Pre-Assessment (80-question quiz; repeated review PDFs deduplicated)",
-    "verifyLive": false,
+    "verifyLive": true,
     "options": [
       {
         "ar": "True",
@@ -5822,15 +5826,15 @@
       "en": "Questions from exam files"
     },
     "question": {
-      "ar": "Pre-Assessment 12",
-      "en": "Pre-Assessment question"
+      "ar": "في حالة BLQ، إذا أظهرت ASSIA نتيجة Need Optimization، ما الإجراء الصحيح؟",
+      "en": "For a BLQ case, if ASSIA shows Need Optimization, what is the correct action?"
     },
     "answer": {
       "ar": "Escalate Need optimization",
       "en": "Escalate Need optimization"
     },
     "source": "Pre-Assessment (80-question quiz; repeated review PDFs deduplicated)",
-    "verifyLive": false,
+    "verifyLive": true,
     "options": [
       {
         "ar": "5 with CST BLQ Case, ASSIA clear view result is as the below, CCA Right action",
@@ -6373,8 +6377,8 @@
       "en": "Questions from exam files"
     },
     "question": {
-      "ar": "ما مهلة الـSLA لحالة بطء الإنترنت؟",
-      "en": "Slowness case SLA will be omplete"
+      "ar": "ما مهلة SLA لحالة بطء الإنترنت؟",
+      "en": "What is the SLA for an internet slowness case?"
     },
     "answer": {
       "ar": "2H",
@@ -6796,15 +6800,15 @@
       "en": "Questions from exam files"
     },
     "question": {
-      "ar": "خدمة سلفني متاحة لأي نوع من عملاء الإنترنت المنزلي؟",
-      "en": "In FBB: Salfny service available for"
+      "ar": "لأي نوع من عملاء الإنترنت المنزلي تتاح خدمة سلفني وفق سؤال التدريب؟",
+      "en": "Which fixed-broadband customer type is eligible for Salfny in the training question?"
     },
     "answer": {
       "ar": "Postpaid Customers",
       "en": "Postpaid Customers"
     },
     "source": "Pre-Assessment (80-question quiz; repeated review PDFs deduplicated)",
-    "verifyLive": false,
+    "verifyLive": true,
     "options": [
       {
         "ar": "Postpaid Customers",
@@ -6994,15 +6998,15 @@
       "en": "Questions from exam files"
     },
     "question": {
-      "ar": "الحد الأقصى للدشع نقدًا من خلال الفرع؟ د",
-      "en": "Max Cash payment limit from branch will be"
+      "ar": "ما الحد الأقصى للدفع النقدي في الفرع وفق مفتاح الامتحان؟",
+      "en": "What is the maximum cash payment at a branch according to the exam key?"
     },
     "answer": {
       "ar": "3000LE",
       "en": "3000LE"
     },
     "source": "Pre-Assessment (80-question quiz; repeated review PDFs deduplicated)",
-    "verifyLive": false,
+    "verifyLive": true,
     "options": [
       {
         "ar": "3000LE",
@@ -7122,8 +7126,8 @@
       "en": "Questions from exam files"
     },
     "question": {
-      "ar": "tool من أي outage نقدر نشوف",
-      "en": "We can check outage from tool outage Price"
+      "ar": "من أي نظام نتحقق من وجود عطل عام؟",
+      "en": "Which system is used to check for an outage?"
     },
     "answer": {
       "ar": "CST360",
@@ -7634,15 +7638,15 @@
       "en": "Questions from exam files"
     },
     "question": {
-      "ar": "فى الخط الارضي نظام الفاتورة متاح فقط ل",
-      "en": "In FV: Postpaid Bill available for"
+      "ar": "ما دورية الفاتورة المتاحة لخط أرضي Postpaid حسب سؤال التدريب؟",
+      "en": "Which billing frequency is available for a postpaid fixed-voice line in the training question?"
     },
     "answer": {
       "ar": "Monthly only",
       "en": "Monthly only"
     },
     "source": "Pre-Assessment (80-question quiz; repeated review PDFs deduplicated)",
-    "verifyLive": false,
+    "verifyLive": true,
     "options": [
       {
         "ar": "Monthly & Quarterly",
@@ -7914,8 +7918,8 @@
       "en": "Questions from exam files"
     },
     "question": {
-      "ar": "ا eS ظ ا",
-      "en": "This Device name is eS"
+      "ar": "ما اسم جهاز الشبكة الظاهر في السؤال؟",
+      "en": "What is the network device shown in the question?"
     },
     "answer": {
       "ar": "MSAN",
@@ -7984,7 +7988,7 @@
       "en": "True"
     },
     "source": "Pre-Assessment (80-question quiz; repeated review PDFs deduplicated)",
-    "verifyLive": false,
+    "verifyLive": true,
     "options": [
       {
         "ar": "False",
@@ -8007,8 +8011,8 @@
       "en": "Questions from exam files"
     },
     "question": {
-      "ar": "Salfny service valid for Plax",
-      "en": "Salfny service valid for Plax"
+      "ar": "لمدة كام يوم تكون خدمة سلفني صالحة حسب سؤال التدريب؟",
+      "en": "How many days is the Salfny service valid for in the training question?"
     },
     "answer": {
       "ar": "2day",

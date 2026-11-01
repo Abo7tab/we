@@ -5,6 +5,39 @@ import callScenarios from './call-scenarios.json';
 
 const MAX_STEPS_PER_CALL = 100;
 const DEFAULT_TREE = 'support';
+const SIMULATOR_ALLOWED_OPTIONS = {
+    'stable-dsl-no-internet': { preflight_start: [0, 1], technical_type: [0] },
+    'dsl-light-off': { preflight_start: [0, 1], technical_type: [0] },
+    'all-sites-browsing': { preflight_start: [0, 1], technical_type: [0] },
+    'slow-wifi-one-room': { preflight_start: [0, 1], technical_type: [0] },
+    'gaming-ping': { preflight_start: [0, 1], technical_type: [0] },
+    'no-ip-stable-dsl': { no_ip_check: [0, 1] },
+    'port-speed-reading': { logical_check_speed_variance: [0, 1] },
+    'payment-not-posted': { billing_inquiry_start: [2] },
+    'package-change': { inquiry_start: [4] },
+    'new-address-availability': { request_start: [0] },
+    'voice-no-tone': { preflight_start: [0, 1], technical_type: [1] },
+    'logical-instability-repeat-drop': { logical_instability_start: [0] },
+    'slowness-all-devices': { slowness_start: [0] },
+    'bad-line-quality-check': { blq_assia: [1] },
+    'gaming-latency': { gaming_start: [0] },
+    'single-site-browsing': { browsing_check: [1] },
+    'speed-variance-record': { logical_check_speed_variance: [0] },
+    'dsl-no-sync-after-main-wire': { physical_start: [0] },
+    'instability-after-technician': { instability_visit: [0] },
+    'night-callback-availability': { noc_oncall_availability: [0, 1] },
+    'landline-no-tone-only': { voice_start: [0] },
+    'account-suspended-before-troubleshooting': { logical_verify_account: [1] },
+    'quota-exhausted': { quota_precheck: [0] },
+    'fawry-payment-delay': { billing_inquiry_start: [2] },
+    'promise-pay-consumer-postpaid': { promise_to_pay_start: [0] },
+    'promise-pay-nonconsumer': { promise_to_pay_start: [1] },
+    'payment-wrong-number-transfer': { wrong_number_payment_check: [0] },
+    'payment-wrong-number-refund': { wrong_number_payment_check: [1] },
+    'ftth-migration-code-39': { exception_27: [0, 1] },
+    'ftth-new-address-availability': { availability_check: [1] },
+    'installation-order-beyond-sla': { order_status_check: [1, 2] },
+};
 
 function icon(name, className = 'size-5') {
     const paths = {
@@ -95,6 +128,46 @@ function optionIcon(label = '') {
     if (/tt|ticket|تركيب|طلب|شكوى|complaint|order|تذكرة/i.test(label)) return 'ticket';
     if (/package|باقة|خدمة|service|billing|فاتورة/i.test(label)) return 'chat';
     return 'question';
+}
+
+function simulatorReplyText(step, option, language, variation = 0) {
+    const label = String(option?.label ?? '').trim();
+    const fact = label.split(/[؛;]/, 1)[0].trim();
+    const question = String(step?.question ?? '');
+    const internalCheck = /افتح|افحص|راجع|حدد|تحقق|نتيجة|حالة|سجل|النظام|الأداة|نوع الحساب|check|review|status|result|history|assia|cst360|bss|system/i.test(question);
+
+    if (language === 'ar') {
+        if (/^لا توجد TT مفتوحة/i.test(fact)) return ['راجعت سجل الخدمة، ومفيش تذكرة مفتوحة لنفس العطل.', 'بحثت برقم الخدمة وما ظهرش بلاغ مفتوح لنفس المشكلة.'][variation % 2];
+        if (/^توجد TT مفتوحة/i.test(fact)) return ['لقيت تذكرة مفتوحة لنفس العطل ورقمها ظاهر في السجل.', 'نتيجة TTS History فيها بلاغ قائم على نفس المشكلة.'][variation % 2];
+        if (/Outage مؤكد/i.test(fact)) return ['الأداة بتعرض عطلًا عامًا مؤكدًا.', 'نتيجة متابعة المنطقة فيها Major/Planned Fault مؤكد.'][variation % 2];
+        if (/لا يوجد Outage/i.test(fact)) return ['الأداة لا تعرض عطلًا عامًا على الخدمة أو المنطقة.', 'بحثت في أداة الأعطال ومفيش Outage ظاهر.'][variation % 2];
+        if (/الحساب نشط|Active/i.test(fact)) return ['حالة الحساب ظاهرة Active ومفيش إيقاف مالي.', 'مراجعة الحساب بتبين إنه نشط ومن غير مستحقات مانعة.'][variation % 2];
+        if (/مستحقات|موقوفة ماليًا|Suspended/i.test(fact)) return ['النظام ظاهر فيه مستحقات أو إيقاف على الحساب.', 'حالة BSS فيها إيقاف أو مبلغ مستحق.'][variation % 2];
+        if (/الباقة انتهت|السعة استُهلكت/i.test(fact)) return ['قراءة الاستهلاك بتوضح إن الباقة انتهت أو وصلت لحدها.', 'النظام بيظهر إن سعة الباقة خلصت.'][variation % 2];
+        if (/الباقة سارية/i.test(fact)) return ['النظام بيظهر إن الباقة سارية ولسه فيها سعة.', 'مراجعة الاستهلاك بتأكد إن الباقة لسه سارية.'][variation % 2];
+        if (/Congested/i.test(fact)) return ['قراءة الـPort في CST360 ظاهرة Congested.', 'حالة الـPort المسجلة في CST360 هي Congested.'][variation % 2];
+        if (/Within Ratio/i.test(fact)) return ['قراءة الـPort في CST360 ظاهرة Within Ratio.', 'نتيجة CST360 للـPort هي Within Ratio.'][variation % 2];
+        if (/Not Congested/i.test(fact)) return ['قراءة الـPort في CST360 لا تظهر Congestion.', 'CST360 لا يعرض حالة Congested للـPort.'][variation % 2];
+        if (/No DSL Physical-Layer issue/i.test(fact)) return ['Clear View لا يظهر مشكلة فيزيائية على DSL.', 'نتيجة Clear View الحالية: لا يوجد عطل Physical Layer على DSL.'][variation % 2];
+        if (/Technician Dispatch|Physical-Layer Fault/i.test(fact)) return ['Clear View يظهر مؤشر عطل فيزيائي أو احتياج زيارة فني.', 'القراءة تشير إلى Physical Layer أو Technician Dispatch.'][variation % 2];
+        if (/^نعم،?\s*/.test(fact)) return [`${internalCheck ? 'نتيجة الفحص: ' : 'العميل أكد: '}${fact.replace(/^نعم،?\s*/, '')}`, `${internalCheck ? 'البيانات بتأكد: ' : 'العميل وضح إن: '}${fact.replace(/^نعم،?\s*/, '')}`][variation % 2];
+        if (/^لا،?\s*/.test(fact)) return [`${internalCheck ? 'نتيجة الفحص: ' : 'العميل وضح: '}${fact.replace(/^لا،?\s*/, 'مفيش ')}`, `${internalCheck ? 'النظام لا يظهر: ' : 'العميل أكد عدم وجود: '}${fact.replace(/^لا،?\s*/, '')}`][variation % 2];
+        return [`${internalCheck ? 'النتيجة الظاهرة في النظام: ' : 'العميل يوضح: '}${fact}`, `${internalCheck ? 'نتيجة الفحص في الحالة: ' : 'بعد سؤالك، العميل يرد: '}${fact}`][variation % 2];
+    }
+
+    if (/^No open TT/i.test(fact)) return ['The service history has no open ticket for this fault.', 'A service-number search found no open ticket for this issue.'][variation % 2];
+    if (/Open TT/i.test(fact)) return ['The history shows an open ticket for the same fault.', 'TTS History contains an active ticket for this issue.'][variation % 2];
+    if (/Confirmed Outage/i.test(fact)) return ['The tool shows a confirmed outage.', 'The area check confirms an outage.'][variation % 2];
+    if (/No Outage/i.test(fact)) return ['The tool shows no outage for the service or area.', 'The area check found no current outage.'][variation % 2];
+    if (/Active/i.test(fact)) return ['The account is active with no billing suspension.', 'The account check shows Active with no billing block.'][variation % 2];
+    if (/Suspended|outstanding/i.test(fact)) return ['The account shows a suspension or outstanding balance.', 'The account check shows a billing hold or amount due.'][variation % 2];
+    if (/quota.*exhausted|package.*ended/i.test(fact)) return ['The usage reading shows the package quota is exhausted.', 'The system shows the package allowance has been used.'][variation % 2];
+    if (/Congested/i.test(fact)) return ['CST360 Port Details shows a congested port.', 'The port status in CST360 is Congested.'][variation % 2];
+    if (/Within Ratio/i.test(fact)) return ['CST360 Port Details shows Within Ratio.', 'The CST360 port result is Within Ratio.'][variation % 2];
+    if (/No DSL Physical-Layer issue/i.test(fact)) return ['Clear View shows no DSL physical-layer issue.', 'The current Clear View result has no DSL physical-layer fault.'][variation % 2];
+    if (/^Yes,?\s*/i.test(fact)) return [`${internalCheck ? 'System finding: ' : 'The customer confirms: '}${fact.replace(/^Yes,?\s*/i, '')}`, `${internalCheck ? 'The system confirms: ' : 'The customer clarifies: '}${fact.replace(/^Yes,?\s*/i, '')}`][variation % 2];
+    if (/^No,?\s*/i.test(fact)) return [`${internalCheck ? 'System finding: ' : 'The customer explains: '}${fact.replace(/^No,?\s*/i, 'there is no ')}`, `${internalCheck ? 'The system does not show: ' : 'The customer confirms there is no '}${fact.replace(/^No,?\s*/i, '')}`][variation % 2];
+    return [`${internalCheck ? 'System finding: ' : 'The customer says: '}${fact}`, `${internalCheck ? 'The system result is: ' : 'After your question, the customer says: '}${fact}`][variation % 2];
 }
 
 function packageFieldLabel(key, language) {
@@ -221,9 +294,9 @@ const COPY = {
         slaSortBy: 'ترتيب حسب', slaSortDuration: 'مدة المهلة', slaSortCase: 'اسم الحالة', slaAscending: 'تصاعدي', slaDescending: 'تنازلي', slaCaseColumn: 'الحالة', slaDurationColumn: 'المهلة',
         quickChangePackage: 'تغيير باقة',
         quickAccess: 'الوصول السريع', closeDrawer: 'إغلاق',
-        homeEyebrow: 'مساحة دعم فني تفاعلية', homeTitleA: 'كل مكالمة لها ', homeTitleB: 'مسار واضح.', homeLead: 'اختار مساحة العمل: مساعد المكالمات، امتحان على دفعات، أو حالات عملية للتدريب على المواقف.', homeSearch: 'ابحث عن عرض أو مشكلة أو خطوة دعم…', homeRoomsLabel: 'اختر وجهتك', homeRoomsTitle: 'ادخل مساحة العمل', homeRoomsHint: 'كل مساحة لها طريقة مختلفة للتعامل مع نفس قاعدة المعرفة.', homeLive: 'مساعد المكالمات', homeLiveText: 'خطوات عملية واضحة: اسأل، افحص في النظام، ثم أكمل حسب النتيجة.', homeExam: 'امتحان تدريبي', homeExamText: '{count} سؤال فريد؛ حل 20 سؤالًا في الجولة، ثم ابدأ مجموعة جديدة.', caseSimulator: 'حالات عملية', caseSimulatorText: 'مواقف عملاء واقعية. اتبع مسار الفحص وشاهد الإجراء والحل من دليل المكالمات.', homeEnter: 'ابدأ الامتحان', homeSlaHint: 'ابحث في المهل ورتبها', homeCodesHint: 'ابحث بالكود وشوف الإجراء', homePackagesHint: 'اعثر على الباقة بسرعة',
+        homeEyebrow: 'مساحة دعم فني تفاعلية', homeTitleA: 'كل مكالمة لها ', homeTitleB: 'مسار واضح.', homeLead: 'اختار مساحة العمل: مساعد المكالمات، امتحان على دفعات، أو حالات عملية للتدريب على المواقف.', homeSearch: 'ابحث عن عرض أو مشكلة أو خطوة دعم…', homeRoomsLabel: 'اختر وجهتك', homeRoomsTitle: 'ادخل مساحة العمل', homeRoomsHint: 'كل مساحة لها طريقة مختلفة للتعامل مع نفس قاعدة المعرفة.', homeLive: 'مساعد المكالمات', homeLiveText: 'خطوات عملية واضحة: اسأل، افحص في النظام، ثم أكمل حسب النتيجة.', homeExam: 'امتحان تدريبي', homeExamText: '{count} سؤال فريد؛ حل 20 سؤالًا في الجولة، ثم ابدأ مجموعة جديدة.', caseSimulator: 'حالات عملية', caseSimulatorText: 'تدرّب على ردود ونتائج متغيرة، واختر المسار ثم راجع أخطاءك في النهاية.', homeEnter: 'ابدأ الامتحان', homeSlaHint: 'ابحث في المهل ورتبها', homeCodesHint: 'ابحث بالكود وشوف الإجراء', homePackagesHint: 'اعثر على الباقة بسرعة',
         guidedMode: 'مساعد المكالمة', callProgress: 'المسار الحالي', callNext: 'الخطوة التالية',
-        simulatorMode: 'حالات عملية', simulatorTitle: 'محاكي المكالمات', simulatorIntro: 'اختار موقفًا وامشِ فيه خطوة بخطوة. الأسئلة والإجراءات مأخوذة من مسارات مساعد المكالمات.', simulatorStart: 'ابدأ الحالة', simulatorBack: 'كل الحالات', simulatorCustomer: 'العميل يقول', simulatorGoal: 'هدف التدريب', simulatorStep: 'محاكاة مكالمة', simulatorDone: 'وصلت لنهاية المسار. راجع الإجراء ونص العميل، ثم جرّب موقفًا آخر.', simulatorRestart: 'أعد الحالة', simulatorSource: 'المسار المستخدم',
+        simulatorMode: 'حالات عملية', simulatorTitle: 'محاكي المكالمات', simulatorIntro: 'اسمع رد العميل أو نتيجة الفحص، اختار الفرع المناسب، وفي النهاية راجع إجاباتك والأخطاء.', simulatorStart: 'ابدأ الحالة', simulatorBack: 'كل الحالات', simulatorCustomer: 'العميل يقول', simulatorGoal: 'هدف التدريب', simulatorStep: 'محاكاة مكالمة', simulatorDone: 'وصلت لنهاية المسار. راجع الإجراء ونص العميل، ثم جرّب موقفًا آخر.', simulatorRestart: 'أعد الحالة', simulatorSource: 'المسار المستخدم', simulatorReply: 'رد العميل / نتيجة الفحص', simulatorReplyHint: 'اختار الفرع الذي يطابق المعلومة التي ظهرت.', simulatorScore: 'نتيجة التدريب', simulatorCorrect: 'إجابة صحيحة', simulatorMistakes: 'راجع الاختيارات دي', simulatorYourChoice: 'اختيارك', simulatorExpectedChoice: 'الاختيار الصحيح', simulatorWhyWrong: 'سبب التصحيح', simulatorAllCorrect: 'ممتاز، كل اختياراتك في الحالة دي كانت صحيحة.', simulatorNoScore: 'لم تسجل قرارات في الحالة دي.',
         quickProblem: 'تشخيص مشكلة', quickInquiry: 'استفسار خدمة', quickRequest: 'طلب أو متابعة تركيب', quickBilling: 'فاتورة أو سداد', quickComplaint: 'شكوى أو تصعيد',
         openReference: 'مرجع الدعم', returnGuided: 'العودة لمساعد المكالمة',
         slaSearchPlaceholder: 'الحالة أو رقم الساعات/الأيام…', packageSearchPlaceholder: 'اسم الباقة أو السرعة أو السعة…', packagesNote: 'البحث يشمل السعة والسرعة والاسم والأسعار الموجودة في الجداول. عدد الأشخاص ليس تصنيفًا رسميًا في البيانات؛ استخدم الاستهلاك وعدد الأجهزة ولا تفترض سعة مناسبة من عدد الأفراد وحده.',
@@ -256,9 +329,9 @@ const COPY = {
         slaSortBy: 'Sort by', slaSortDuration: 'SLA duration', slaSortCase: 'Case name', slaAscending: 'Ascending', slaDescending: 'Descending', slaCaseColumn: 'Case', slaDurationColumn: 'SLA',
         quickChangePackage: 'Change package',
         quickAccess: 'Quick access', closeDrawer: 'Close',
-        homeEyebrow: 'Interactive support space', homeTitleA: 'A clear path for ', homeTitleB: 'every call.', homeLead: 'Choose a workspace: call assistant, 20-question exam rounds, or practical call simulations.', homeSearch: 'Search a service, issue, or support step…', homeRoomsLabel: 'Choose your destination', homeRoomsTitle: 'Enter a workspace', homeRoomsHint: 'Each workspace uses the same support knowledge in a different way.', homeLive: 'Call assistant', homeLiveText: 'Clear steps: ask, check the system, and continue based on what you find.', homeExam: 'Practice exam', homeExamText: '{count} unique questions. Answer 20 per round, then start another set.', caseSimulator: 'Practical cases', caseSimulatorText: 'Realistic customer situations. Follow the checks and see the action from the call guide.', homeEnter: 'Start exam', homeSlaHint: 'Search and sort response times', homeCodesHint: 'Find a code and see what to do', homePackagesHint: 'Find a package quickly',
+        homeEyebrow: 'Interactive support space', homeTitleA: 'A clear path for ', homeTitleB: 'every call.', homeLead: 'Choose a workspace: call assistant, 20-question exam rounds, or practical call simulations.', homeSearch: 'Search a service, issue, or support step…', homeRoomsLabel: 'Choose your destination', homeRoomsTitle: 'Enter a workspace', homeRoomsHint: 'Each workspace uses the same support knowledge in a different way.', homeLive: 'Call assistant', homeLiveText: 'Clear steps: ask, check the system, and continue based on what you find.', homeExam: 'Practice exam', homeExamText: '{count} unique questions. Answer 20 per round, then start another set.', caseSimulator: 'Practical cases', caseSimulatorText: 'Practice changing customer replies and findings, choose a path, and review mistakes at the end.', homeEnter: 'Start exam', homeSlaHint: 'Search and sort response times', homeCodesHint: 'Find a code and see what to do', homePackagesHint: 'Find a package quickly',
         guidedMode: 'Call assistant', callProgress: 'Call path', callNext: 'Next step',
-        simulatorMode: 'Practical cases', simulatorTitle: 'Call simulator', simulatorIntro: 'Choose a customer situation and work through it step by step using the call assistant procedure.', simulatorStart: 'Start case', simulatorBack: 'All cases', simulatorCustomer: 'Customer says', simulatorGoal: 'Training goal', simulatorStep: 'Call simulation', simulatorDone: 'You reached the end of this path. Review the action and customer script, then try another case.', simulatorRestart: 'Restart case', simulatorSource: 'Procedure path',
+        simulatorMode: 'Practical cases', simulatorTitle: 'Call simulator', simulatorIntro: 'Read the customer reply or system finding, choose the matching branch, then review your decisions and mistakes at the end.', simulatorStart: 'Start case', simulatorBack: 'All cases', simulatorCustomer: 'Customer says', simulatorGoal: 'Training goal', simulatorStep: 'Call simulation', simulatorDone: 'You reached the end of this path. Review the action and customer script, then try another case.', simulatorRestart: 'Restart case', simulatorSource: 'Procedure path', simulatorReply: 'Customer reply / system result', simulatorReplyHint: 'Choose the branch that matches the information shown.', simulatorScore: 'Training result', simulatorCorrect: 'Correct answers', simulatorMistakes: 'Review these choices', simulatorYourChoice: 'Your choice', simulatorExpectedChoice: 'Correct choice', simulatorWhyWrong: 'Why this is correct', simulatorAllCorrect: 'Great, all your choices in this case were correct.', simulatorNoScore: 'No decisions were recorded in this case.',
         quickProblem: 'Troubleshoot a problem', quickInquiry: 'Service inquiry', quickRequest: 'Installation request or follow-up', quickBilling: 'Bill or payment', quickComplaint: 'Complaint or escalation',
         openReference: 'Support reference', returnGuided: 'Return to call guide',
         slaSearchPlaceholder: 'Case or hours/days…', packageSearchPlaceholder: 'Package name, speed, or quota…', packagesNote: 'Search covers the names, speeds, quotas, and prices in the available tables. Number of people is not an official package field; use actual usage and device count, and do not infer a quota from household size alone.',
@@ -299,8 +372,14 @@ const App = {
         const quickDrawerOpen = ref(false);
         const workspaceMode = ref('guided');
         const simulationCase = ref(null);
+        const simulatorExpectedOption = ref({});
+        const simulatorAttempts = ref([]);
+        const simulatorLastOutcomes = ref({});
+        const simulatorRunNumber = ref(0);
         const examQuestionIndex = ref(0);
         const examBatch = ref([]);
+        const examMode = ref('mixed');
+        const examStarted = ref(false);
         const examUsedQuestionIds = ref([]);
         const examBatchNumber = ref(0);
         const examTotalCorrect = ref(0);
@@ -322,6 +401,15 @@ const App = {
         });
         const examScore = computed(() => examAnswers.value.reduce((score, answer, index) =>
             score + (answer === examBatch.value[index]?.correctIndex ? 1 : 0), 0));
+        const simulatorDecision = computed(() => {
+            if (!simulationCase.value || !currentStepId.value) return null;
+            const options = currentStep.value?.options ?? [];
+            const expectedIndex = simulatorExpectedOption.value[currentStepId.value];
+            if (!Number.isInteger(expectedIndex) || !options[expectedIndex]) return null;
+            const text = simulatorReplyText(currentStep.value, options[expectedIndex], language.value, simulatorRunNumber.value + history.value.length);
+            return { expectedIndex, text };
+        });
+        const simulatorScore = computed(() => simulatorAttempts.value.filter((attempt) => attempt.correct).length);
         const completedPath = computed(() => pathSelections.value.map(({ stepId, optionIndex }) => ({
             step: tree.value?.[stepId],
             option: tree.value?.[stepId]?.options?.[optionIndex],
@@ -551,13 +639,22 @@ const App = {
             examBatchNumber.value = 0;
             examTotalCorrect.value = 0;
             examTotalAnswered.value = 0;
-            startNextExamBatch();
+            examMode.value = 'mixed';
+            examStarted.value = false;
+            examBatch.value = [];
             workspaceMode.value = 'exam';
         }
 
+        function trueFalseOptionValue(option) {
+            const labels = [option?.en, option?.ar].map((label) => String(label ?? '').trim().toLowerCase());
+            if (labels.some((label) => ['true', 't', 'صح', 'صحيح', 'نعم'].includes(label))) return true;
+            if (labels.some((label) => ['false', 'f', 'غلط', 'خطأ', 'خاطئ', 'لا'].includes(label))) return false;
+            return null;
+        }
+
         function isTrueFalseQuestion(question) {
-            const options = (question?.options ?? []).map((option) => String(option.en ?? option.ar ?? '').trim().toLowerCase());
-            return options.length === 2 && options.includes('true') && options.includes('false');
+            const options = (question?.options ?? []).map(trueFalseOptionValue);
+            return options.length === 2 && options.includes(true) && options.includes(false);
         }
 
         function shuffled(items) {
@@ -574,30 +671,37 @@ const App = {
             const available = examQuestions.map((question, id) => ({ question, id })).filter(({ id }) => !used.has(id));
             const availableTrueFalse = shuffled(available.filter(({ question }) => isTrueFalseQuestion(question)));
             const multipleChoice = shuffled(available.filter(({ question }) => !isTrueFalseQuestion(question)));
-            const selected = availableTrueFalse.slice(0, 5);
+            let selected = [];
+            if (examMode.value === 'true-false') selected = availableTrueFalse.slice(0, 20);
+            else if (examMode.value === 'multiple-choice') selected = multipleChoice.slice(0, 20);
+            else selected = [...availableTrueFalse.slice(0, 5), ...multipleChoice.slice(0, 15)];
             const selectedIds = new Set(selected.map(({ id }) => id));
-            if (selected.length < 5) {
-                const reserveTrueFalse = shuffled(examQuestions
-                    .map((question, id) => ({ question, id }))
-                    .filter(({ question, id }) => isTrueFalseQuestion(question) && !selectedIds.has(id)));
-                selected.push(...reserveTrueFalse.slice(0, 5 - selected.length));
-                reserveTrueFalse.slice(0, 5 - availableTrueFalse.length).forEach(({ id }) => selectedIds.add(id));
-            }
-            selected.push(...multipleChoice.slice(0, 15));
-            selected.forEach(({ id }) => selectedIds.add(id));
-            if (selected.length < 20) {
-                selected.push(...shuffled(available.filter(({ id }) => !selectedIds.has(id))).slice(0, 20 - selected.length));
-            }
+            if (selected.length < 20) selected.push(...shuffled(available.filter(({ id }) => !selectedIds.has(id))).slice(0, 20 - selected.length));
             examBatch.value = shuffled(selected).map(({ question, id }) => ({ ...question, bankId: id }));
             examUsedQuestionIds.value = [...new Set([...examUsedQuestionIds.value, ...selected.filter(({ id }) => !used.has(id)).map(({ id }) => id)])];
             examBatchNumber.value += 1;
             examQuestionIndex.value = 0;
             examSelectedIndex.value = null;
             examAnswers.value = [];
+            examStarted.value = true;
         }
 
         function hasMoreExamQuestions() {
-            return examUsedQuestionIds.value.length < examQuestions.length;
+            const used = new Set(examUsedQuestionIds.value);
+            return examQuestions.some((question, id) => !used.has(id)
+                && (examMode.value === 'mixed'
+                    || (examMode.value === 'true-false' ? isTrueFalseQuestion(question) : !isTrueFalseQuestion(question))));
+        }
+
+        function selectExamMode(mode) {
+            examMode.value = mode;
+            examQuestionIndex.value = 0;
+            examBatch.value = [];
+            examUsedQuestionIds.value = [];
+            examBatchNumber.value = 0;
+            examTotalCorrect.value = 0;
+            examTotalAnswered.value = 0;
+            startNextExamBatch();
         }
 
         function chooseExamAnswer(optionIndex) {
@@ -639,13 +743,34 @@ const App = {
             workspaceMode.value = 'simulator';
         }
 
+        function prepareSimulatorDecision(stepId) {
+            const options = tree.value?.[stepId]?.options ?? [];
+            if (!simulationCase.value || !options.length) return;
+
+            const key = `${simulationCase.value.id}:${stepId}`;
+            const previousIndex = simulatorLastOutcomes.value[key];
+            const configuredOptions = SIMULATOR_ALLOWED_OPTIONS[simulationCase.value.id]?.[stepId];
+            let available = (configuredOptions ?? options.map((_, index) => index)).filter((index) => index >= 0 && index < options.length);
+            if (!available.length) available = options.map((_, index) => index);
+            if (available.length > 1 && Number.isInteger(previousIndex)) {
+                available = available.filter((index) => index !== previousIndex);
+            }
+            const expectedIndex = available[Math.floor(Math.random() * available.length)];
+            simulatorExpectedOption.value = { ...simulatorExpectedOption.value, [stepId]: expectedIndex };
+            simulatorLastOutcomes.value = { ...simulatorLastOutcomes.value, [key]: expectedIndex };
+        }
+
         function startScenario(scenario) {
             if (!tree.value?.[scenario.startStepId]) {
                 notice.value = t('missing');
                 return;
             }
             simulationCase.value = scenario;
+            simulatorRunNumber.value += 1;
+            simulatorExpectedOption.value = {};
+            simulatorAttempts.value = [];
             currentStepId.value = scenario.startStepId;
+            prepareSimulatorDecision(scenario.startStepId);
             history.value = [];
             pathSelections.value = [];
             resetPackageControls();
@@ -661,6 +786,8 @@ const App = {
 
         function showScenarioList() {
             simulationCase.value = null;
+            simulatorExpectedOption.value = {};
+            simulatorAttempts.value = [];
             history.value = [];
             pathSelections.value = [];
             workspaceMode.value = 'simulator';
@@ -772,8 +899,8 @@ const App = {
                     h('button', { class: 'exam-primary-button case-start-button', type: 'button', onClick: () => startScenario(scenario) }, [t('simulatorStart'), icon('arrow', 'size-4')]),
                 ]))),
                 h('p', { class: 'case-simulator-note' }, isArabic
-                    ? 'المواقف تستخدم مسارات الدليل نفسه. لا تدخل بيانات عميل حقيقي؛ المهلات والإجراءات المتغيرة تُراجع من النظام الحالي.'
-                    : 'Cases use the same support guide. Do not enter real customer data; verify changing SLAs and procedures in the current system.'),
+                    ? 'رد العميل أو نتيجة الفحص تتغير مع كل تشغيل للتدريب. المواقف تستخدم مسارات الدليل نفسه؛ لا تدخل بيانات عميل حقيقي، وراجع المهلات والإجراءات المتغيرة في النظام الحالي.'
+                    : 'Customer replies and findings vary on each practice run. Cases use the same support guide; do not enter real customer data, and verify changing SLAs and procedures in the current system.'),
             ]);
         }
 
@@ -787,9 +914,41 @@ const App = {
                 ? 'معلومة تدريبية متغيرة: راجع الـSLA أو الإجراء الحالي في النظام قبل استخدامه مع عميل.'
                 : 'Time-sensitive training item: check the current SLA or procedure before using it with a customer.';
 
+            if (!examStarted.value) {
+                const trueFalseCount = examQuestions.filter(isTrueFalseQuestion).length;
+                const multipleChoiceCount = examQuestions.length - trueFalseCount;
+                const modes = [
+                    { id: 'mixed', title: isArabic ? 'جولة متنوعة' : 'Mixed practice', detail: isArabic ? '٥ صح وغلط + ١٥ اختيار من متعدد في كل جولة' : '5 true/false + 15 multiple choice per round', count: examQuestions.length },
+                    { id: 'true-false', title: isArabic ? 'صح وغلط فقط' : 'True / False only', detail: isArabic ? 'تدرّب على العبارات وحدد صح ولا غلط' : 'Practice statements and mark them true or false', count: trueFalseCount },
+                    { id: 'multiple-choice', title: isArabic ? 'اختيار من متعدد فقط' : 'Multiple choice only', detail: isArabic ? 'تدرّب على أسئلة الاختيارات' : 'Practice multiple-choice questions', count: multipleChoiceCount },
+                ];
+                return h('section', { class: 'exam-panel exam-setup' }, [
+                    h('span', { class: 'exam-kicker' }, isArabic ? 'بنك الأسئلة' : 'QUESTION BANK'),
+                    h('h2', { class: 'exam-title' }, isArabic ? 'اختار طريقة التدريب' : 'Choose a practice mode'),
+                    h('p', { class: 'exam-intro' }, isArabic
+                        ? `المتاح حاليًا ${trueFalseCount} سؤال صح وغلط و${multipleChoiceCount} سؤال اختيار من متعدد.`
+                        : `${trueFalseCount} true/false and ${multipleChoiceCount} multiple-choice questions are available.`),
+                    h('div', { class: 'exam-mode-grid' }, modes.map((mode) => h('button', {
+                        class: 'exam-mode-card', type: 'button', onClick: () => selectExamMode(mode.id),
+                    }, [
+                        h('span', { class: 'exam-mode-count' }, `${mode.count}`),
+                        h('strong', mode.title),
+                        h('span', { class: 'exam-mode-detail' }, mode.detail),
+                        h('span', { class: 'exam-mode-start' }, isArabic ? 'ابدأ التدريب ←' : 'Start practice →'),
+                    ]))),
+                    h('p', { class: 'exam-source-note' }, isArabic
+                        ? 'بعد كل إجابة هتشوف الصح والغلط، والإجابة الصحيحة، وشرح السؤال. لو ملف التدريب ذكر الإجابة من غير سبب، هنوضح ده بدل ما نخترع شرحًا.'
+                        : 'After each answer, see whether it is correct, the answer key, and the explanation. If the source gives no rationale, we say so instead of inventing one.'),
+                ]);
+            }
+
             if (index >= total) {
                 const moreQuestions = hasMoreExamQuestions();
-                const nextBatchSize = Math.min(20, examQuestions.length - examUsedQuestionIds.value.length);
+                const used = new Set(examUsedQuestionIds.value);
+                const remainingForMode = examQuestions.filter((question, questionId) => !used.has(questionId)
+                    && (examMode.value === 'mixed'
+                        || (examMode.value === 'true-false' ? isTrueFalseQuestion(question) : !isTrueFalseQuestion(question)))).length;
+                const nextBatchSize = Math.min(20, remainingForMode);
                 return h('section', { class: 'exam-panel exam-results' }, [
                     h('div', { class: 'exam-result-mark' }, [icon(percent >= 70 ? 'check' : 'question', 'size-7')]),
                     h('span', { class: 'exam-kicker' }, isArabic ? `الجولة ${examBatchNumber.value} اكتملت` : `ROUND ${examBatchNumber.value} COMPLETE`),
@@ -849,9 +1008,9 @@ const App = {
                         const correctOption = answered && optionIndex === batchQuestion.correctIndex;
                         const wrongSelection = answered && optionIndex === selected && !isCorrect;
                         const classes = ['exam-choice', correctOption ? 'is-correct' : '', wrongSelection ? 'is-wrong' : '', answered && optionIndex === selected ? 'is-selected' : ''].filter(Boolean).join(' ');
-                        const optionEnglish = String(option.en ?? '').trim().toLowerCase();
+                        const optionEnglish = trueFalseOptionValue(option);
                         const displayOption = isArabic && trueFalse
-                            ? (optionEnglish === 'true' ? 'صح' : 'غلط')
+                            ? (optionEnglish ? 'صح' : 'غلط')
                             : option[language.value];
                         return h('button', {
                             class: classes,
@@ -860,7 +1019,7 @@ const App = {
                             'aria-pressed': optionIndex === selected,
                             onClick: () => chooseExamAnswer(optionIndex),
                         }, [
-                            h('span', { class: 'exam-choice-letter' }, trueFalse ? (optionEnglish === 'true' ? '✓' : '×') : (optionLetters[optionIndex] || String(optionIndex + 1))),
+                            h('span', { class: 'exam-choice-letter' }, trueFalse ? (optionEnglish ? '✓' : '×') : (optionLetters[optionIndex] || String(optionIndex + 1))),
                             h('span', displayOption),
                         ]);
                     })),
@@ -871,8 +1030,10 @@ const App = {
                         h('strong', isCorrect
                             ? (isArabic ? 'إجابة صحيحة' : 'Correct answer')
                             : (isArabic ? 'الإجابة غير صحيحة' : 'Not quite')),
-                        h('p', [h('b', isArabic ? 'الإجابة الصحيحة: ' : 'Correct answer: '), isArabic && trueFalse ? (batchQuestion.options[batchQuestion.correctIndex].en.toLowerCase() === 'true' ? 'صح' : 'غلط') : batchQuestion.options[batchQuestion.correctIndex][language.value]]),
-                        h('p', [h('b', isArabic ? 'الشرح: ' : 'Explanation: '), batchQuestion.explanation[language.value]]),
+                        h('p', [h('b', isArabic ? 'الإجابة الصحيحة: ' : 'Correct answer: '), isArabic && trueFalse ? (trueFalseOptionValue(batchQuestion.options[batchQuestion.correctIndex]) ? 'صح' : 'غلط') : batchQuestion.options[batchQuestion.correctIndex][language.value]]),
+                    h('p', [h('b', isArabic ? 'ليه؟ ' : 'Why? '), batchQuestion.explanation?.[language.value] || (isArabic
+                        ? 'ملف المصدر لا يوضح سبب الإجابة؛ المعروض هو مفتاح الإجابة فقط.'
+                        : 'The source does not explain why; this is the answer key only.')]),
                         batchQuestion.verifyLive ? h('small', verifyNote) : null,
                     ]) : null,
                 ]),
@@ -1011,8 +1172,20 @@ const App = {
 
             history.value = [...history.value, currentStepId.value];
             const selectedIndex = currentStep.value.options.indexOf(option);
+            if (simulationCase.value && simulatorDecision.value) {
+                const expectedIndex = simulatorDecision.value.expectedIndex;
+                simulatorAttempts.value = [...simulatorAttempts.value, {
+                    stepId: currentStepId.value,
+                    question: currentStep.value.question,
+                    selectedLabel: option.label,
+                    expectedLabel: currentStep.value.options[expectedIndex]?.label ?? '',
+                    correct: selectedIndex === expectedIndex,
+                    reason: currentStep.value.check_guidance || currentStep.value.action || '',
+                }];
+            }
             pathSelections.value = [...pathSelections.value, { stepId: currentStepId.value, optionIndex: selectedIndex }];
             currentStepId.value = nextStep;
+            if (simulationCase.value) prepareSimulatorDecision(nextStep);
             resetPackageControls();
             notice.value = '';
             afterStepChange();
@@ -1020,6 +1193,10 @@ const App = {
 
         function goBack() {
             if (history.value.length === 0) return;
+            const previousStepId = history.value.at(-1);
+            if (simulationCase.value) {
+                simulatorAttempts.value = simulatorAttempts.value.filter((attempt) => attempt.stepId !== previousStepId);
+            }
             currentStepId.value = history.value.at(-1);
             history.value = history.value.slice(0, -1);
             pathSelections.value = pathSelections.value.slice(0, -1);
@@ -1247,6 +1424,11 @@ const App = {
                                     h('p', { class: 'active-scenario-goal' }, [h('strong', `${t('simulatorGoal')}: `), simulationCase.value.goal[language.value]]),
                                     simulationCase.value.image ? h('img', { class: 'case-scenario-image active-scenario-image', src: simulationCase.value.image, alt: simulationCase.value.imageAlt?.[language.value] || simulationCase.value.title[language.value] }) : null,
                                 ]) : null,
+                                simulationCase.value && simulatorDecision.value ? h('section', { class: 'simulator-customer-reply mb-5 rounded-2xl border border-cyan-200 bg-cyan-50 px-4 py-3.5 sm:px-5', 'aria-live': 'polite' }, [
+                                    h('h3', { class: 'mb-1 flex items-center gap-2 text-xs font-bold text-cyan-900' }, [icon('chat', 'size-4'), t('simulatorReply')]),
+                                    h('p', { class: 'leading-7 text-cyan-950' }, simulatorDecision.value.text),
+                                    h('p', { class: 'mt-1 text-xs text-cyan-800' }, t('simulatorReplyHint')),
+                                ]) : null,
                                 h('div', { class: 'mb-3 flex flex-wrap items-center justify-between gap-2' }, [
                                     h('p', { class: 'inline-flex items-center gap-2 text-xs font-semibold text-slate-500' }, [h('span', { class: 'inline-block size-2 rounded-full bg-emerald-500' }), t('step') + ' ' + (history.value.length + 1)]),
                                     history.value.length > 0 ? h('button', {
@@ -1433,6 +1615,21 @@ const App = {
                                         ]) : null,
                                         simulationCase.value ? h('section', { class: 'simulator-complete-card' }, [
                                             h('h3', [icon('check', 'size-5'), t('simulatorDone')]),
+                                            h('section', { class: 'simulator-score-card' }, [
+                                                h('h4', t('simulatorScore')),
+                                                h('p', `${simulatorScore.value} / ${simulatorAttempts.value.length} · ${t('simulatorCorrect')}`),
+                                                simulatorAttempts.value.length === 0 ? h('p', t('simulatorNoScore')) : null,
+                                                simulatorAttempts.value.length > 0 && simulatorScore.value === simulatorAttempts.value.length ? h('p', t('simulatorAllCorrect')) : null,
+                                                simulatorAttempts.value.some((attempt) => !attempt.correct) ? h('div', { class: 'simulator-mistakes' }, [
+                                                    h('h5', t('simulatorMistakes')),
+                                                    h('ol', simulatorAttempts.value.filter((attempt) => !attempt.correct).map((attempt, index) => h('li', { key: `${attempt.stepId}-${index}` }, [
+                                                        h('strong', attempt.question),
+                                                        h('span', [h('b', `${t('simulatorYourChoice')}: `), attempt.selectedLabel]),
+                                                        h('span', [h('b', `${t('simulatorExpectedChoice')}: `), attempt.expectedLabel]),
+                                                        h('span', [h('b', `${t('simulatorWhyWrong')}: `), attempt.reason || (language.value === 'ar' ? 'الفرع الصحيح يتحدد من رد الحالة ونتيجة الفحص المعروضة.' : 'The correct branch follows the simulated reply or system result.')]),
+                                                    ]))),
+                                                ]) : null,
+                                            ]),
                                             currentStep.value.action ? h('p', [h('strong', `${t('action')}: `), currentStep.value.action]) : null,
                                             currentStep.value.customer_script ? h('p', [h('strong', `${t('customerScript')}: `), currentStep.value.customer_script]) : null,
                                             h('p', [h('strong', `${t('simulatorSource')}: `), simulationCase.value.source]),

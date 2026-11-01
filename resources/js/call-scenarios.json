@@ -6,8 +6,8 @@
       "en": "Internet down, DSL steady"
     },
     "customer": {
-      "ar": "الإنترنت فاصل على كل الأجهزة، ولمبة DSL ثابتة. مفيش عطل عام ظاهر، والحساب والباقة نشطين.",
-      "en": "Internet is down on every device, but the DSL light is steady. No outage is visible; the account and package are active."
+      "ar": "الإنترنت فاصل على كل الأجهزة ولمبة DSL ثابتة وقت المشكلة.",
+      "en": "Internet is down on every device, and DSL stays steady while the issue occurs."
     },
     "goal": {
       "ar": "ابدأ بالتذكرة والعطل العام والحساب والباقة، ثم صنّف العرض المنطقي وافحص النتيجة قبل التصعيد.",
@@ -40,8 +40,8 @@
       "en": "No websites open"
     },
     "customer": {
-      "ar": "العميل فاتح أكثر من جهاز، وكل المواقع لا تفتح. لمبة DSL ثابتة؛ ابدأ بالتحقق من التذكرة والعطل العام والحساب والباقة.",
-      "en": "The customer tried multiple devices; no websites open and DSL is steady. Start by checking the ticket, outage, account, and package."
+      "ar": "العميل جرّب أكثر من جهاز وكل المواقع لا تفتح، ولمبة DSL ثابتة.",
+      "en": "The customer tried multiple devices; no websites open and DSL is steady."
     },
     "goal": {
       "ar": "حدد هل المشكلة عامة أم على جهاز أو موقع واحد، ثم اتبع فحص التصفح.",

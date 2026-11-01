@@ -572,18 +572,24 @@ const App = {
         function startNextExamBatch() {
             const used = new Set(examUsedQuestionIds.value);
             const available = examQuestions.map((question, id) => ({ question, id })).filter(({ id }) => !used.has(id));
-            const trueFalse = shuffled(available.filter(({ question }) => isTrueFalseQuestion(question)));
+            const availableTrueFalse = shuffled(available.filter(({ question }) => isTrueFalseQuestion(question)));
             const multipleChoice = shuffled(available.filter(({ question }) => !isTrueFalseQuestion(question)));
-            const selected = [
-                ...trueFalse.slice(0, 5),
-                ...multipleChoice.slice(0, 15),
-            ];
+            const selected = availableTrueFalse.slice(0, 5);
+            const selectedIds = new Set(selected.map(({ id }) => id));
+            if (selected.length < 5) {
+                const reserveTrueFalse = shuffled(examQuestions
+                    .map((question, id) => ({ question, id }))
+                    .filter(({ question, id }) => isTrueFalseQuestion(question) && !selectedIds.has(id)));
+                selected.push(...reserveTrueFalse.slice(0, 5 - selected.length));
+                reserveTrueFalse.slice(0, 5 - availableTrueFalse.length).forEach(({ id }) => selectedIds.add(id));
+            }
+            selected.push(...multipleChoice.slice(0, 15));
+            selected.forEach(({ id }) => selectedIds.add(id));
             if (selected.length < 20) {
-                const selectedIds = new Set(selected.map(({ id }) => id));
                 selected.push(...shuffled(available.filter(({ id }) => !selectedIds.has(id))).slice(0, 20 - selected.length));
             }
             examBatch.value = shuffled(selected).map(({ question, id }) => ({ ...question, bankId: id }));
-            examUsedQuestionIds.value = [...examUsedQuestionIds.value, ...selected.map(({ id }) => id)];
+            examUsedQuestionIds.value = [...new Set([...examUsedQuestionIds.value, ...selected.filter(({ id }) => !used.has(id)).map(({ id }) => id)])];
             examBatchNumber.value += 1;
             examQuestionIndex.value = 0;
             examSelectedIndex.value = null;
